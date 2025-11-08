@@ -24,3 +24,11 @@ class Person(models.Model):
 
     def __str__(self):
         return f"{self.last_name} {self.first_name}"
+
+# === УНИВЕРСИТЕТСКИЕ СТРУКТУРЫ ===
+
+class Faculty(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    def __str__(self):
+        return self.name
+
