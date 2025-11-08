@@ -280,3 +280,63 @@ class AssessmentResult(models.Model):
 
     def __str__(self):
         return f"{self.student} — {self.assessment} = {self.points}"
+
+# === ЗАЯВЛЕНИЯ ===
+
+class StudentRequest(models.Model):
+    """
+    Заявления студента (включая справки).
+    """
+    TYPE_CHOICES = [
+        ("certificate_enrollment", "Справка об обучении"),
+        ("certificate_income", "Справка о доходах/стипендии"),
+        ("dormitory", "Общежитие"),
+        ("practice", "Практика/стажировка"),
+        ("other", "Прочее"),
+    ]
+    STATUS_CHOICES = [
+        ("draft", "Черновик"),
+        ("submitted", "Отправлено"),
+        ("in_progress", "В работе"),
+        ("approved", "Одобрено"),
+        ("rejected", "Отклонено"),
+        ("issued", "Выдано"),
+    ]
+    university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='student_requests')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='requests')
+    type = models.CharField(max_length=64, choices=TYPE_CHOICES)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="submitted")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    payload_json = models.JSONField(default=dict, blank=True)  # детали: куда выдать, на кого, цель и т.п.
+
+    def __str__(self):
+        return f"{self.student}: {self.get_type_display()} [{self.get_status_display()}]"
+
+class TeacherRequest(models.Model):
+    """
+        Заявления преподавателя (включая справки).
+    """
+    TYPE_CHOICES = [
+        ("annual", "Ежегодный отпуск"),
+        ("sick", "Больничный"),
+        ("academic", "Академический отпуск"),
+        ("business", "Командировка"),
+        ("other", "Иное"),
+    ]
+    STATUS = [
+        ("submitted", "Отправлено"),
+        ("in_review", "На рассмотрении"),
+        ("approved", "Одобрено"),
+        ("rejected", "Отклонено"),
+    ]
+    university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='teacher_requests')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='requests')
+    type = models.CharField(max_length=64, choices=TYPE_CHOICES)
+    status = models.CharField(max_length=16, choices=STATUS, default="submitted")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    payload_json = models.JSONField(default=dict, blank=True) # детали: куда выдать, на кого, цель и т.п.
+
+    def __str__(self):
+        return f"{self.teacher}: {self.get_type_display()} [{self.get_status_display()}]"
