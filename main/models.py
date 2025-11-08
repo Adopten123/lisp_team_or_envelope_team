@@ -2,6 +2,8 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+# === ОБЪЕКТЫ ЛЮДЕЙ ===
+
 class Person(models.Model):
     """
     Базовый объект человека.
@@ -27,7 +29,31 @@ class Person(models.Model):
     def __str__(self):
         return f"{self.last_name} {self.first_name}"
 
+class Teacher(models.Model):
+    """
+    Объект учителя.
+    """
+    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='teacher')
+    academic_title = models.CharField(max_length=128, blank=True)
+    department = models.CharField(max_length=255, blank=True)
+    university = models.ForeignKey('University', on_delete=models.CASCADE, related_name='teachers')
+
+    def __str__(self):
+        return str(self.person)
+
 # === УНИВЕРСИТЕТСКИЕ СТРУКТУРЫ ===
+class University(models.Model):
+    """
+    Университет
+    """
+    name = models.CharField("Название университета", max_length=256, unique=True) # название
+    short_name = models.CharField("Короткое имя", max_length=64, unique=True) # скоращенное название
+    city = models.CharField("Город", max_length=128, blank=True)
+    description = models.TextField(blank=True)
+    contact_email = models.EmailField(blank=True)
+
+    def __str__(self):
+        return self.short_name or self.name
 
 class Faculty(models.Model):
     name = models.CharField(max_length=256, unique=True)
@@ -48,3 +74,4 @@ class Program(models.Model):
 
     def __str__(self):
         return f"{self.code or ''} {self.name}".strip()
+
