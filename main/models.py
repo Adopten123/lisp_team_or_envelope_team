@@ -60,6 +60,7 @@ class StudentGroup(models.Model):
         return self.name
 
 # === УНИВЕРСИТЕТСКИЕ СТРУКТУРЫ ===
+
 class University(models.Model):
     """
     Университет
@@ -98,3 +99,18 @@ class Program(models.Model):
     def __str__(self):
         return f"{self.code or ''} {self.name}".strip()
 
+class Discipline(models.Model):
+    """
+    Дисциплина (математика, ООП и т.п.)
+
+    ects - система единиц, которая используется для измерения учебной нагрузки студента
+    """
+    code = models.CharField(max_length=32, blank=True)
+    title = models.CharField(max_length=256)
+    ects = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)
+
+    class Meta:
+        unique_together = [("code", "title")]
+
+    def __str__(self):
+        return self.title
