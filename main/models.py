@@ -56,7 +56,12 @@ class University(models.Model):
         return self.short_name or self.name
 
 class Faculty(models.Model):
-    name = models.CharField(max_length=256, unique=True)
+    """
+    Факультет
+    убрать null=True из поля university на этапе продакшена
+    """
+    university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='faculties', null=True)
+    name = models.CharField(max_length=256)
     def __str__(self):
         return self.name
 
