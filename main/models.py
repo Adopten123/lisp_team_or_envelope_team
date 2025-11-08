@@ -41,10 +41,14 @@ class Teacher(models.Model):
     def __str__(self):
         return str(self.person)
 
+
 class StudentGroup(models.Model):
     """
-    Студентческая группа (ПО-51 и проч)
+    Студенческая группа (ПО-51 и проч)
+
+    Убрать null=True на продакшене
     """
+    university = models.ForeignKey('University', on_delete=models.CASCADE, related_name='groups', null=True)
     program = models.ForeignKey('Program', on_delete=models.PROTECT, related_name='groups') # программа обучения
     name = models.CharField(max_length=64)  # ПО-51
     admission_year = models.PositiveSmallIntegerField()  # год начала учебы
@@ -58,6 +62,26 @@ class StudentGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+class Student(models.Model):
+    """
+    Студент
+
+    Поля под вопросом: current_year, по сути дублирование информации
+    """
+    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='student')
+
+    university = models.ForeignKey('University', on_delete=models.CASCADE, related_name='students')
+    student_group = models.ForeignKey(StudentGroup, on_delete=models.PROTECT, related_name='students')
+    student_id = models.CharField("Номер студенческого билета", max_length=32, unique=True)
+
+    current_year = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(6)], help_text="Курс (1..6)"
+    )
+    admission_year = models.PositiveSmallIntegerField() # год поступления
+
+    def __str__(self):
+        return f"{self.person} ({self.student_group})"
 
 # === УНИВЕРСИТЕТСКИЕ СТРУКТУРЫ ===
 
@@ -135,3 +159,47 @@ class Curriculum(models.Model):
 
     class Meta:
         unique_together = [("program", "discipline", "semester")]
+
+
+# === Амплуа для моделей людей ===
+
+class Teaching(models.Model):
+    """
+    Кто и когда ведёт дисциплину.
+    Модель, созданная для связи преподавателя с конкретной группой/потоком и семестром.
+
+    Поля под вопросом: academic_year, semester_in_year
+    """
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='teachings')
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE, related_name='teachings')
+    group = models.ForeignKey(StudentGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name='teachings')
+
+    academic_year = models.CharField(max_length=9)  # учбеный год
+    semester_in_year = models.PositiveSmallIntegerField(choices=[(1, "осенний"), (2, "весенний")])
+
+    class Meta:
+        unique_together = [("teacher", "curriculum", "group", "academic_year")]
+        indexes = [models.Index(fields=["academic_year"])]
+
+    def __str__(self):
+        return f"{self.teacher} → {self.curriculum.discipline}"
+
+class StudentRole(models.Model):
+    """
+    Роли студентов: староста, журналист, профорг (с историей периодов).
+    """
+    ROLE_CHOICES = [
+        ("headman", "Староста"),
+        ("journalist", "Журналист"),
+        ("TUO", "Профорг"),
+    ]
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='roles')
+    role = models.CharField(max_length=32, choices=ROLE_CHOICES)
+    start_date = models.DateField() # начало срока полномочий
+    end_date = models.DateField(null=True, blank=True) # конец срока поломочий
+
+    class Meta:
+        indexes = [models.Index(fields=["role", "start_date"])]
+
+    def __str__(self):
+        return f"{self.student} — {self.get_role_display()}"
