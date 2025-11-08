@@ -340,3 +340,70 @@ class TeacherRequest(models.Model):
 
     def __str__(self):
         return f"{self.teacher}: {self.get_type_display()} [{self.get_status_display()}]"
+
+
+# === АБИТУРИЕНТЫ ===
+
+class Applicant(models.Model):
+    """
+    Абитуриент
+
+    В основном вопрос в том, где хранить дату рождения и прочие данные, пока пускай будет тут.
+    """
+    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='applicant')
+    birth_date = models.DateField(null=True, blank=True)
+    passport_number = models.CharField(max_length=64, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+    school_name = models.CharField(max_length=255, blank=True)
+    graduation_year = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    linked_student = models.OneToOneField(
+        Student, on_delete=models.SET_NULL, null=True, blank=True,
+        help_text="Связь после зачисления"
+    )
+
+    def __str__(self):
+        return f"Абитуриент: {self.person}"
+
+
+class ApplicantExam(models.Model):
+    """Результаты ЕГЭ/вступительных и пр."""
+    EXAM_TYPE = [
+        ("USE", "ЕГЭ"),
+        ("internal", "Внутренний"),
+        ("other", "Другое"),
+    ]
+    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='exams')
+    subject = models.CharField(max_length=128)
+    exam_type = models.CharField(max_length=16, choices=EXAM_TYPE, default="USE")
+    score = models.DecimalField(max_digits=5, decimal_places=2)
+
+    class Meta:
+        unique_together = [("applicant", "subject", "exam_type")]
+
+
+class AdmissionRequest(models.Model):
+    """
+    Заявка абитуриента на программу (с приоритетами и статусами).
+    """
+    STATUS = [
+        ("draft", "Черновик"),
+        ("submitted", "Подано"),
+        ("under_review", "На рассмотрении"),
+        ("accepted", "Принято"),
+        ("rejected", "Отклонено"),
+        ("enrolled", "Зачислен"),
+    ]
+    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='applications')
+    program = models.ForeignKey(Program, on_delete=models.PROTECT, related_name='admission_request')
+    priority = models.PositiveSmallIntegerField(default=1)
+    status = models.CharField(max_length=16, choices=STATUS, default="submitted")
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    payload_json = models.JSONField(default=dict, blank=True)  # загрузка файлов/доков/льгот и пр.
+
+    class Meta:
+        unique_together = [("applicant", "program")]
+        indexes = [models.Index(fields=["status", "priority"])]
+
+    def __str__(self):
+        return f"{self.applicant} → {self.program} ({self.status})"
