@@ -41,6 +41,24 @@ class Teacher(models.Model):
     def __str__(self):
         return str(self.person)
 
+class StudentGroup(models.Model):
+    """
+    Студентческая группа (ПО-51 и проч)
+    """
+    program = models.ForeignKey('Program', on_delete=models.PROTECT, related_name='groups') # программа обучения
+    name = models.CharField(max_length=64)  # ПО-51
+    admission_year = models.PositiveSmallIntegerField()  # год начала учебы
+    curator = models.ForeignKey(
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name='curating_groups'
+    )
+
+    class Meta:
+        unique_together = [("program", "name")]
+        indexes = [models.Index(fields=["admission_year"])]
+
+    def __str__(self):
+        return self.name
+
 # === УНИВЕРСИТЕТСКИЕ СТРУКТУРЫ ===
 class University(models.Model):
     """
