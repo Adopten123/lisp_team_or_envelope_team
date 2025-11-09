@@ -1,7 +1,10 @@
 from django.http import HttpResponse
+from django.shortcuts import render
+
 
 def index(request):
-    return HttpResponse("Главная страница любого пользователя, тут будут отображаться клетки с переходом между вкладками")
+    """Главная страница"""
+    return render(request, 'index.html')
 
 def university_moderation(request):
     return HttpResponse("Страница управления университетом, тут будет выдача ролей и создание кафедр")

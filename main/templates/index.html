@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Университетский кампус</title>
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="university-logo">
+                <div class="logo-icon">🎓</div>
+                <h1>Университетский Кампус</h1>
+            </div>
+            <p class="welcome-text">Добро пожаловать в цифровой кампус</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Карточка пользователя -->
+            <section class="user-card" id="userCard">
+                <div class="user-avatar">
+                    <div class="avatar-placeholder">👤</div>
+                </div>
+                <div class="user-info">
+                    <h3 class="user-name">Гость</h3>
+                    <p class="user-status">Не авторизован</p>
+                </div>
+                <div class="user-badge" id="userBadge">●</div>
+            </section>
+
+            <!-- Быстрые действия -->
+            <section class="quick-actions">
+                <h2 class="section-title">Быстрый доступ</h2>
+                <div class="actions-grid">
+                    <div class="action-card" data-action="schedule">
+                        <div class="action-icon">📅</div>
+                        <span class="action-text">Расписание</span>
+                    </div>
+                    <div class="action-card" data-action="grades">
+                        <div class="action-icon">📊</div>
+                        <span class="action-text">Оценки</span>
+                    </div>
+                    <div class="action-card" data-action="group">
+                        <div class="action-icon">👥</div>
+                        <span class="action-text">Моя группа</span>
+                    </div>
+                    <div class="action-card" data-action="certificate">
+                        <div class="action-icon">📋</div>
+                        <span class="action-text">Заказать справку</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Уведомления -->
+            <section class="notifications">
+                <h2 class="section-title">Уведомления</h2>
+                <div class="notifications-list">
+                    <div class="notification-item">
+                        <div class="notification-icon">🔔</div>
+                        <div class="notification-content">
+                            <p class="notification-text">Завтра: Лекция по математике в 10:00</p>
+                            <span class="notification-time">2 часа назад</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon">📝</div>
+                        <div class="notification-content">
+                            <p class="notification-text">Срок сдачи проекта через 3 дня</p>
+                            <span class="notification-time">5 часов назад</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon">🎉</div>
+                        <div class="notification-content">
+                            <p class="notification-text">Запланировано мероприятие: День открытых дверей</p>
+                            <span class="notification-time">Вчера</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Дополнительный контент для демонстрации скролла -->
+            <section class="quick-actions">
+                <h2 class="section-title">Дополнительные сервисы</h2>
+                <div class="actions-grid">
+                    <div class="action-card" data-action="cafeteria">
+                        <div class="action-icon">🍽️</div>
+                        <span class="action-text">Столовая</span>
+                    </div>
+                    <div class="action-card" data-action="sports">
+                        <div class="action-icon">⚽</div>
+                        <span class="action-text">Спорт</span>
+                    </div>
+                    <div class="action-card" data-action="events">
+                        <div class="action-icon">🎭</div>
+                        <span class="action-text">Мероприятия</span>
+                    </div>
+                    <div class="action-card" data-action="contacts">
+                        <div class="action-icon">📞</div>
+                        <span class="action-text">Контакты</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Навигационное меню - ВНЕ контейнера для фиксированного позиционирования -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-page="main">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Главная</span>
+        </button>
+        <button class="nav-item" data-page="news">
+            <span class="nav-icon">🌐</span>
+            <span class="nav-text">Новости</span>
+        </button>
+        <button class="nav-item" data-page="profile">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">Профиль</span>
+        </button>
+        <button class="nav-item" data-page="help">
+            <span class="nav-icon">❓</span>
+            <span class="nav-text">Помощь</span>
+        </button>
+    </nav>
+
+    <script src="{% static 'js/max-auth.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
