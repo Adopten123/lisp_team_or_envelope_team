@@ -51,7 +51,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "admission_request",
+        "id": "applicant_admission_request",
         "icon": "🗳️",
         "text": "Подать заявление на поступление",
         "data_action": "admission_request",
@@ -112,21 +112,21 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "staff_menu",
+        "id": "moderation_staff",
         "icon": "💼",
         "text": "Меню персонала",
         "data_action": "staff_menu",
         "roles": {"University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "university_menu",
+        "id": "moderation_university",
         "icon": "🏫",
         "text": "Меню университета",
         "data_action": "staff_menu",
         "roles": {"University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "schedule_menu",
+        "id": "moderation_schedules",
         "icon": "📅",
         "text": "Меню расписания",
         "data_action": "schedule_menu",
@@ -134,7 +134,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "subject_menu",
+        "id": "moderation_subjects",
         "icon": "📦",
         "text": "Меню дисциплин",
         "data_action": "subject_menu",
@@ -142,7 +142,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "request_menu",
+        "id": "moderation_requests",
         "icon": "📑",
         "text": "Обработка справок",
         "data_action": "request_menu",
@@ -150,7 +150,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "request_menu",
+        "id": "moderation_acts",
         "icon": "🗂️",
         "text": "Меню актов",
         "data_action": "request_menu",
