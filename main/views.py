@@ -11,7 +11,7 @@ def index(request):
         "menu_buttons": menu_buttons,
     }
 
-    return render(request, 'index.html', context)
+    return render(request, 'main/main.html', context)
 
 def university_moderation(request):
     return HttpResponse("Страница управления университетом, тут будет выдача ролей и создание кафедр")

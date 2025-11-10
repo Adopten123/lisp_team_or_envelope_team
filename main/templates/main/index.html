@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Университетский кампус</title>
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        {% include 'main/menu/header_menu.html' %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Навигационное меню - ВНЕ контейнера для фиксированного позиционирования -->
+    {% include 'main/menu/nav_menu.html' %}
+
+    <script src="{% static 'js/max-auth.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
