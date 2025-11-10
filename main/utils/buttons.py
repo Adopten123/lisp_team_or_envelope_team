@@ -111,4 +111,58 @@ buttons = [
         "roles": {"Teacher", "University Moderator 1lvl",
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
+    {
+        "id": "staff_menu",
+        "icon": "💼",
+        "text": "Меню персонала",
+        "data_action": "staff_menu",
+        "roles": {"University Moderator 2lvl", "University Moderator 3lvl"}
+    },
+    {
+        "id": "university_menu",
+        "icon": "🏫",
+        "text": "Меню университета",
+        "data_action": "staff_menu",
+        "roles": {"University Moderator 2lvl", "University Moderator 3lvl"}
+    },
+    {
+        "id": "schedule_menu",
+        "icon": "📅",
+        "text": "Меню расписания",
+        "data_action": "schedule_menu",
+        "roles": {"University Moderator 1lvl",
+                  "University Moderator 2lvl", "University Moderator 3lvl"}
+    },
+    {
+        "id": "subject_menu",
+        "icon": "📦",
+        "text": "Меню дисциплин",
+        "data_action": "subject_menu",
+        "roles": {"University Moderator 1lvl",
+                  "University Moderator 2lvl", "University Moderator 3lvl"}
+    },
+    {
+        "id": "news_menu",
+        "icon": "📫",
+        "text": "Меню новостей",
+        "data_action": "news_menu",
+        "roles": {"University Moderator 1lvl",
+                  "University Moderator 2lvl", "University Moderator 3lvl"}
+    },
+    {
+        "id": "request_menu",
+        "icon": "📑",
+        "text": "Обработка справок",
+        "data_action": "request_menu",
+        "roles": {"University Moderator 1lvl",
+                  "University Moderator 2lvl", "University Moderator 3lvl"}
+    },
+    {
+        "id": "request_menu",
+        "icon": "🗂️",
+        "text": "Меню актов",
+        "data_action": "request_menu",
+        "roles": {"University Moderator 1lvl",
+                  "University Moderator 2lvl", "University Moderator 3lvl"}
+    },
 ]
