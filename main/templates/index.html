@@ -35,22 +35,12 @@
             <section class="quick-actions">
                 <h2 class="section-title">Быстрый доступ</h2>
                 <div class="actions-grid">
-                    <div class="action-card" data-action="schedule">
-                        <div class="action-icon">📅</div>
-                        <span class="action-text">Расписание</span>
-                    </div>
-                    <div class="action-card" data-action="grades">
-                        <div class="action-icon">📊</div>
-                        <span class="action-text">Оценки</span>
-                    </div>
-                    <div class="action-card" data-action="group">
-                        <div class="action-icon">👥</div>
-                        <span class="action-text">Моя группа</span>
-                    </div>
-                    <div class="action-card" data-action="certificate">
-                        <div class="action-icon">📋</div>
-                        <span class="action-text">Заказать справку</span>
-                    </div>
+                    {%  for item in menu_buttons %}
+                        <div class="action-card" data-action="{{ item.data_action }}">
+                            <div class="action-icon">{{ item.icon }}</div>
+                            <span class="action-text">{{ item.text }}</span>
+                        </div>
+                    {%  endfor %}
                 </div>
             </section>
 

@@ -1,15 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-
+from main.utils.menu import get_menu_buttons
 
 def index(request):
     """Главная страница"""
 
-    menu_buttons = {
+    menu_buttons = get_menu_buttons("Applicant")
 
+    context = {
+        "menu_buttons": menu_buttons,
     }
 
-    return render(request, 'index.html')
+    return render(request, 'index.html', context)
 
 def university_moderation(request):
     return HttpResponse("Страница управления университетом, тут будет выдача ролей и создание кафедр")
