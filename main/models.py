@@ -185,6 +185,26 @@ class Teaching(models.Model):
 
 # === Амплуа для моделей людей ===
 
+class Role(models.Model):
+    """
+    Временное решение для выдачи ролей
+    """
+    PERMISSION = [
+        ("Moderator_3lvl", "Модератор 3ур."),
+        ("Moderator_2lvl", "Модератор 2ур."),
+        ("Moderator_1lvl",  "Модератор 1ур."),
+        ("Teacher", "Учитель"),
+        ("Journalist", "Журналист"),
+        ("Headman", "Модерация группы"),
+        ("Student", "Студент"),
+        ("Applicant", "Абитуриент"),
+        ("Guest", "Гость"),
+    ]
+
+    permission = models.CharField(choices=PERMISSION)
+    name = models.CharField(max_length=32)
+
+
 class StudentRole(models.Model):
     """
     Роли студентов: староста, журналист, профорг (с историей периодов).

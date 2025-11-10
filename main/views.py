@@ -4,6 +4,11 @@ from django.shortcuts import render
 
 def index(request):
     """Главная страница"""
+
+    menu_buttons = {
+
+    }
+
     return render(request, 'index.html')
 
 def university_moderation(request):
