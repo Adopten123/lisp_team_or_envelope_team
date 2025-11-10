@@ -1,6 +1,6 @@
 buttons = [
     {
-        "id": "news",
+        "id": "news_view",
         "icon": "🔥",
         "text": "Новости",
         "data_action": "news",
@@ -8,42 +8,42 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "schedule",
+        "id": "student_schedule_view",
         "icon": "📅",
         "text": "Расписание",
         "data_action": "schedule",
         "roles": {"Student", "Headman", "Journalist"}
     },
     {
-        "id": "grades",
+        "id": "student_grades_view",
         "icon": "📊",
         "text": "Оценки",
         "data_action": "grades",
         "roles": {"Student", "Headman", "Journalist"}
     },
     {
-        "id": "group",
+        "id": "student_group_view",
         "icon": "👥",
         "text": "Моя группа",
         "data_action": "group",
         "roles": {"Student", "Headman", "Journalist"}
     },
     {
-        "id": "certificate",
+        "id": "student_request_view",
         "icon": "📋",
         "text": "Заказать справку",
         "data_action": "certificate",
         "roles": {"Student", "Headman", "Journalist"}
     },
     {
-        "id": "headman_news",
+        "id": "headman_group_news_view",
         "icon": "📰",
         "text": "Оповещение группе",
         "data_action": "headman_news",
         "roles": {"Headman"}
     },
     {
-        "id": "journalist_news",
+        "id": "journalist_news_view",
         "icon": "📰",
         "text": "Создать новость",
         "data_action": "journalist_news",
@@ -72,7 +72,7 @@ buttons = [
         "roles": {"Applicant"}
     },
     {
-        "id": "schedule_teacher",
+        "id": "teacher_schedule_view",
         "icon": "📅",
         "text": "Расписание",
         "data_action": "schedule",
@@ -80,7 +80,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "subjects",
+        "id": "teacher_subject_view",
         "icon": "📁",
         "text": "Мои дисциплины",
         "data_action": "subjects",
@@ -88,7 +88,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "working_off",
+        "id": "teacher_working_off_view",
         "icon": "📓",
         "text": "Отработки",
         "data_action": "working_off",
@@ -96,7 +96,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "certificate_teacher",
+        "id": "teacher_request_form",
         "icon": "📋",
         "text": "Заказать справку",
         "data_action": "certificate_teacher",
@@ -104,7 +104,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "make_alert_teacher",
+        "id": "teacher_make_alert_form",
         "icon": "📢",
         "text": "Оповестить о паре",
         "data_action": "make_alert_teacher",
@@ -138,14 +138,6 @@ buttons = [
         "icon": "📦",
         "text": "Меню дисциплин",
         "data_action": "subject_menu",
-        "roles": {"University Moderator 1lvl",
-                  "University Moderator 2lvl", "University Moderator 3lvl"}
-    },
-    {
-        "id": "news_menu",
-        "icon": "📫",
-        "text": "Меню новостей",
-        "data_action": "news_menu",
         "roles": {"University Moderator 1lvl",
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },

@@ -20,10 +20,10 @@
             <h2 class="section-title">Быстрый доступ</h2>
             <div class="actions-grid">
                 {% for item in menu_buttons %}
-                    <div class="action-card" data-action="{{ item.data_action }}">
+                    <a href="{% url item.id %}" class="action-card">
                         <div class="action-icon">{{ item.icon }}</div>
                         <span class="action-text">{{ item.text }}</span>
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
         </section>
