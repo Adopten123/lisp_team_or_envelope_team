@@ -17,6 +17,9 @@ class Person(models.Model):
     first_name = models.CharField("Имя", max_length=128)
     middle_name = models.CharField("Отчество", max_length=128, blank=True)
 
+    # временное поле
+    role = models.ForeignKey('Role', related_name='role', on_delete=models.SET_NULL, null=True, blank=True)
+
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=32, blank=True)
     vk_user_id = models.CharField(

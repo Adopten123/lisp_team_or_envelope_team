@@ -76,13 +76,15 @@ University ──┬─> Faculty ──┬─> Program ──┬─> StudentGrou
 ### `Person`
 **Назначение:** базовый объект человека (ФИО, контакты, VK/Max ID) и связка с `auth.User`.
 
-| Поле | Тип | Обяз. | Описание |
-|---|---|:--:|---|
-| `user` | OneToOne → `AUTH_USER_MODEL` | − | Привязка к Django User (если есть) |
-| `last_name` / `first_name` / `middle_name` | Char(128) | ✔/✔/− | ФИО (отчество опционально) |
-| `email` | Email | − | Контактный e‑mail |
-| `phone` | Char(32) | − | Телефон |
-| `vk_user_id` | Char(64), `db_index` | − | VK/Max user id |
+| Поле                                       | Тип                          | Обяз. | Описание                           |
+|--------------------------------------------|------------------------------|:--:|------------------------------------|
+| `user`                                     | OneToOne → `AUTH_USER_MODEL` | − | Привязка к Django User (если есть) |
+| `last_name` / `first_name` / `middle_name` | Char(128)                    | ✔/✔/− | ФИО (отчество опционально)         |
+| `email`                                    | Email                        | − | Контактный e‑mail                  |
+| `phone`                                    | Char(32)                     | − | Телефон                            |
+| `vk_user_id`                               | Char(64), `db_index`         | − | VK/Max user id                     |
+| `role`                                     | (FK) -> ROLE                 | − | роль аккаунта (временное поле)     |
+
 
 **Индексы:** по `vk_user_id`.  
 **`__str__`**: `Фамилия Имя`.
