@@ -1,0 +1,230 @@
+/* === Indigo Admin Skin (Django 4.x/5.x) ================================== */
+/* Палитра и переменные */
+:root{
+  --indigo-50:#eef2ff; --indigo-100:#e0e7ff; --indigo-200:#c7d2fe;
+  --indigo-300:#a5b4fc; --indigo-400:#818cf8; --indigo-500:#6366f1;
+  --indigo-600:#4f46e5; --indigo-700:#4338ca; --indigo-800:#3730a3; --indigo-900:#312e81;
+
+  --bg:#f7f7fb;
+  --surface:#ffffff;
+  --border:#e6e6f0;
+  --text:#1f2937;
+  --muted:#6b7280;
+
+  --brand: var(--indigo-600);
+  --brand-strong: var(--indigo-700);
+  --brand-weak: var(--indigo-100);
+  --focus: rgba(79,70,229,.35);
+}
+
+/* Общий фон администратора */
+body, .dashboard #content{
+  background: var(--bg);
+}
+
+/* Верхняя полоса */
+#header{
+  background: linear-gradient(90deg, var(--indigo-600), var(--indigo-700));
+  border-bottom: 1px solid rgba(255,255,255,.2);
+  box-shadow: 0 2px 10px rgba(17,24,39,.18);
+}
+#header a, #header #site-name a, #user-tools a, #user-tools{
+  color: #fff !important;
+}
+#header .site-branding{
+  display:flex; align-items:center; gap:.6rem;
+}
+#header .site-branding .site-logo{
+  width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center;
+  background: rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:8px;
+}
+
+/* Хлебные крошки */
+div.breadcrumbs{
+  background: var(--indigo-50);
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+div.breadcrumbs a{ color: var(--indigo-600); }
+div.breadcrumbs a:hover{ color: var(--indigo-700); }
+
+/* Контейнеры и модули */
+#content, .module{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(17,24,39,.08);
+}
+.dashboard .module{ padding: 0 0 .5rem 0; }
+.module caption, .module h2{
+  background: var(--indigo-50);
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Таблицы в changelist */
+.change-list .results, .module table{
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.change-list .results thead th{
+  background: var(--indigo-50);
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.change-list .results tr{
+  background: var(--surface);
+}
+.change-list .results tr:nth-child(odd){
+  background: #fafaff;
+}
+.change-list .results tr:hover{
+  background: var(--indigo-100);
+}
+
+/* Пагинация */
+.paginator{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.paginator a:link, .paginator a:visited{
+  color: var(--indigo-700);
+}
+.paginator .this-page{
+  background: var(--brand-weak);
+  color: var(--brand-strong);
+  border-radius: 6px;
+  padding: .1rem .45rem;
+}
+
+/* Фильтры справа */
+#changelist-filter{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+#changelist-filter h2{
+  background: var(--indigo-50);
+  border-bottom: 1px solid var(--border);
+}
+#changelist-filter li.selected a{
+  color: var(--indigo-700);
+  font-weight: 600;
+}
+
+/* Формы: поля, селекты, инпуты */
+input, select, textarea, .vTextField, .vIntegerField, .vForeignKeyRawIdAdminField{
+  border: 1px solid var(--border);
+  border-radius: 8px !important;
+  padding: .45rem .6rem !important;
+  box-shadow: none;
+}
+select{ background-color: #fff; }
+.help, .help-tooltip{ color: var(--muted); }
+
+/* Фокус-стиль (доступность) */
+:focus{
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+input:focus, select:focus, textarea:focus{
+  border-color: var(--indigo-400) !important;
+  box-shadow: 0 0 0 3px var(--focus);
+}
+
+/* Кнопки */
+.button, input[type=submit], .submit-row input, .object-tools a.addlink, .object-tools a.historylink{
+  background: var(--brand);
+  border: 1px solid var(--brand-strong);
+  color: #fff !important;
+  border-radius: 8px;
+  padding: .45rem .8rem;
+  box-shadow: 0 4px 12px rgba(79,70,229,.25);
+}
+.button:hover, input[type=submit]:hover, .object-tools a.addlink:hover{
+  background: var(--indigo-700);
+  border-color: var(--indigo-800);
+}
+
+/* Кнопки "Сохранить и добавить" и др. */
+.submit-row{
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 12px;
+}
+.submit-row input{
+  margin: .2rem .2rem .2rem 0;
+}
+
+/* Inlines */
+.inline-group{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.inline-group h2{
+  background: var(--indigo-50);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Сообщения (alerts) */
+ul.messagelist li{
+  border-radius: 10px;
+}
+ul.messagelist li.success{
+  background: #e6f9ef;
+  border-color: #b9f1d0;
+  color: #0f6b45;
+}
+ul.messagelist li.warning{
+  background: #fff7e6;
+  border-color: #ffe3a6;
+  color: #7a5700;
+}
+ul.messagelist li.error{
+  background: #ffecec;
+  border-color: #ffb3b3;
+  color: #8a1f1f;
+}
+
+/* Логин-страница */
+.login #container{
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(17,24,39,.15);
+}
+.login #header{
+  background: linear-gradient(90deg, var(--indigo-600), var(--indigo-700));
+}
+.login #content h1{
+  color: var(--indigo-700);
+}
+
+/* Виджеты ManyToMany "dual selector" */
+.selector, .selector-available, .selector-chosen{
+  border-color: var(--border);
+}
+.selector .selector-chooser .selector-add,
+.selector .selector-chooser .selector-remove{
+  background: var(--brand);
+  border-color: var(--brand-strong);
+}
+
+/* Переключатели/чекбоксы/радио */
+input[type="checkbox"], input[type="radio"]{
+  accent-color: var(--brand);
+}
+
+/* Ссылки */
+a:link, a:visited{
+  color: var(--indigo-700);
+}
+a:hover{
+  color: var(--indigo-800);
+}
+
+/* Мелкие подправки типографики */
+h1, h2, h3, .module h2{
+  color: var(--text);
+}
