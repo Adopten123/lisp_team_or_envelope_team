@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.urls import reverse
+from django.utils import timezone
+
 
 # === ОБЪЕКТЫ ЛЮДЕЙ ===
 
@@ -430,3 +433,29 @@ class AdmissionRequest(models.Model):
 
     def __str__(self):
         return f"{self.applicant} → {self.program} ({self.status})"
+
+# === НОВОСТИ ===
+
+class NewsPost(models.Model):
+    """
+    Модель новостей
+    """
+    university = models.ForeignKey('University', on_delete=models.CASCADE, related_name='news', null=True)
+    title = models.CharField(max_length=255, verbose_name="Заголовок")
+    body = models.TextField(verbose_name="Текст новости")
+    created_at = models.DateTimeField(auto_now_add=True)
+    published_at = models.DateTimeField(default=timezone.now)
+    author = models.CharField(max_length=100, verbose_name="Автор")
+    cover_image = models.ImageField(upload_to="news_covers/", blank=True, null=True)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["-published_at"]
+        verbose_name = "Новость"
+        verbose_name_plural = "Новости"
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("news_detail", kwargs={"news_id": self.id})
