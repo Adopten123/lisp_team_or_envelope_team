@@ -16,9 +16,10 @@ class MaxAppAuth {
 
     async initializeMaxApp() {
         try {
+            console.log('1');
             // Инициализируем MAX Web App
             await Window.WebApp.init();
-            
+            console.log('2');
             // Получаем данные пользователя
             const userData = Window.WebApp.initData.user;
             console.log('MAX пользователь:', userData);
