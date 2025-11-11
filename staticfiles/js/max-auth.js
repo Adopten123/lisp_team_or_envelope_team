@@ -20,9 +20,7 @@ class WebAppAuth {
 
             console.log('2 - WebApp инициализирован');
             
-            // Получаем данные пользователя
-            const userData = window.WebApp.initData;
-            
+            // Получаем данные пользователя         
             const params = new URLSearchParams(window.WebApp.initData);
             const data = {};
         
@@ -41,7 +39,7 @@ class WebAppAuth {
             console.log('WebApp пользователь:', data.user.id);
             
             // Автоматическая авторизация на бэкенде
-            await this.authenticateWithBackend(userData);
+            await this.authenticateWithBackend(data);
             
         } catch (error) {
             console.error('Ошибка инициализации WebApp:', error);
@@ -60,12 +58,10 @@ class WebAppAuth {
                 },
                 body: JSON.stringify({
                     // Передаем только нужные данные пользователя
-                    user_id: userData.id,
-                    first_name: userData.first_name,
-                    last_name: userData.last_name,
-                    username: userData.username,
-                    photo_url: userData.photo_url,
-                    language_code: userData.language_code,
+                    user_id: userData.user.id,
+                    first_name: userData.user.first_name,
+                    last_name: userData.user.last_name,
+                    username: userData.user.username,
                 })
             });
 
