@@ -9,9 +9,11 @@
         <span class="nav-icon">🌐</span>
         <span class="nav-text">Новости</span>
     </button>
-     <a href="{% url 'profile_view' %}" class="nav-item" data-page="profile">
-        <span class="nav-icon">👤</span>
-        <span class="nav-text">Профиль</span>
+    <a href="{% url 'profile_view' %}" class="link-reset" data-page="profile">
+        <button class="nav-item" data-page="profile">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">Профиль</span>
+        </button>
     </a>
     <button class="nav-item" data-page="help">
         <span class="nav-icon">❓</span>
