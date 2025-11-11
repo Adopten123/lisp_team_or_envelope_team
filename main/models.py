@@ -518,8 +518,6 @@ class ScheduleSlot(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Ячейка расписания"
-        verbose_name_plural = "Ячейки расписания"
         ordering = ["weekday", "start_time"]
         indexes = [
             models.Index(fields=["university", "weekday", "start_time"]),
@@ -618,8 +616,6 @@ class ScheduleException(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Исключение расписания"
-        verbose_name_plural = "Исключения расписания"
         ordering = ["date", "slot_id"]
         indexes = [
             models.Index(fields=["date", "action"]),
