@@ -1,9 +1,10 @@
+from datetime import date
 from django.http import HttpResponse, HttpResponseForbidden
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.shortcuts import render
 from django.core.paginator import Paginator
 
-from ..models import Person, Student, Enrollment, Assessment, AssessmentResult, StudentRole
+from ..models import Person, Student, Enrollment, Assessment, AssessmentResult, StudentRole, ScheduleSlot
 from main.utils.grades_helper import normalize_total, to_5pt
 def student_schedule_view(request):
     """
@@ -17,7 +18,40 @@ def student_schedule_view(request):
     if not student:
         return HttpResponseForbidden("Доступно только студентам")
 
-    return HttpResponse("Страница просмотра расписания студентами")
+    group = student.student_group
+    today = date.today()
+
+    slots = (
+        ScheduleSlot.objects
+        .filter(university_id=student.university_id)
+        .filter(Q(groups__id=group.id) | Q(teaching__group_id=group.id))
+        .select_related(
+            "teaching",
+            "teaching__curriculum",
+            "teaching__curriculum__discipline",
+            "teaching__teacher",
+            "teaching__teacher__person",
+        )
+        .prefetch_related("groups", "exceptions")
+        .distinct()
+        .order_by("weekday", "start_time")
+    )
+
+    week = {i: [] for i in range(1, 8)}
+
+    for slot in slots:
+        week[slot.weekday].append({
+            "slot": slot,
+            "today_effective": slot.effective_for_date(today),
+        })
+
+    context = {
+        "group": group,
+        "week": week,
+        "today": today,
+    }
+
+    return render(request, "main/schedule/student_schedule.html", context)
 
 def student_grades_view(request):
     """

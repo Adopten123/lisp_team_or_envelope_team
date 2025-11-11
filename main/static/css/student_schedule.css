@@ -1,0 +1,109 @@
+/* ===== Расписание (страница студента) ===== */
+
+/* Секция расписания */
+.schedule-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* День недели (контейнер) */
+.schedule-day {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Заголовок дня */
+.day-title {
+  color: #2f3542;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.day-title::before {
+  content: "📅";
+  font-size: 1rem;
+}
+
+/* Карточка пары */
+.schedule-card {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Время пары */
+.schedule-time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #667eea;
+}
+
+/* Название предмета */
+.schedule-subject {
+  font-weight: 600;
+  color: #2f3542;
+}
+
+/* Метаданные пары: корпус, аудитория, примечание */
+.schedule-meta {
+  font-size: 0.85rem;
+  color: #666;
+  text-align: right;
+}
+
+/* Пустое состояние внутри дня */
+.schedule-empty {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Состояния (опционально): отмена / перенос — если будешь подсвечивать через класс */
+.schedule-card.is-cancelled {
+  opacity: 0.6;
+  position: relative;
+}
+.schedule-card.is-cancelled::after {
+  content: "Отменено";
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 0.75rem;
+  background: #ff4757;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 420px) {
+  .schedule-card {
+    grid-template-columns: 80px 1fr;
+  }
+  .schedule-meta {
+    grid-column: 1 / -1;
+    text-align: left;
+    margin-top: 4px;
+  }
+}
