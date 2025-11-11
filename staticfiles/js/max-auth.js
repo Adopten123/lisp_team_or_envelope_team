@@ -22,8 +22,24 @@ class WebAppAuth {
             
             // Получаем данные пользователя
             const userData = window.WebApp.initData;
+            
+            const data = {};
+        
+            for (const [key, value] of params.entries()) {
+                if (key === 'user' || key === 'chat') {
+                    try {
+                        data[key] = JSON.parse(decodeURIComponent(value));
+                    } catch (e) {
+                        data[key] = value;
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            console.log('Parsed data:', data);
+            
             console.log('WebApp пользователь:', userData);
-            console.log('WebApp пользователь:', userData.user);
             
             // Автоматическая авторизация на бэкенде
             await this.authenticateWithBackend(userData);
