@@ -2,11 +2,21 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
+from django.utils import timezone
 
 from main.models import Person, Teaching
 
 
 def teacher_schedule_view(request):
+
+    person = Person.objects.filter(pk=2).first()
+    teacher = getattr(person, "teacher", None) if person else None
+
+    if not teacher:
+        return HttpResponseForbidden("Доступно только для преподавателя")
+
+    today = timezone.localdate()
+
     return HttpResponse("Страница расписания преподавателя")
 
 def teacher_subjects_view(request):
