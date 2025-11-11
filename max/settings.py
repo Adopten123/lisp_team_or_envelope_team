@@ -56,6 +56,11 @@ MIDDLEWARE = [
 # Настройки CSP
 CSP_DEFAULT_SRC = ["'self'"]
 CSP_SCRIPT_SRC = ["'self'", "https://st.max.ru"]
+CSP_STYLE_SRC = ["'self'"]
+CSP_IMG_SRC = ["'self'", "data:"]
+CSP_FONT_SRC = ["'self'"]
+CSP_CONNECT_SRC = ["'self'"]
+CSP_FRAME_SRC = ["'self'"]
 CSP_FRAME_ANCESTORS = ["'self'", "https://st.max.ru", "https://maxcampus.ru"]
 
 ROOT_URLCONF = 'max.urls'
