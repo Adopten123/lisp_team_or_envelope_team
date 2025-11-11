@@ -221,3 +221,20 @@ class CampusApp {
 document.addEventListener('DOMContentLoaded', function() {
     window.campusApp = new CampusApp();
 });
+
+// Обработка активного состояния навигации
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем текущую страницу из URL
+    const currentPage = window.location.pathname.split('/').filter(Boolean).pop() || 'main';
+
+    // Убираем активный класс у всех элементов
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Добавляем активный класс к текущей странице
+    const currentNavItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
+    if (currentNavItem) {
+        currentNavItem.classList.add('active');
+    }
+});

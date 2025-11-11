@@ -1,0 +1,200 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">👥 Персонал — {{ current_university.short_name }}</h2>
+
+        {# Фильтр по кафедре #}
+        <section class="user-card" style="margin-bottom:12px;">
+            <form method="get" class="filters"
+                  style="display:flex; gap:12px; width:100%; align-items:flex-end; flex-wrap:wrap;">
+                <div style="flex:1; min-width:220px;">
+                    <label for="f_department" style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Кафедра
+                        (поиск)</label>
+                    <input id="f_department" name="department" value="{{ department_q }}"
+                           placeholder="Например: ИТ, Математика…" class="action-card"
+                           style="padding:10px; border-radius:10px;">
+                </div>
+                <div>
+                    <button type="submit" class="btn-indigo">Применить</button>
+                    <a href="{% url 'moderation_staff' %}" class="btn-ghost" style="margin-left:6px;">Сбросить</a>
+                </div>
+            </form>
+        </section>
+
+        {# Сворачиваемая форма создания #}
+        {% if can_manage %}
+            <section class="user-card" style="margin-bottom:12px;">
+                <details class="collapsible">
+                    <summary class="btn-indigo-outline">➕ Создать преподавателя</summary>
+                    <div style="margin-top:12px;">
+                        <form method="post"
+                              style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; width:100%;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="create">
+                            <div>
+                                <label style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Человек</label>
+                                {{ form.person }}
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Учёное
+                                    звание</label>
+                                {{ form.academic_title }}
+                            </div>
+                            <div>
+                                <label style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Кафедра</label>
+                                {{ form.department }}
+                            </div>
+                            <div style="grid-column:1 / -1; text-align:right;">
+                                <button type="submit" class="btn-indigo">Создать</button>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+            </section>
+        {% endif %}
+
+        {# Список преподавателей #}
+        <section class="notifications">
+            <h3 class="section-title">Сотрудники</h3>
+            <div class="notifications-list">
+                {% if page_obj and page_obj.object_list %}
+                    {% for t in page_obj.object_list %}
+                        <div class="notification-item">
+                            <div class="notification-icon">👨‍🏫</div>
+                            <div class="notification-content" style="flex:1;">
+                                <p class="notification-text">
+                                    <strong>{{ t.person.last_name }}
+                                        {{ t.person.first_name }}{% if t.person.middle_name %}
+                                            {{ t.person.middle_name }}{% endif %}</strong>
+                                    {% if t.department %} · кафедра {{ t.department }}{% endif %}
+                                </p>
+                                <span class="notification-time">{% if t.academic_title %}
+                                    {{ t.academic_title }}{% else %}—{% endif %}</span>
+                            </div>
+                            {% if can_manage %}
+                                <form method="post" style="margin-left:auto;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="teacher_id" value="{{ t.id }}">
+                                    <button type="submit" class="btn-danger"
+                                            onclick="return confirm('Удалить роль Teacher? Роль человека станет Guest.');">
+                                        Удалить
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="notification-item">
+                        <div class="notification-icon">ℹ️</div>
+                        <div class="notification-content">
+                            <p class="notification-text">Пока сотрудников не найдено.</p>
+                            <span class="notification-time">Измените фильтр или создайте первого преподавателя.</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Пагинация по 20 #}
+            {% if page_obj and page_obj.paginator.num_pages > 1 %}
+                <nav class="paginator" aria-label="Пагинация" style="margin-top:14px;">
+                    {% if page_obj.has_previous %}
+                        <a class="badge"
+                           href="?page={{ page_obj.previous_page_number }}&department={{ department_q|urlencode }}">←
+                            Назад</a>
+                    {% else %}
+                        <span class="badge">← Назад</span>
+                    {% endif %}
+
+                    <span class="badge">Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+                    {% if page_obj.has_next %}
+                        <a class="badge"
+                           href="?page={{ page_obj.next_page_number }}&department={{ department_q|urlencode }}">Вперёд
+                            →</a>
+                    {% else %}
+                        <span class="badge">Вперёд →</span>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}
+
+{% block extra_styles %}
+    <style>
+        .btn-indigo {
+            background: #667eea;
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-indigo:active {
+            transform: scale(0.98);
+        }
+
+        .btn-indigo-outline {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.5);
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.35);
+            color: #667eea;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .btn-ghost:active {
+            transform: scale(0.98);
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-danger:active {
+            transform: scale(0.98);
+        }
+
+        .collapsible {
+            display: block;
+        }
+
+        .collapsible > summary {
+            list-style: none;
+        }
+
+        .collapsible > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .user-card select, .user-card input[type="text"] {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            padding: 10px;
+            background: #fff;
+        }
+    </style>
+{% endblock %}

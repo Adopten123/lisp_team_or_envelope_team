@@ -2,12 +2,51 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
+from django.utils import timezone
 
-from main.models import Person, Teaching
+from main.models import Person, Teaching, ScheduleSlot
 
 
 def teacher_schedule_view(request):
-    return HttpResponse("Страница расписания преподавателя")
+
+    person = Person.objects.filter(pk=2).first()
+    teacher = getattr(person, "teacher", None) if person else None
+
+    if not teacher:
+        return HttpResponseForbidden("Доступно только для преподавателя")
+
+    today = timezone.localdate()
+
+    slots = (
+        ScheduleSlot.objects
+        .filter(university_id=teacher.university_id)
+        .filter(teaching__teacher_id=teacher.id)
+        .select_related(
+            "teaching",
+            "teaching__curriculum",
+            "teaching__curriculum__discipline",
+            "teaching__teacher",
+            "teaching__teacher__person",
+        )
+        .prefetch_related("groups", "exceptions")
+        .distinct()
+        .order_by("weekday", "start_time")
+    )
+
+    week = {i: [] for i in range(1, 8)}  # 1..7
+    for slot in slots:
+        week[slot.weekday].append({
+            "slot": slot,
+            "today_effective": slot.effective_for_date(today),
+        })
+
+    context = {
+        "teacher": teacher,
+        "week": week,
+        "today": today,
+    }
+
+    return render(request, "main/schedule/teacher_schedule.html", context)
 
 def teacher_subjects_view(request):
 

@@ -1,0 +1,57 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% load weekdays %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/student_schedule.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="schedule-section">
+        <h2 class="section-title">📅 Расписание
+            преподавателя: {{ teacher.person.last_name }} {{ teacher.person.first_name }}</h2>
+
+        {% for weekday, slots in week.items %}
+            <div class="schedule-day">
+                <h3 class="day-title">{{ weekday|weekday_name }}</h3>
+
+                {% if slots %}
+                    {% for s in slots %}
+                        {% with slot=s.slot eff=s.today_effective %}
+                            <div class="schedule-card{% if eff and eff.0 %} is-cancelled{% endif %}">
+                                <div class="schedule-time">
+                                    {% if eff %}
+                                        {{ eff.1 }}–{{ eff.2 }}
+                                    {% else %}
+                                        {{ slot.start_time | date:"H:i"  }}–{{ slot.end_time | date:"H:i" }}
+                                    {% endif %}
+                                </div>
+                                <div class="schedule-subject">
+                                    {{ slot.teaching.curriculum.discipline.title }}
+                                    {% if slot.note %}
+                                        <span style="font-weight:500; color:#666;"> · {{ slot.note }}</span>{% endif %}
+                                </div>
+                                <div class="schedule-meta">
+                                    {% if eff %}
+                                        {{ eff.3 }} {{ eff.4 }}{% if eff.5 %} · {{ eff.5 }}{% endif %}
+                                    {% else %}
+                                        {{ slot.building }} {{ slot.room }}
+                                    {% endif %}
+                                    {% with gs=slot.groups.all %}
+                                        {% if gs %}
+                                            <div style="font-size:.8rem; color:#777; margin-top:4px;">
+                                                {{ gs|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <div class="schedule-empty">Нет занятий</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

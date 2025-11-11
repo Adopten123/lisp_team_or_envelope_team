@@ -1,0 +1,148 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/profile_css.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="profile-section">
+        {% if error %}
+            <div class="error-message">
+                <div class="icon">😕</div>
+                <h3>{{ error }}</h3>
+                <p>Обратитесь в техническую поддержку</p>
+            </div>
+        {% else %}
+            <!-- Заголовок профиля -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    {% if person.first_name and person.last_name %}
+                        {{ person.first_name|first }}{{ person.last_name|first }}
+                    {% else %}
+                        👤
+                    {% endif %}
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">
+                        {{ person.last_name }} {{ person.first_name }} {{ person.middle_name }}
+                    </h1>
+                    <p class="profile-role">
+                        {% if person.role %}
+                            {{ person.role.name }}
+                        {% else %}
+                            Пользователь
+                        {% endif %}
+                    </p>
+                    <span class="profile-status">Активен</span>
+                </div>
+            </div>
+
+            <!-- Основная информация -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3 class="card-title">📊 Основная информация</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Имя пользователя:</span>
+                            <span class="info-value">{{ person.user.username }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ person.email|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Телефон:</span>
+                            <span class="info-value">{{ person.phone|default:"Не указан" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Информация о студенте -->
+                {% if student %}
+                <div class="info-card">
+                    <h3 class="card-title">🎓 Информация о студенте</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Университет:</span>
+                            <span class="info-value">{{ student.university.name|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Группа:</span>
+                            <span class="info-value">{{ student.student_group.name|default:"Не указана" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Факультет:</span>
+                            <span class="info-value">{{ student.student_group.faculty.name|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Номер студенческого:</span>
+                            <span class="info-value">{{ student.student_id|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Текущий курс:</span>
+                            <span class="info-value">{{ student.current_year|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Год поступления:</span>
+                            <span class="info-value">{{ student.admission_year|default:"Не указан" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Информация о преподавателе -->
+                {% if teacher %}
+                <div class="info-card">
+                    <h3 class="card-title">👨‍🏫 Информация о преподавателе</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Ученое звание:</span>
+                            <span class="info-value">{{ teacher.academic_title|default:"Не указано" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Кафедра:</span>
+                            <span class="info-value">{{ teacher.department|default:"Не указана" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Университет:</span>
+                            <span class="info-value">{{ teacher.university.name|default:"Не указан" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Информация об абитуриенте -->
+                {% if applicant %}
+                <div class="info-card">
+                    <h3 class="card-title">📝 Информация об абитуриенте</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Дата рождения:</span>
+                            <span class="info-value">{{ applicant.birth_date|default:"Не указана" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Паспорт:</span>
+                            <span class="info-value">{{ applicant.passport_number|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Адрес:</span>
+                            <span class="info-value">{{ applicant.address|default:"Не указан" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Школа:</span>
+                            <span class="info-value">{{ applicant.school_name|default:"Не указана" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Год окончания школы:</span>
+                            <span class="info-value">{{ applicant.graduation_year|default:"Не указан" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

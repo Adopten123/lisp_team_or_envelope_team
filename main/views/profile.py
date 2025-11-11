@@ -1,18 +1,17 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from ..models import Person, Student, Teacher, Applicant, StudentGroup, University, Faculty
+from ..utils.profile_buttons import get_menu_buttons
 
-from main.models import Person
-from main.utils.menu import get_menu_buttons
 
 def profile_view(request):
     """Страница профиля пользователя"""
     try:
         # Получаем объект Person, связанный с текущим пользователем
-        person = Person.objects.get(user=request.user)
+        person = Person.objects.filter(pk=1).first()
 
         # Получаем роль пользователя для меню
-        role_name = "Student"  # значение по умолчанию
-        if person.role:
-            role_name = person.role.name
+        role_name = person.role.name if person.role else "Student"
 
         # Проверяем, есть ли связанные объекты Student или Teacher
         student = getattr(person, 'student', None)
@@ -31,8 +30,15 @@ def profile_view(request):
         # Если объект Person не найден для текущего пользователя
         context = {
             'person': None,
-            'error': 'Профиль не найден',
-            'menu_buttons': get_menu_buttons("Student"),  # роль по умолчанию
+            'error': 'Профиль не найден. Обратитесь к администратору.',
+            'menu_buttons': get_menu_buttons("Guest"),
+        }
+    except Exception as e:
+        # Обработка других возможных ошибок
+        context = {
+            'person': None,
+            'error': f'Произошла ошибка: {str(e)}',
+            'menu_buttons': get_menu_buttons("Guest"),
         }
 
     return render(request, 'main/profile/profile.html', context)

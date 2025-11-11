@@ -1,4 +1,4 @@
-from datetime import date
+from django.utils import timezone
 from django.http import HttpResponse, HttpResponseForbidden
 from django.db.models import Prefetch, Q
 from django.shortcuts import render
@@ -19,7 +19,7 @@ def student_schedule_view(request):
         return HttpResponseForbidden("Доступно только студентам")
 
     group = student.student_group
-    today = date.today()
+    today = timezone.localdate()
 
     slots = (
         ScheduleSlot.objects
