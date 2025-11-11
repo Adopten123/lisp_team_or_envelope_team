@@ -1,6 +1,10 @@
 {% extends 'main/index.html' %}
 {% load static %}
 
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/moderation_staff.css' %}">
+{% endblock %}
+
 {% block content %}
     <section class="main-content">
         <h2 class="section-title">👥 Персонал — {{ current_university.short_name }}</h2>
@@ -121,80 +125,4 @@
             {% endif %}
         </section>
     </section>
-{% endblock %}
-
-{% block extra_styles %}
-    <style>
-        .btn-indigo {
-            background: #667eea;
-            color: #fff;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-indigo:active {
-            transform: scale(0.98);
-        }
-
-        .btn-indigo-outline {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(102, 126, 234, 0.5);
-            color: #667eea;
-            padding: 8px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-ghost {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(102, 126, 234, 0.35);
-            color: #667eea;
-            padding: 10px 14px;
-            border-radius: 12px;
-            text-decoration: none;
-        }
-
-        .btn-ghost:active {
-            transform: scale(0.98);
-        }
-
-        .btn-danger {
-            background: #ff4757;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .btn-danger:active {
-            transform: scale(0.98);
-        }
-
-        .collapsible {
-            display: block;
-        }
-
-        .collapsible > summary {
-            list-style: none;
-        }
-
-        .collapsible > summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .user-card select, .user-card input[type="text"] {
-            width: 100%;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 10px;
-            padding: 10px;
-            background: #fff;
-        }
-    </style>
 {% endblock %}
