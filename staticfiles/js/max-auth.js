@@ -38,7 +38,7 @@ class WebAppAuth {
                 }
             }
             
-            console.log('WebApp пользователь:', data.id);
+            console.log('WebApp пользователь:', data.user.id);
             
             // Автоматическая авторизация на бэкенде
             await this.authenticateWithBackend(userData);
