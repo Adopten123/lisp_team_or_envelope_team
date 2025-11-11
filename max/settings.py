@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.humanize",
+    'csp',
     'main',
     'authentication',
 ]
@@ -49,8 +50,13 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
+
+# Настройки CSP
+CSP_DEFAULT_SRC = ["'self'"]
+CSP_SCRIPT_SRC = ["'self'", "https://st.max.ru"]
+CSP_FRAME_ANCESTORS = ["'self'", "https://st.max.ru", "https://maxcampus.ru"]
 
 ROOT_URLCONF = 'max.urls'
 
