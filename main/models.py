@@ -210,6 +210,9 @@ class Role(models.Model):
     permission = models.CharField(choices=PERMISSION)
     name = models.CharField(max_length=32)
 
+    def __str__(self):
+        return f"{self.name} - {self.permission}"
+
 
 class StudentRole(models.Model):
     """

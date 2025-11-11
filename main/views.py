@@ -14,7 +14,16 @@ def index(request):
     return render(request, 'main/main.html', context)
 
 def news_view(request):
-    return HttpResponse("Страница создания и просмотра существующих новостей")
+    """
+    Функция для просмотра новостей.
+    Новости видят все роли.
+    Студент видит новости университета и новости группы.
+
+    Изменить: захардкоденного студента
+    """
+
+
+    return HttpResponse("Страница просмотра существующих новостей")
 
 def student_schedule_view(request):
     return HttpResponse("Страница просмотра расписания студентами")
