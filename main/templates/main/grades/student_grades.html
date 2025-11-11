@@ -64,21 +64,6 @@
             {% endif %}
         </div>
 
-        {# Пагинация — подключи, если вынес в partial; иначе вставь сюда свой блок #}
-        <nav class="paginator" aria-label="Пагинация" style="margin-top:14px;">
-            {% if page_obj.has_previous %}
-                <a class="badge" href="?page={{ page_obj.previous_page_number }}">← Назад</a>
-            {% else %}
-                <span class="badge">← Назад</span>
-            {% endif %}
-
-            <span class="badge">Стр. {{ page_obj.number }} из {{ paginator.num_pages }}</span>
-
-            {% if page_obj.has_next %}
-                <a class="badge" href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
-            {% else %}
-                <span class="badge">Вперёд →</span>
-            {% endif %}
-        </nav>
+        {% include 'main/menu/paginator.html' %}
     </section>
 {% endblock %}

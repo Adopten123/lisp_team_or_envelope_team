@@ -207,7 +207,7 @@ class Role(models.Model):
         ("Guest", "Гость"),
     ]
 
-    permission = models.CharField(choices=PERMISSION)
+    permission = models.CharField(max_length=64, choices=PERMISSION)
     name = models.CharField(max_length=32)
 
     def __str__(self):
