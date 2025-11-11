@@ -3,11 +3,12 @@ from django.shortcuts import render
 from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
 from ..models import Person
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
+
 
 def index(request):
     """Главная страница"""
@@ -62,7 +63,7 @@ def max_web_app_auth(request):
         
         login(request, user)
 
-        return Response({
+        return JsonResponse({
             'success': True,
             'person_id': user.username,
             'is_new_user': created,
@@ -71,7 +72,7 @@ def max_web_app_auth(request):
         })
             
     except Exception as e:
-        return Response(
+        return JsonResponse(
             {'error': 'Authentication failed', 'details': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
