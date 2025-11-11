@@ -4,7 +4,7 @@ from django.shortcuts import render
 def index(request):
     """Главная страница"""
 
-    menu_buttons = get_menu_buttons("Student")
+    menu_buttons = get_menu_buttons("University Moderator 3lvl")
 
     context = {
         "menu_buttons": menu_buttons,
