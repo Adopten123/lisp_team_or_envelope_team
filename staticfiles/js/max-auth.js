@@ -23,6 +23,7 @@ class WebAppAuth {
             // Получаем данные пользователя
             const userData = window.WebApp.initData;
             
+            const params = new URLSearchParams(window.WebApp.initData);
             const data = {};
         
             for (const [key, value] of params.entries()) {
