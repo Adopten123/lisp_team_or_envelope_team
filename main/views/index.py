@@ -83,7 +83,8 @@ def max_web_app_auth(request):
                 person.user = user
                 person.save()
 
-        user = authenticate(request, username=user.username)
+        user = person.user
+        
         if user:
             login(request, user)
 
