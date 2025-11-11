@@ -9,7 +9,7 @@ def news_view(request):
     Новости видят все роли.
     Студент видит новости университета и новости группы.
 
-    Изменить: захардкоденного студента
+    Изменить: захардкоденный студент
     """
     PAGINATOR_COUNT = 10
 
@@ -41,6 +41,9 @@ def news_view(request):
     })
 
 def news_detail_view(request, news_id):
+    """
+    Функция детального представления новости с более подробным просмотром её
+    """
     post = get_object_or_404(NewsPost, pk=news_id, is_published=True)
     return render(request, "main/news/news_detail.html",
                   {"post": post}
