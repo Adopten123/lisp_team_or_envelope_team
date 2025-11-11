@@ -52,15 +52,13 @@ def get_current_person(request):
     Получить текущего авторизованного пользователя
     Возвращает Person или None
     """
-    user_id = request.session.get('webapp_user_id')
-    person_id = request.session.get('person_id')
+    user_id = request.session.get('max_auth_user_id')
     
-    if not user_id or not person_id:
+    if not user_id:
         return None
     
     try:
         return Person.objects.get(
-            id=person_id, 
             vk_user_id=user_id
         )
     except Person.DoesNotExist:
