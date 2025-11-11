@@ -8,11 +8,11 @@ def profile_view(request):
     """Страница профиля пользователя"""
     try:
         # Получаем объект Person, связанный с текущим пользователем
-        person = request.user.person
+        person = request.user
         #person = Person.objects.filter(pk=1).first()
 
         # Получаем роль пользователя для меню
-        role_name = person.role.name if person.role else "Student"
+        #role_name = person.role.name if person.role else "Student"
 
         # Проверяем, есть ли связанные объекты Student или Teacher
         student = getattr(person, 'student', None)
@@ -24,7 +24,7 @@ def profile_view(request):
             'student': student,
             'teacher': teacher,
             'applicant': applicant,
-            'menu_buttons': get_menu_buttons(role_name),
+            'menu_buttons': get_menu_buttons("Student"),
         }
 
     except Person.DoesNotExist:
