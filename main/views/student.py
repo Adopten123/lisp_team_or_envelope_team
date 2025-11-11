@@ -152,11 +152,13 @@ def student_grades_view(request):
     paginator = Paginator(courses, PAGINATOR_COUNT)
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
-    return render(request, "main/grades/student_grades.html", {
+    context = {
         "page_obj": page_obj,
         "paginator": paginator,
         "is_paginated": page_obj.has_other_pages(),
-    })
+    }
+
+    return render(request, "main/grades/student_grades.html", context)
 
 def student_group_view(request):
     """
