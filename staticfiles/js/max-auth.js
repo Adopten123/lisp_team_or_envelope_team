@@ -23,6 +23,7 @@ class WebAppAuth {
             // Получаем данные пользователя
             const userData = window.WebApp.initData;
             console.log('WebApp пользователь:', userData);
+            console.log('WebApp пользователь:', userData.user);
             
             // Автоматическая авторизация на бэкенде
             await this.authenticateWithBackend(userData);
