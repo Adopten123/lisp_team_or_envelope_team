@@ -1,12 +1,57 @@
+from datetime import date
 from django.http import HttpResponse, HttpResponseForbidden
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.shortcuts import render
 from django.core.paginator import Paginator
 
-from ..models import Person, Student, Enrollment, Assessment, AssessmentResult
+from ..models import Person, Student, Enrollment, Assessment, AssessmentResult, StudentRole, ScheduleSlot
 from main.utils.grades_helper import normalize_total, to_5pt
 def student_schedule_view(request):
-    return HttpResponse("Страница просмотра расписания студентами")
+    """
+    Функция для просмотра расписания студентом
+    с учетом исключения на текущий день (ScheuldeException)
+    """
+
+    person = Person.objects.filter(pk=1).first()
+    student = getattr(person, 'student', None)
+
+    if not student:
+        return HttpResponseForbidden("Доступно только студентам")
+
+    group = student.student_group
+    today = date.today()
+
+    slots = (
+        ScheduleSlot.objects
+        .filter(university_id=student.university_id)
+        .filter(Q(groups__id=group.id) | Q(teaching__group_id=group.id))
+        .select_related(
+            "teaching",
+            "teaching__curriculum",
+            "teaching__curriculum__discipline",
+            "teaching__teacher",
+            "teaching__teacher__person",
+        )
+        .prefetch_related("groups", "exceptions")
+        .distinct()
+        .order_by("weekday", "start_time")
+    )
+
+    week = {i: [] for i in range(1, 8)}
+
+    for slot in slots:
+        week[slot.weekday].append({
+            "slot": slot,
+            "today_effective": slot.effective_for_date(today),
+        })
+
+    context = {
+        "group": group,
+        "week": week,
+        "today": today,
+    }
+
+    return render(request, "main/schedule/student_schedule.html", context)
 
 def student_grades_view(request):
     """
@@ -43,6 +88,7 @@ def student_grades_view(request):
                         queryset=AssessmentResult.objects
                         .filter(student=student)
                         .order_by("-graded_at", "-attempt"),
+                        to_attr="student_results",
                     )
                 ),
                 to_attr="assessments_with_results",
@@ -50,18 +96,20 @@ def student_grades_view(request):
         )
         .order_by("-teaching__academic_year", "-teaching__semester_in_year")
     )
+
     courses = []
     for enr in enrollments:
         t = enr.teaching
         discipline = t.curriculum.discipline
         teacher_name = str(t.teacher.person)
         group_name = t.group.name if t.group else "Поток"
+
         items = []
         total_weighted = 0.0
         weight_sum = 0.0
 
         for a in getattr(t, "assessments_with_results", []):
-            res = a.results[0] if getattr(a, "results", None) else None
+            res = a.student_results[0] if getattr(a, "student_results", None) else None
             if res:
                 max_pts = float(a.max_points) if a.max_points else 0.0
                 pts = float(res.points)
@@ -104,14 +152,63 @@ def student_grades_view(request):
     paginator = Paginator(courses, PAGINATOR_COUNT)
     page_obj = paginator.get_page(request.GET.get("page", 1))
 
-    return render(request, "main/grades/student_grades.html", {
+    context = {
         "page_obj": page_obj,
         "paginator": paginator,
         "is_paginated": page_obj.has_other_pages(),
-    })
+    }
+
+    return render(request, "main/grades/student_grades.html", context)
 
 def student_group_view(request):
-    return HttpResponse("Страница просмотра группы")
+    """
+    Страница просмотра группы студента.
+    """
+    PAGINATOR_COUNT = 20
+    person = Person.objects.filter(pk=1).first()
+    student = getattr(person, "student", None) if person else None
+    if not student:
+        return HttpResponseForbidden("Доступно только для студентов")
+
+    group = student.student_group
+    curator = group.curator.person if group else None
+
+    qs = (
+        Student.objects
+        .filter(student_group=group)
+        .select_related("person")
+        .prefetch_related(
+            Prefetch("roles", queryset=StudentRole.objects.all(), to_attr="roles_data")
+        )
+        .order_by("person__last_name", "person__first_name", "person__middle_name")
+    )
+
+    paginator = Paginator(qs, PAGINATOR_COUNT)
+    page_obj = paginator.get_page(request.GET.get("page", 1))
+
+    classmates = []
+    headman = None
+    for s in page_obj.object_list:
+        if s.person.role.permission == "Headman":
+            headman = { "name": str(s.person), "student_id": s.student_id, "is_me": s == student }
+            continue
+
+        classmates.append({
+            "name": str(s.person),
+            "student_id": s.student_id,
+            "is_me": s == student,
+        })
+
+    context = {
+        "group_name": group.name,
+        "classmates": classmates,
+        "curator": curator,
+        "headman": headman,
+        "page_obj": page_obj,
+        "paginator": paginator,
+        "is_paginated": page_obj.has_other_pages(),
+    }
+    return render(request, 'main/group/group_list.html', context)
 
 def student_request_view(request):
     return HttpResponse("Страница просмотра справок")

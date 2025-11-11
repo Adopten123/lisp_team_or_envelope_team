@@ -1,0 +1,65 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/nl_paginator.css' %}">
+    <link rel="stylesheet" href="{% static 'css/teacher_subjects.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="notifications">
+        <h2 class="section-title">Мои предметы</h2>
+
+        <div class="notification-item" style="margin-bottom:12px;">
+            <div class="notification-icon">🔎</div>
+            <div class="notification-content">
+                <form method="get" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                    <label class="user-status">Год:
+                        <input type="text" name="year" value="{{ filter_year }}" placeholder="2025/2026"
+                               style="margin-left:6px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,.3);">
+                    </label>
+
+                    <label class="user-status">Семестр:
+                        <select name="sem"
+                                style="margin-left:6px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,.3);">
+                            <option value="" {% if not filter_sem %}selected{% endif %}>Любой</option>
+                            <option value="1" {% if filter_sem == "1" %}selected{% endif %}>осенний</option>
+                            <option value="2" {% if filter_sem == "2" %}selected{% endif %}>весенний</option>
+                        </select>
+                    </label>
+
+                    <button type="submit" class="btn btn-primary">Применить</button>
+                    <button type="submit" class="btn btn-primary"><a href="{% url 'teacher_subjects_view' %}" class="link-reset">Сбросить</a></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="notifications-list">
+            {% if items %}
+                {% for it in items %}
+                    <article class="notification-item">
+                        <div class="notification-icon">📘</div>
+                        <div class="notification-content">
+                            <p class="notification-text">
+                                <strong>{{ it.discipline }}</strong>
+                            </p>
+                            <span class="notification-time">
+            {{ it.academic_year }}, {{ it.semester }} · {{ it.group }}
+          </span>
+                            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                                <span class="badge">Студентов: {{ it.students_total }}</span>
+                                <span class="badge">Работ: {{ it.assessments_total }}</span>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <div class="empty-block">
+                    <p>Пока нет курсов для отображения.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% include 'main/menu/paginator.html' %}
+    </section>
+{% endblock %}

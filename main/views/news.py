@@ -25,8 +25,10 @@ def news_view(request):
             teacher = getattr(person, "teacher", None)
             if teacher:
                 qs = qs.filter(university=teacher.university)
+
     paginator = Paginator(qs, PAGINATOR_COUNT)
     page = request.GET.get("page", 1)
+
     try:
         page_obj = paginator.page(page)
     except PageNotAnInteger:
@@ -34,17 +36,19 @@ def news_view(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    return render(request, 'main/news/news_list.html', {
+    context = {
         "page_obj": page_obj,
         "paginator": paginator,
         "is_paginated": page_obj.has_other_pages(),
-    })
+    }
+
+    return render(request, 'main/news/news_list.html', context)
 
 def news_detail_view(request, news_id):
     """
     Функция детального представления новости с более подробным просмотром её
     """
     post = get_object_or_404(NewsPost, pk=news_id, is_published=True)
-    return render(request, "main/news/news_detail.html",
-                  {"post": post}
-    )
+    context = {"post": post}
+
+    return render(request, "main/news/news_detail.html",context)
