@@ -18,7 +18,7 @@
                     {% for s in slots %}
                         {% with slot=s.slot %}
                             <div class="schedule-card">
-                                <div class="schedule-time">{{ slot.start_time }}–{{ slot.end_time }}</div>
+                                <div class="schedule-time">{{ slot.start_time | date:"H:i" }}–{{ slot.end_time | date:"H:i"}}</div>
                                 <div class="schedule-subject">{{ slot.teaching.curriculum.discipline.title }}</div>
                                 <div class="schedule-meta">
                                     {{ slot.building }} {{ slot.room }}
