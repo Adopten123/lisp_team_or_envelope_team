@@ -96,17 +96,19 @@ def moderation_staff(request):
     else:
         form = TeacherCreateForm()
 
-    return render(request, "main/moderation/moderation_staff.html", {
+    context = {
         "current_university": current_uni,
         "page_obj": page_obj,
         "paginator": paginator,
         "can_manage": True,
         "form": form,
         "department_q": department_q,
-    })
+    }
+
+    return render(request, "main/moderation/moderation_staff.html", context)
 
 def moderation_university(request):
-    return HttpResponse("Страница управления университетом, тут будет выдача ролей и создание кафедр")
+    return HttpResponse("Страница управления университетом, тут создание кафедр и факультетов")
 
 def moderation_schedules(request):
     return HttpResponse(f"Страница редактирования расписания групп")
