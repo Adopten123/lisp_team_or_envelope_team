@@ -55,13 +55,26 @@ MIDDLEWARE = [
 
 # Настройки CSP
 CSP_DEFAULT_SRC = ["'self'"]
-CSP_SCRIPT_SRC = ["'self'", "https://st.max.ru"]
-CSP_STYLE_SRC = ["'self'"]
-CSP_IMG_SRC = ["'self'", "data:"]
-CSP_FONT_SRC = ["'self'"]
-CSP_CONNECT_SRC = ["'self'"]
-CSP_FRAME_SRC = ["'self'"]
-CSP_FRAME_ANCESTORS = ["'self'", "https://st.max.ru", "https://maxcampus.ru"]
+CSP_SCRIPT_SRC = [
+    "'self'", 
+    "https://st.max.ru",
+    "'unsafe-inline'"  # Add this if the script uses inline scripts
+]
+CSP_CONNECT_SRC = [
+    "'self'",
+    "https://st.max.ru"  # Add this if the script makes API calls
+]
+CSP_FRAME_SRC = [
+    "'self'",
+    "https://st.max.ru"  # Add this if it uses iframes
+]
+CSP_FRAME_ANCESTORS = [
+    "'self'", 
+    "https://st.max.ru", 
+    "https://maxcampus.ru"
+]
+CSP_OBJECT_SRC = ["'none'"]
+CSP_BASE_URI = ["'self'"]
 
 ROOT_URLCONF = 'max.urls'
 
