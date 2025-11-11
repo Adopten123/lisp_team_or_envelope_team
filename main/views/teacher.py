@@ -61,6 +61,7 @@ def teacher_subjects_view(request):
     }
 
     return render(request, 'main/teacher/teacher_subjects.html', context)
+
 def teacher_working_off_view(request):
     return HttpResponse("Страница отработок преподавателя")
 

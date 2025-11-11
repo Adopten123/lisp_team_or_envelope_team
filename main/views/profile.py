@@ -3,7 +3,6 @@ from django.shortcuts import render
 from main.models import Person
 from main.utils.menu import get_menu_buttons
 
-
 def profile_view(request):
     """Страница профиля пользователя"""
     try:
