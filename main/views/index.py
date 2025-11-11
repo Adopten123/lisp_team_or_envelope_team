@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.db import transaction
 from ..models import Person
-import json
+from django.contrib.auth import login
 import time
 import hashlib
 import hmac
@@ -136,8 +136,7 @@ def max_web_app_auth(request):
             request.session['max_auth_user_id'] = person.vk_user_id
             request.session['max_auth_timestamp'] = int(time.time())
             
-            # Устанавливаем время жизни сессии
-            request.session.set_expiry(86400)  # 24 часа
+            login(request, person)
             
             return Response({
                 'success': True,

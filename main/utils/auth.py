@@ -20,15 +20,6 @@ def max_login_required(view_func):
                 status=401
             )
         
-        # Проверяем время жизни авторизации (24 часа)
-        if time.time() - auth_timestamp > 86400:
-            # Очищаем сессию
-            request.session.flush()
-            return JsonResponse(
-                {'error': 'Session expired'}, 
-                status=401
-            )
-        
         # Проверяем, что пользователь все еще существует
         try:
             person = Person.objects.get(
