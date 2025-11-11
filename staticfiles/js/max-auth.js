@@ -1,38 +1,43 @@
-// max-auth.js - Только авторизация в Django
-class MaxAppAuth {
+// webapp-auth.js - Авторизация через WebApp
+class WebAppAuth {
     constructor() {
         this.init();
     }
 
     async init() {
-        // Проверяем, находимся ли мы в MAX Web App
-        if (typeof Window.WebApp === 'undefined') {
-            console.log('MAX Web App не обнаружен');
+        // Проверяем, находимся ли мы в WebApp
+        if (typeof window.WebApp === 'undefined') {
+            console.log('WebApp не обнаружен');
             return;
         }
 
-        await this.initializeMaxApp();
+        await this.initializeWebApp();
     }
 
-    async initializeMaxApp() {
+    async initializeWebApp() {
         try {
-            // Инициализируем MAX Web App
-            await Window.WebApp.init();
+            console.log('1 - Начинаем инициализацию WebApp');
+            
+            // Инициализируем WebApp
+            await window.WebApp.init();
+            console.log('2 - WebApp инициализирован');
             
             // Получаем данные пользователя
-            const userData = Window.WebApp.initData.user;
-            console.log('MAX пользователь:', userData);
+            const userData = window.WebApp.initData.user;
+            console.log('WebApp пользователь:', userData);
             
             // Автоматическая авторизация на бэкенде
             await this.authenticateWithBackend(userData);
             
         } catch (error) {
-            console.error('Ошибка инициализации MAX:', error);
+            console.error('Ошибка инициализации WebApp:', error);
         }
     }
 
     async authenticateWithBackend(userData) {
         try {
+            console.log('3 - Отправляем данные на бэкенд');
+            
             const response = await fetch('/api/max-auth/', {
                 method: 'POST',
                 headers: {
@@ -40,13 +45,18 @@ class MaxAppAuth {
                     'X-CSRFToken': this.getCSRFToken(),
                 },
                 body: JSON.stringify({
-                    user: userData,
-                    auth_date: Window.WebApp.initData.auth_date,
-                    hash: Window.WebApp.initData.hash
+                    // Передаем только нужные данные пользователя
+                    user_id: userData.id,
+                    first_name: userData.first_name,
+                    last_name: userData.last_name,
+                    username: userData.username,
+                    photo_url: userData.photo_url,
+                    language_code: userData.language_code,
                 })
             });
 
             const data = await response.json();
+            console.log('4 - Ответ от бэкенда:', data);
 
             if (data.success) {
                 console.log('Авторизация успешна, пользователь сохранен в БД');
@@ -70,5 +80,6 @@ class MaxAppAuth {
 
 // Автоматическая инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    new MaxAppAuth();
+    console.log('DOM загружен, запускаем WebAppAuth');
+    new WebAppAuth();
 });

@@ -2,13 +2,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from ..models import Person, Student, Teacher, Applicant, StudentGroup, University, Faculty
 from ..utils.profile_buttons import get_menu_buttons
-
+from ..utils.auth import get_current_person
 
 def profile_view(request):
     """Страница профиля пользователя"""
     try:
         # Получаем объект Person, связанный с текущим пользователем
-        person = Person.objects.filter(pk=1).first()
+        person = get_current_person(request.user)
+        #person = Person.objects.filter(pk=1).first()
 
         # Получаем роль пользователя для меню
         role_name = person.role.name if person.role else "Student"
