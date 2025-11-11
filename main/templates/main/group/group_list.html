@@ -1,0 +1,67 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/nl_paginator.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <section class="notifications">
+        <h2 class="section-title">Группа {{ group_name }}</h2>
+
+        {# Куратор #}
+        <div class="notification-item" style="margin-bottom: 12px;">
+            <div class="notification-icon">👨‍🏫</div>
+            <div class="notification-content">
+                {% if curator %}
+                    <p class="notification-text">
+                        Куратор группы: <strong>{{ curator.last_name }} {{ curator.first_name }}</strong>
+                    </p>
+                    {% if curator.middle_name %}
+                        <span class="notification-time">Отчество: {{ curator.middle_name }}</span>
+                    {% endif %}
+                {% else %}
+                    <p class="notification-text">Куратор пока не назначен</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Староста — отдельной карточкой сразу под куратором #}
+        <div class="notification-item" style="margin-bottom: 16px;">
+            <div class="notification-icon">⭐</div>
+            <div class="notification-content">
+                {% if headman %}
+                    <p class="notification-text">
+                        Староста: <strong>{{ headman.name }}</strong>
+                        {% if headman.is_me %}<span class="badge badge--ok">- это вы!!!</span>{% endif %}
+                    </p>
+                    <span class="notification-time">Студ. билет: {{ headman.student_id }}</span>
+                {% else %}
+                    <p class="notification-text">Староста не назначен</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Остальные одногруппники #}
+        <div class="notifications-list">
+            {% for s in classmates %}
+                <article class="notification-item">
+                    <div class="notification-icon">👤</div>
+                    <div class="notification-content">
+                        <p class="notification-text">
+                            {{ s.name }}
+                            {% if s.is_me %}<span class="badge">- это вы!!!</span>{% endif %}
+                        </p>
+                        <span class="notification-time">Студ. билет: {{ s.student_id }}</span>
+                    </div>
+                </article>
+            {% empty %}
+                <p>В группе пока нет других студентов.</p>
+            {% endfor %}
+        </div>
+
+        {% include 'main/menu/paginator.html'%}
+    </section>
+{% endblock %}

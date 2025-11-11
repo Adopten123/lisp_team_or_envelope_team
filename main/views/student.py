@@ -3,7 +3,7 @@ from django.db.models import Prefetch
 from django.shortcuts import render
 from django.core.paginator import Paginator
 
-from ..models import Person, Student, Enrollment, Assessment, AssessmentResult
+from ..models import Person, Student, Enrollment, Assessment, AssessmentResult, StudentRole
 from main.utils.grades_helper import normalize_total, to_5pt
 def student_schedule_view(request):
     return HttpResponse("Страница просмотра расписания студентами")
@@ -114,7 +114,54 @@ def student_grades_view(request):
     })
 
 def student_group_view(request):
-    return HttpResponse("Страница просмотра группы")
+    """
+    Страница просмотра группы студента.
+    """
+    PAGINATOR_COUNT = 20
+    person = Person.objects.filter(pk=1).first()
+    student = getattr(person, "student", None) if person else None
+    if not student:
+        return HttpResponseForbidden("Доступно только для студентов")
+
+    group = student.student_group
+    curator = group.curator.person if group else None
+
+    qs = (
+        Student.objects
+        .filter(student_group=group)
+        .select_related("person")
+        .prefetch_related(
+            Prefetch("roles", queryset=StudentRole.objects.all(), to_attr="roles_data")
+        )
+        .order_by("person__last_name", "person__first_name", "person__middle_name")
+    )
+
+    paginator = Paginator(qs, PAGINATOR_COUNT)
+    page_obj = paginator.get_page(request.GET.get("page", 1))
+
+    classmates = []
+    headman = None
+    for s in page_obj.object_list:
+        if s.person.role.permission == "Headman":
+            headman = { "name": str(s.person), "student_id": s.student_id, "is_me": s == student }
+            continue
+
+        classmates.append({
+            "name": str(s.person),
+            "student_id": s.student_id,
+            "is_me": s == student,
+        })
+
+    context = {
+        "group_name": group.name,
+        "classmates": classmates,
+        "curator": curator,
+        "headman": headman,
+        "page_obj": page_obj,
+        "paginator": paginator,
+        "is_paginated": page_obj.has_other_pages(),
+    }
+    return render(request, 'main/group/group_list.html', context)
 
 def student_request_view(request):
     return HttpResponse("Страница просмотра справок")
