@@ -127,3 +127,17 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Секретный ключ для MAX бота (получить у администраторов MAX)
+MAX_BOT_TOKEN = 'f9LHodD0cOJAdEBMW8PcUvjzNhrIsxKkE0wlveax46Iz2lPWlaiyQVrSOe9UG2Rxf0d2ExSz0CwXyX8GYlC4'
+
+# Настройки сессии для безопасности
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True  # Для HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = True
+
+# Для разработки можно временно отключить
+if DEBUG:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
