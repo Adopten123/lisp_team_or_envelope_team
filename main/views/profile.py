@@ -12,7 +12,7 @@ def profile_view(request):
         #person = Person.objects.filter(pk=1).first()
 
         # Получаем роль пользователя для меню
-        role_name = person.role.name if person.role else "Student"
+        #role_name = person.role.name if person.role else "Student"
 
         # Проверяем, есть ли связанные объекты Student или Teacher
         student = getattr(person, 'student', None)
