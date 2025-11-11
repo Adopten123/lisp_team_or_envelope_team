@@ -64,7 +64,7 @@ def max_web_app_auth(request):
 
         return Response({
             'success': True,
-            'person_id': user.id,
+            'person_id': user.username,
             'is_new_user': created,
             'full_name': f"{first_name} {last_name}",
             'message': 'User authenticated successfully'
