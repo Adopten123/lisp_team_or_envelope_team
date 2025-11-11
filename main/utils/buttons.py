@@ -80,7 +80,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "teacher_subject_view",
+        "id": "teacher_subjects_view",
         "icon": "📁",
         "text": "Мои дисциплины",
         "data_action": "subjects",

@@ -6,7 +6,7 @@ from .journalist import journalist_news_view
 
 from .teacher import (
     teacher_schedule_view,
-    teacher_subject_view,
+    teacher_subjects_view,
     teacher_working_off_view,
     teacher_request_form,
     teacher_make_alert_form)
