@@ -43,6 +43,7 @@ def student_grades_view(request):
                         queryset=AssessmentResult.objects
                         .filter(student=student)
                         .order_by("-graded_at", "-attempt"),
+                        to_attr="student_results",
                     )
                 ),
                 to_attr="assessments_with_results",
@@ -50,18 +51,20 @@ def student_grades_view(request):
         )
         .order_by("-teaching__academic_year", "-teaching__semester_in_year")
     )
+
     courses = []
     for enr in enrollments:
         t = enr.teaching
         discipline = t.curriculum.discipline
         teacher_name = str(t.teacher.person)
         group_name = t.group.name if t.group else "Поток"
+
         items = []
         total_weighted = 0.0
         weight_sum = 0.0
 
         for a in getattr(t, "assessments_with_results", []):
-            res = a.results[0] if getattr(a, "results", None) else None
+            res = a.student_results[0] if getattr(a, "student_results", None) else None
             if res:
                 max_pts = float(a.max_points) if a.max_points else 0.0
                 pts = float(res.points)

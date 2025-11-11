@@ -166,6 +166,9 @@ class Curriculum(models.Model):
     class Meta:
         unique_together = [("program", "discipline", "semester")]
 
+    def __str__(self):
+        return f"{self.discipline} {self.program}"
+
 class Teaching(models.Model):
     """
     Класс конкретного курса
