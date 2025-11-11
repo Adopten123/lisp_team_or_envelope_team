@@ -6,7 +6,7 @@ class MaxAppAuth {
 
     async init() {
         // Проверяем, находимся ли мы в MAX Web App
-        if (typeof window.WebApp === 'undefined') {
+        if (typeof Window.WebApp === 'undefined') {
             console.log('MAX Web App не обнаружен');
             return;
         }
@@ -17,10 +17,10 @@ class MaxAppAuth {
     async initializeMaxApp() {
         try {
             // Инициализируем MAX Web App
-            await window.WebApp.init();
+            await Window.WebApp.init();
             
             // Получаем данные пользователя
-            const userData = window.WebApp.initData.user;
+            const userData = Window.WebApp.initData.user;
             console.log('MAX пользователь:', userData);
             
             // Автоматическая авторизация на бэкенде
@@ -41,8 +41,8 @@ class MaxAppAuth {
                 },
                 body: JSON.stringify({
                     user: userData,
-                    auth_date: window.WebApp.initData.auth_date,
-                    hash: window.WebApp.initData.hash
+                    auth_date: Window.WebApp.initData.auth_date,
+                    hash: Window.WebApp.initData.hash
                 })
             });
 
