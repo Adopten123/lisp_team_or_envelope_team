@@ -24,7 +24,7 @@ def profile_view(request):
             'student': student,
             'teacher': teacher,
             'applicant': applicant,
-            'menu_buttons': get_menu_buttons(role_name),
+            'menu_buttons': get_menu_buttons('Студент - Student'),
         }
 
     except Person.DoesNotExist:
