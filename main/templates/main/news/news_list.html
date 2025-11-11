@@ -5,6 +5,7 @@
 
 {% block extra_styles %}
     <link rel="stylesheet" href="{% static 'css/nl_paginator.css' %}">
+    <link rel="stylesheet" href="{% static 'css/news_list.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -27,7 +28,9 @@
                     </a>
                 {% endfor %}
             {% else %}
-                <p>Пока нет новостей.</p>
+                <div class="empty-block">
+                    <p>Пока нет новостей.</p>
+                </div>
             {% endif %}
         </div>
 
