@@ -8,7 +8,7 @@ def profile_view(request):
     """Страница профиля пользователя"""
     try:
         # Получаем объект Person, связанный с текущим пользователем
-        person = get_current_person(request.user)
+        person = get_current_person(request)
         #person = Person.objects.filter(pk=1).first()
 
         # Получаем роль пользователя для меню
