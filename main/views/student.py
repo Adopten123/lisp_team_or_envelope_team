@@ -6,6 +6,17 @@ from django.core.paginator import Paginator
 from ..models import Person, Student, Enrollment, Assessment, AssessmentResult, StudentRole
 from main.utils.grades_helper import normalize_total, to_5pt
 def student_schedule_view(request):
+    """
+    Функция для просмотра расписания студентом
+    с учетом исключения на текущий день (ScheuldeException)
+    """
+
+    person = Person.objects.filter(pk=1).first()
+    student = getattr(person, 'student', None)
+
+    if not student:
+        return HttpResponseForbidden("Доступно только студентам")
+
     return HttpResponse("Страница просмотра расписания студентами")
 
 def student_grades_view(request):
