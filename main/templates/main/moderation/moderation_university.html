@@ -1,0 +1,120 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/org_tree.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">🏛 Университет: {{ current_university.short_name }}</h2>
+
+        {# ФОРМЫ #}
+        <section class="user-card" style="margin-bottom:12px;">
+            <div class="forms-grid">
+                {% if can_create_faculty %}
+                    <details class="collapsible" open>
+                        <summary class="btn-indigo-outline">➕ Создать факультет</summary>
+                        <div class="form-body">
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="create_faculty">
+                                <div class="form-row">
+                                    <label>Название факультета</label>
+                                    {{ faculty_form.name }}
+                                    {% if faculty_form.name.errors %}
+                                        <div class="form-error">{{ faculty_form.name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-indigo">Создать факультет</button>
+                                </div>
+                            </form>
+                        </div>
+                    </details>
+                {% endif %}
+
+                <details class="collapsible">
+                    <summary class="btn-indigo-outline">➕ Создать кафедру/направление</summary>
+                    <div class="form-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="create_program">
+                            <div class="form-row">
+                                <label>Факультет</label>
+                                {{ program_form.faculty }}
+                                {% if program_form.faculty.errors %}
+                                    <div class="form-error">{{ program_form.faculty.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-row">
+                                <label>Название</label>
+                                {{ program_form.name }}
+                                {% if program_form.name.errors %}
+                                    <div class="form-error">{{ program_form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="form-row two">
+                                <div>
+                                    <label>Код</label>
+                                    {{ program_form.code }}
+                                </div>
+                                <div>
+                                    <label>Длительность (лет)</label>
+                                    {{ program_form.duration_years }}
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-indigo">Создать кафедру</button>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        {# ДЕРЕВО #}
+        <section class="user-card">
+            <h3 class="tree-title">Структура факультетов и кафедр</h3>
+            {% if faculties %}
+                <div class="faculty-grid">
+                    {% for f in faculties %}
+                        <article class="faculty-card">
+                            <header class="faculty-header">
+                                <div class="faculty-pill">ФАКУЛЬТЕТ</div>
+                                <h4 class="faculty-name">{{ f.name }}</h4>
+                                <div class="faculty-meta">
+                                    Кафедр: {{ f.programs.all|length }}
+                                </div>
+                            </header>
+
+                            {% if f.programs.all %}
+                                <div class="programs-wrap">
+                                    {% for p in f.programs.all %}
+                                        <div class="program-chip" title="{{ p.name }}">
+                                            <span class="program-dot"></span>
+                                            <span class="program-name">{{ p.name }}</span>
+                                            {% if p.code %}<span class="program-code">{{ p.code }}</span>{% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="programs-empty">
+                                    Нет кафедр — добавьте первую выше
+                                </div>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="notification-item">
+                    <div class="notification-icon">ℹ️</div>
+                    <div class="notification-content">
+                        <p class="notification-text">Факультеты пока не созданы.</p>
+                        <span class="notification-time">Добавьте первый факультет или кафедру выше.</span>
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}
