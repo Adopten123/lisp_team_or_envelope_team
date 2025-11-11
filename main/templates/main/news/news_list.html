@@ -14,15 +14,17 @@
         <div class="notifications-list">
             {% if page_obj.object_list %}
                 {% for n in page_obj.object_list %}
-                    <article class="notification-item">
-                        <div class="notification-icon">{{ n.news_icon }}</div>
-                        <div class="notification-content">
-                            <p class="notification-text">{{ n.title }}</p>
-                            <span class="notification-time"> {{ n.published_at|naturaltime }}
-                                {% if n.group %} · для группы {{ n.group.name }}{% endif %}
+                    <a href="{{ n.get_absolute_url }}" class="link-reset">
+                        <article class="notification-item">
+                            <div class="notification-icon">{{ n.news_icon }}</div>
+                            <div class="notification-content">
+                                <p class="notification-text">{{ n.title }}</p>
+                                <span class="notification-time"> {{ n.published_at|naturaltime }}
+                                    {% if n.group %} · для группы {{ n.group.name }}{% endif %}
                             </span>
-                        </div>
-                    </article>
+                            </div>
+                        </article>
+                    </a>
                 {% endfor %}
             {% else %}
                 <p>Пока нет новостей.</p>

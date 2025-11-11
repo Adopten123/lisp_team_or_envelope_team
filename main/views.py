@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db import models
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -54,6 +54,12 @@ def news_view(request):
         "paginator": paginator,
         "is_paginated": page_obj.has_other_pages(),
     })
+
+def news_detail_view(request, news_id):
+    post = get_object_or_404(NewsPost, pk=news_id, is_published=True)
+    return render(request, "main/news/news_detail.html",
+                  {"post": post}
+    )
 
 def student_schedule_view(request):
     return HttpResponse("Страница просмотра расписания студентами")

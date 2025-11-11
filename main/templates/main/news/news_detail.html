@@ -1,0 +1,18 @@
+{% extends 'main/index.html' %}
+{% load humanize %}
+
+{% block content %}
+    <article class="notification-item">
+        <div class="notification-icon">📰</div>
+        <div class="notification-content">
+            <h2 class="notification-text" style="margin-bottom:6px;">{{ post.title }}</h2>
+            <span class="notification-time">{{ post.published_at|naturaltime }}</span>
+            {% if post.cover_image %}
+                <div style="margin-top:8px;">
+                    <img src="{{ post.cover_image.url }}" alt="" style="max-width:100%; border-radius:12px;">
+                </div>
+            {% endif %}
+            <p style="margin-top:10px;">{{ post.body|linebreaks }}</p>
+        </div>
+    </article>
+{% endblock %}
