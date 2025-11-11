@@ -52,7 +52,7 @@ def get_current_person(request):
     Получить текущего авторизованного пользователя
     Возвращает Person или None
     """
-    user_id = request.session.get('max_auth_user_id')
+    user_id = getattr(request, 'session', {}).get('max_auth_user_id')
     
     if not user_id:
         return None
