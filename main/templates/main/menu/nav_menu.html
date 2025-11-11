@@ -1,15 +1,15 @@
 {% load static %}
 
 <nav class="bottom-nav">
-    <button class="nav-item active" data-page="main">
+    <a href="{% url 'index' %}" class="nav-item active" data-page="main">
         <span class="nav-icon">🏠</span>
         <span class="nav-text">Главная</span>
-    </button>
+    </a>
     <button class="nav-item" data-page="news">
         <span class="nav-icon">🌐</span>
         <span class="nav-text">Новости</span>
     </button>
-    <a href="{% url 'profile_view' %}" class="nav-item" , data-page="profile">
+    <a href="{% url 'profile_view' %}" class="nav-item" data-page="profile">
         <span class="nav-icon">👤</span>
         <span class="nav-text">Профиль</span>
     </a>
