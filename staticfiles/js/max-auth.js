@@ -17,9 +17,7 @@ class WebAppAuth {
     async initializeWebApp() {
         try {
             console.log('1 - Начинаем инициализацию WebApp');
-            
-            // Инициализируем WebApp
-            await window.WebApp.init();
+
             console.log('2 - WebApp инициализирован');
             
             // Получаем данные пользователя
