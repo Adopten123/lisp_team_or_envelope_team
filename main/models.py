@@ -444,6 +444,7 @@ class NewsPost(models.Model):
     Модель новостей
     """
     university = models.ForeignKey('University', on_delete=models.CASCADE, related_name='news', null=True)
+    news_icon = models.CharField(max_length=8, verbose_name="Эмодзи")
     title = models.CharField(max_length=255, verbose_name="Заголовок")
     body = models.TextField(verbose_name="Текст новости")
     created_at = models.DateTimeField(auto_now_add=True)

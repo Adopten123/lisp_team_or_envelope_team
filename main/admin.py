@@ -273,7 +273,7 @@ class AdmissionRequestAdmin(admin.ModelAdmin):
 
 @admin.register(NewsPost)
 class NewsPostAdmin(admin.ModelAdmin):
-    list_display = ("title", "university", "is_published", "published_at", "author", "cover_thumb")
+    list_display = ("title", "news_icon", "university", "is_published", "published_at", "author", "cover_thumb")
     list_filter = ("university", "is_published", "published_at")
     search_fields = ("title", "body", "author")
     autocomplete_fields = ("university",)
@@ -283,7 +283,7 @@ class NewsPostAdmin(admin.ModelAdmin):
 
     actions = ["publish_now", "unpublish"]
     fieldsets = (
-        (None, {"fields": ("university", "title", "author", "is_published")}),
+        (None, {"fields": ("university", "news_icon", "title", "author", "is_published")}),
         ("Контент", {"fields": ("cover_image", "body")}),
         ("Даты", {"fields": ("created_at", "published_at")}),
     )

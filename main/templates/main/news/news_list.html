@@ -1,0 +1,44 @@
+{% extends 'main/index.html' %}
+{% load humanize %}
+
+{% block content %}
+    <section class="notifications">
+        <h2 class="section-title">Уведомления</h2>
+
+        <div class="notifications-list">
+            {% if page_obj.object_list %}
+                {% for n in page_obj.object_list %}
+                    <article class="notification-item">
+                        <div class="notification-icon">{{ n.news_icon }}</div>
+                        <div class="notification-content">
+                            <p class="notification-text">{{ n.title }}</p>
+                            <span class="notification-time"> {{ n.published_at|naturaltime }}
+                                {% if n.group %} · для группы {{ n.group.name }}{% endif %}
+                            </span>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p>Пока нет новостей.</p>
+            {% endif %}
+        </div>
+
+        {% if is_paginated %}
+            <nav class="paginator">
+                {% if page_obj.has_previous %}
+                    <a class="badge" href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+                {% else %}
+                    <span class="badge">← Назад</span>
+                {% endif %}
+
+                <span class="badge">Стр. {{ page_obj.number }} из {{ paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                    <a class="badge" href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+                {% else %}
+                    <span class="badge">Вперёд →</span>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </section>
+{% endblock %}
