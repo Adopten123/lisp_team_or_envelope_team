@@ -1,0 +1,75 @@
+.form-vertical { display:flex; flex-direction:column; gap:14px; }
+.form-vertical .form-field { display:flex; flex-direction:column; gap:6px; }
+.ui-label { font-weight:600; color:#2f3542; }
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+     padding:10px 16px;border-radius:12px;border:1.5px solid transparent;
+     text-decoration:none;cursor:pointer;transition:transform .04s,box-shadow .2s;}
+.btn:active{transform:translateY(1px)}
+.btn-indigo{background:#667eea;color:#fff;box-shadow:0 6px 18px rgba(102,126,234,.25)}
+.btn-indigo:hover{box-shadow:0 10px 24px rgba(102,126,234,.35)}
+.btn-ghost{background:#fff;color:#4f46e5;border-color:rgba(102,126,234,.35)}
+
+/* ===== Сетки размеров ===== */
+
+.form-row--pair {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+
+.form-row--half {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+
+.form-row--full { display:block; }
+
+.form-vertical select,
+.form-vertical input[type="time"],
+.form-vertical input[type="date"],
+.form-vertical input[type="text"]{
+  height:38px;
+  border-radius:10px;
+  border:1px solid rgba(102,126,234,.25);
+  padding:6px 10px;
+}
+
+.selector{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+
+.selector .selector-available,
+.selector .selector-chosen{
+  background:#fff;border:1px solid rgba(102,126,234,.25);border-radius:12px;
+  padding:8px;box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+
+.selector h2,.selector h3{margin:0 0 6px 0;font-size:.9rem;font-weight:700;color:#2f3542}
+
+.selector select{
+  width:100%;
+  height:150px;
+  border-radius:10px;
+  border:1px solid rgba(102,126,234,.25);
+  font-size:.9rem;
+}
+
+.selector .selector-filter{margin-bottom:6px}
+.selector .selector-filter input{
+  width:100%;border:1px solid rgba(102,126,234,.35);border-radius:10px;
+  padding:6px 8px; height:34px;
+}
+
+.selector .selector-chooseall,
+.selector .selector-clearall{
+  display:inline-block;margin-top:6px;color:#4f46e5;text-decoration:none;font-size:.9rem;
+}
+
+@media (max-width: 800px){
+  .form-row--pair, .form-row--half { grid-template-columns: 1fr; }
+  .selector { grid-template-columns: 1fr; }
+}

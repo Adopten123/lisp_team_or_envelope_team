@@ -8,7 +8,7 @@ from main.utils.permissions import is_moderator_min
 from main.views.moderation import _resolve_current_university
 
 from main.models import (
-    Person
+    Person, StudentGroup,
 )
 
 def moderation_schedule_slot_create(request):
@@ -16,27 +16,29 @@ def moderation_schedule_slot_create(request):
 
     if not is_moderator_min(user, 1):
         return HttpResponseForbidden("Недостаточно прав")
+
+    group_id = request.GET.get("group")
+    group = get_object_or_404(StudentGroup, pk=group_id) if group_id else None
     uni = _resolve_current_university(user)
 
     if request.method == "POST":
-        form = ScheduleSlotForm(request.POST, university=uni)
+        form = ScheduleSlotForm(request.POST, university=uni, group=group)
         if form.is_valid():
             slot = form.save(commit=False)
             slot.university = uni
             slot.save()
             form.save_m2m()
             messages.success(request, "Ячейка расписания добавлена.")
-            redirect_group = request.GET.get("group") or ""
-            return redirect(f"{reverse('moderation_schedules')}?group={redirect_group}")
+            back = f"{reverse('moderation_schedules')}?group={group.id}" if group else reverse("moderation_schedules")
+            return redirect(back)
     else:
-        form = ScheduleSlotForm(university=uni)
+        form = ScheduleSlotForm(university=uni, group=group)
 
-    context = {
+    return render(request, "main/moderation/moderation_schedules_slot_form.html", {
         "current_university": uni,
+        "current_group": group,
         "form": form,
-    }
-    return render(request, "main/moderation/moderation_schedules_slot_form.html", context)
-
+    })
 
 def moderation_schedule_exception_create(request):
     user = Person.objects.filter(pk=5).first().user

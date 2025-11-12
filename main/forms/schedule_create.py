@@ -1,7 +1,20 @@
 from django import forms
-from main.models import ScheduleSlot, ScheduleException, Teaching, StudentGroup
+from django.contrib.admin.widgets import FilteredSelectMultiple
+
+from main.models import (
+    ScheduleSlot, ScheduleException,
+    Teaching, StudentGroup,
+    University
+)
 
 class ScheduleSlotForm(forms.ModelForm):
+    groups = forms.ModelMultipleChoiceField(
+        queryset=StudentGroup.objects.none(),
+        required=False,
+        widget=FilteredSelectMultiple(verbose_name="Группы", is_stacked=False),
+        label="Группы",
+    )
+
     class Meta:
         model = ScheduleSlot
         fields = [
@@ -11,40 +24,43 @@ class ScheduleSlotForm(forms.ModelForm):
             "building", "room", "note",
         ]
         widgets = {
-            "note": forms.TextInput(attrs={"placeholder": "Например: практическое занятие"}),
-            "start_date": forms.DateInput(attrs={"type": "date", "class": "ui-input"}),
-            "end_date": forms.DateInput(attrs={"type": "date", "class": "ui-input"}),
-            "start_time": forms.TimeInput(attrs={"type": "time", "class": "ui-input"}),
-            "end_time": forms.TimeInput(attrs={"type": "time", "class": "ui-input"}),
-            "weekday": forms.Select(attrs={"class": "ui-select"}),
-            "week_parity": forms.Select(attrs={"class": "ui-select"}),
-            "building": forms.TextInput(attrs={"class": "ui-input"}),
-            "room": forms.TextInput(attrs={"class": "ui-input"}),
+            "start_date": forms.DateInput(attrs={"type": "date"}),
+            "end_date": forms.DateInput(attrs={"type": "date"}),
+            "start_time": forms.TimeInput(attrs={"type": "time"}),
+            "end_time": forms.TimeInput(attrs={"type": "time"}),
+            "note": forms.TextInput(attrs={"placeholder": "Например: практика"}),
         }
 
-    def __init__(self, *args, university=None, **kwargs):
+    def __init__(self, *args, university: University | None = None, group: StudentGroup | None = None, **kwargs):
         super().__init__(*args, **kwargs)
 
         if university:
             self.fields["university"].initial = university
             self.fields["university"].disabled = True
-            self.fields["teaching"].queryset = Teaching.objects.filter(teacher__university=university)
 
-        if not university and getattr(self.instance, "teaching_id", None):
-            uni2 = self.instance.teaching.teacher.university
-            self.fields["teaching"].queryset = Teaching.objects.filter(teacher__university=uni2)
-            if not self.fields["university"].initial:
-                self.fields["university"].initial = uni2
-                self.fields["university"].disabled = True
+            self.fields["teaching"].queryset = (
+                Teaching.objects
+                .filter(teacher__university=university)
+                .select_related("curriculum__discipline", "teacher__person")
+                .order_by("curriculum__discipline__title")
+            )
 
-        uni_for_groups = university or (getattr(self.instance, "teaching", None) and self.instance.teaching.teacher.university)
-        if uni_for_groups:
-            self.fields["groups"].queryset = StudentGroup.objects.filter(university=uni_for_groups).order_by("name")
-        else:
-            self.fields["groups"].queryset = StudentGroup.objects.all().order_by("name")
+            self.fields["groups"].queryset = (
+                StudentGroup.objects
+                .filter(university=university)
+                .order_by("name")
+            )
 
-        self.fields["teaching"].widget.attrs.update({"class": "ui-select"})
-        self.fields["groups"].widget = forms.SelectMultiple(attrs={"size": 10, "class": "ui-multiselect"})
+        if group and not self.is_bound:
+            self.fields["groups"].initial = [group.pk]
+
+    class Media:
+        css = {"all": ("admin/css/widgets.css",)}
+        js = (
+            "admin/js/core.js",
+            "admin/js/SelectBox.js",
+            "admin/js/SelectFilter2.js",
+        )
 
 class ScheduleExceptionForm(forms.ModelForm):
     class Meta:
@@ -59,13 +75,17 @@ class ScheduleExceptionForm(forms.ModelForm):
             "new_date": forms.DateInput(attrs={"type": "date"}),
             "new_start_time": forms.TimeInput(attrs={"type": "time"}),
             "new_end_time": forms.TimeInput(attrs={"type": "time"}),
+            "new_note": forms.TextInput(attrs={"placeholder": "Причина, комментарий…"}),
         }
 
-    def __init__(self, *args, university=None, **kwargs):
+    def __init__(self, *args, university: University | None = None, group: StudentGroup | None = None, **kwargs):
         super().__init__(*args, **kwargs)
+        qs = ScheduleSlot.objects.all()
         if university:
-            self.fields["slot"].queryset = (
-                ScheduleSlot.objects.filter(university=university)
-                .select_related("teaching__curriculum__discipline")
-                .order_by("weekday", "start_time")
-            )
+            qs = qs.filter(university=university)
+        if group:
+            qs = qs.filter(Q(groups=group) | Q(teaching__group=group))
+
+        self.fields["slot"].queryset = qs.select_related(
+            "teaching__curriculum__discipline", "teaching__teacher__person"
+        ).order_by("weekday", "start_time")

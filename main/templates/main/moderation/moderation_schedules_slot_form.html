@@ -2,8 +2,7 @@
 {% load static %}
 
 {% block extra_styles %}
-    <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
-    <link rel="stylesheet" href="{% static 'css/schedule_moderation_forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/filtered_m2m.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -11,13 +10,34 @@
         <h2 class="section-title">➕ Новая ячейка расписания — {{ current_university.short_name }}</h2>
 
         <section class="user-card">
-            <form method="post" novalidate class="ui-form">
+            <script src="{% url 'admin:jsi18n' %}"></script>
+            {{ form.media }}
+
+            <form method="post" novalidate class="form-vertical">
                 {% csrf_token %}
 
-                <div class="form-grid two">
+                <div class="form-row--pair">
+                    <div class="form-field">
+                        <label class="ui-label">Университет</label>
+                        {{ form.university }}
+                    </div>
                     <div class="form-field">
                         <label class="ui-label">Курс (Teaching)</label>
                         {{ form.teaching }}
+                    </div>
+                </div>
+
+                <div class="form-row--full">
+                    <div class="form-field">
+                        <label class="ui-label">Группы</label>
+                        {{ form.groups }}
+                    </div>
+                </div>
+
+                <div class="form-row--half">
+                    <div class="form-field">
+                        <label class="ui-label">День недели</label>
+                        {{ form.weekday }}
                     </div>
                     <div class="form-field">
                         <label class="ui-label">Чётность недели</label>
@@ -25,17 +45,7 @@
                     </div>
                 </div>
 
-                <div class="form-field">
-                    <label class="ui-label">Группы (можно несколько)</label>
-                    {{ form.groups }}
-                    <div class="hint">Удерживайте Ctrl/Cmd для выбора нескольких.</div>
-                </div>
-
-                <div class="form-grid three">
-                    <div class="form-field">
-                        <label class="ui-label">День недели</label>
-                        {{ form.weekday }}
-                    </div>
+                <div class="form-row--half">
                     <div class="form-field">
                         <label class="ui-label">Начало</label>
                         {{ form.start_time }}
@@ -46,7 +56,7 @@
                     </div>
                 </div>
 
-                <div class="form-grid two">
+                <div class="form-row--half">
                     <div class="form-field">
                         <label class="ui-label">Дата начала</label>
                         {{ form.start_date }}
@@ -57,7 +67,7 @@
                     </div>
                 </div>
 
-                <div class="form-grid three">
+                <div class="form-row--half">
                     <div class="form-field">
                         <label class="ui-label">Корпус</label>
                         {{ form.building }}
@@ -66,17 +76,42 @@
                         <label class="ui-label">Аудитория</label>
                         {{ form.room }}
                     </div>
+                </div>
+
+                <div class="form-row--full">
                     <div class="form-field">
                         <label class="ui-label">Примечание</label>
                         {{ form.note }}
                     </div>
                 </div>
 
-                <div class="form-actions">
+                <div class="form-actions" style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button class="btn btn-indigo" type="submit">Сохранить</button>
-                    <a class="btn btn-ghost" href="{% url 'moderation_schedules' %}">Отмена</a>
+                    <a class="btn btn-ghost" href="
+                            {% url 'moderation_schedules' %}{% if current_group %}?group={{ current_group.id }}{% endif %}">Отмена</a>
                 </div>
             </form>
         </section>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.selector').forEach(function (sel) {
+                const titles = sel.querySelectorAll('h2, h3');
+                if (titles.length >= 2) {
+                    titles[0].textContent = 'Доступные группы';
+                    titles[1].textContent = 'Выбранные группы';
+                }
+                const filterLeft = sel.querySelector('.selector-available .selector-filter input');
+                const filterRight = sel.querySelector('.selector-chosen .selector-filter input');
+                if (filterLeft) filterLeft.placeholder = 'Фильтр';
+                if (filterRight) filterRight.placeholder = 'Фильтр';
+
+                const chooseAll = sel.querySelector('.selector-chooseall');
+                const clearAll = sel.querySelector('.selector-clearall');
+                if (chooseAll) chooseAll.textContent = 'Выбрать все';
+                if (clearAll) clearAll.textContent = 'Очистить все';
+            });
+        });
+    </script>
 {% endblock %}
