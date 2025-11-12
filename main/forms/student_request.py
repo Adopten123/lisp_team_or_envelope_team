@@ -4,10 +4,6 @@ from main.models import StudentRequest
 import json
 
 class StudentRequestCreateForm(forms.ModelForm):
-    """
-    Студент выбирает ТОЛЬКО тип. Статус = submitted, university/student ставим во view.
-    Дополнительно (опционально) можно передать JSON-детали в payload_json_str.
-    """
     payload_json_str = forms.CharField(
         label="Детали (JSON, опционально)",
         required=False,

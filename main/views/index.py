@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate
 def index(request):
     """Главная страница"""
 
-    menu_buttons = get_menu_buttons("Student")
+    menu_buttons = get_menu_buttons("Teacher")
 
     context = {
         "menu_buttons": menu_buttons,

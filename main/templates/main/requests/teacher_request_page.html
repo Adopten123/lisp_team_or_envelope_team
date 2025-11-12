@@ -1,0 +1,120 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/requests.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nl_paginator.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">🧾 Мои заявления (преподаватель) — {{ current_university.short_name }}</h2>
+
+        <!-- Фильтры в одну строку -->
+        <section class="user-card" style="margin-bottom:12px;">
+            <form method="get" class="filters">
+                <div class="cell">
+                    <select name="type" class="filter-select">
+                        <option value="">Все типы</option>
+                        {% for v,l in type_choices %}
+                            <option value="{{ v }}" {% if f_type == v %}selected{% endif %}>{{ l }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="cell">
+                    <select name="status" class="filter-select">
+                        <option value="">Все статусы</option>
+                        {% for v,l in status_choices %}
+                            <option value="{{ v }}" {% if f_status == v %}selected{% endif %}>{{ l }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="cell"><input type="text" name="q" value="{{ q }}" class="filter-input"
+                                         placeholder="Поиск по типу, статусу или примечанию"></div>
+
+                <div class="cell">
+                    <button class="btn-indigo" type="submit">Искать</button>
+                    <a class="btn-ghost" href="{% url 'teacher_request_form' %}">Сбросить</a></div>
+
+            </form>
+        </section>
+
+        <!-- Создание -->
+        <section class="user-card" style="margin-bottom:12px;">
+            <details class="collapsible">
+                <summary class="btn-summary">Создать заявление</summary>
+
+                <form method="post" class="ui-form" style="margin-top:14px;">
+                    {% csrf_token %}
+                    <div class="form-row two">
+                        <div>
+                            <label>Тип</label>
+                            {{ form.type }}
+                        </div>
+                        <div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Примечание (опционально)</label>
+                        <textarea name="note" rows="4" class="json-input"
+                                  placeholder="Например: прошу отпуск с 01.07 по 21.07, 21 календарный день"></textarea>
+                    </div>
+
+                    <div class="form-actions" style="display:flex; gap:10px;">
+                        <button class="btn-indigo" type="submit">Отправить</button>
+                        <a class="btn-ghost" href="{% url 'teacher_request_form' %}">Отмена</a>
+                    </div>
+                </form>
+            </details>
+        </section>
+
+        <!-- Список -->
+        <section class="notifications">
+            <div class="notifications-list">
+                {% if page_obj.object_list %}
+                    {% for r in page_obj.object_list %}
+                        <div class="notification-item">
+                            <div class="notification-icon">📄</div>
+                            <div class="notification-content" style="flex:1;">
+                                <p class="notification-text">
+                                    <strong>{{ r.get_type_display }}</strong>
+                                    · <span class="status-pill status-{{ r.status }}">{{ r.get_status_display }}</span>
+                                </p>
+                                <span class="notification-time">Создано: {{ r.created_at|date:"d.m.Y H:i" }}</span>
+                                {% if r.payload_json.note %}
+                                    <div class="request-json" style="margin-top:6px;">
+                                        Примечание: {{ r.payload_json.note }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-block">
+                        <div class="notification-icon">ℹ️</div>
+                        <div>Заявлений пока нет.</div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="paginator" aria-label="Пагинация" style="margin-top:14px;">
+                    {% if page_obj.has_previous %}
+                        <a class="badge"
+                           href="?page={{ page_obj.previous_page_number }}&type={{ f_type }}&status={{ f_status }}&q={{ q|urlencode }}">←
+                            Назад</a>
+                    {% else %}<span class="badge">← Назад</span>{% endif %}
+
+                    <span class="badge">Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+                    {% if page_obj.has_next %}
+                        <a class="badge"
+                           href="?page={{ page_obj.next_page_number }}&type={{ f_type }}&status={{ f_status }}&q={{ q|urlencode }}">Вперёд
+                            →</a>
+                    {% else %}<span class="badge">Вперёд →</span>{% endif %}
+                </nav>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}

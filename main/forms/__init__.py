@@ -4,3 +4,4 @@ from .subject_create import DisciplineCreateForm, CurriculumCreateForm, Teaching
 from .help_request import HelpRequestForm
 from .schedule_create import ScheduleSlotForm, ScheduleExceptionForm
 from .student_request import StudentRequestCreateForm
+from .teacher_request import TeacherRequestCreateForm

@@ -1,11 +1,14 @@
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.utils import timezone
 
-from main.models import Person, Teaching, ScheduleSlot
-
+from main.models import (
+    Person, Teaching, ScheduleSlot,
+    TeacherRequest,
+)
+from main.forms import TeacherRequestCreateForm
 
 def teacher_schedule_view(request):
 
@@ -105,7 +108,61 @@ def teacher_working_off_view(request):
     return render(request, "main/teacher/working_off_placeholder.html")
 
 def teacher_request_form(request):
-    return HttpResponse("Страница написания заявлений")
+    user = Person.objects.filter(pk=2).first().user
+    person = getattr(user, "person", None)
+    teacher = getattr(person, "teacher", None) if person else None
+    if not teacher:
+        return HttpResponseForbidden("Доступно только преподавателям")
+
+    current_university = teacher.university
+
+    # создание
+    if request.method == "POST":
+        form = TeacherRequestCreateForm(request.POST)
+        if form.is_valid():
+            obj: TeacherRequest = form.save(commit=False)
+            obj.university = current_university
+            obj.teacher = teacher
+            # оборачиваем текст «примечание» в payload_json
+            note = (request.POST.get("note") or "").strip()
+            obj.payload_json = {"note": note} if note else {}
+            obj.save()
+            return redirect(reverse("teacher_request_form"))
+    else:
+        form = TeacherRequestCreateForm()
+
+    # фильтры
+    f_type = request.GET.get("type") or ""
+    f_status = request.GET.get("status") or ""
+    q = (request.GET.get("q") or "").strip()
+
+    qs = (TeacherRequest.objects
+          .filter(university=current_university, teacher=teacher)
+          .order_by("-created_at"))
+
+    if f_type:
+        qs = qs.filter(type=f_type)
+    if f_status:
+        qs = qs.filter(status=f_status)
+    if q:
+        qs = qs.filter(
+            Q(type__icontains=q) |
+            Q(status__icontains=q) |
+            Q(payload_json__note__icontains=q)
+        )
+
+    paginator = Paginator(qs, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    context = {
+        "current_university": current_university,
+        "form": form,
+        "type_choices": TeacherRequest.TYPE_CHOICES,
+        "status_choices": TeacherRequest.STATUS,
+        "f_type": f_type, "f_status": f_status, "q": q,
+        "page_obj": page_obj,
+    }
+    return render(request, "main/requests/teacher_request_page.html", context)
 
 def teacher_make_alert_form(request):
     return HttpResponse("Страница создания оповещения о паре учителем")
