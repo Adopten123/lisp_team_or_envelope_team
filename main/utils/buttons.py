@@ -1,12 +1,12 @@
 buttons = [
-    {
-        "id": "news_view",
-        "icon": "🔥",
-        "text": "Новости",
-        "data_action": "news",
-        "roles": {"Guest", "Applicant", "Student", "Headman", "Journalist", "Teacher", "University Moderator 1lvl",
-                  "University Moderator 2lvl", "University Moderator 3lvl"}
-    },
+    # {
+    #     "id": "news_view",
+    #     "icon": "🔥",
+    #     "text": "Новости",
+    #     "data_action": "news",
+    #     "roles": {"Guest", "Applicant", "Student", "Headman", "Journalist", "Teacher", "University Moderator 1lvl",
+    #               "University Moderator 2lvl", "University Moderator 3lvl"}
+    # },
     {
         "id": "student_schedule_view",
         "icon": "📅",
