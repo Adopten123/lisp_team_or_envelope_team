@@ -3,3 +3,5 @@ from .university_create import FacultyCreateForm, ProgramCreateForm
 from .subject_create import DisciplineCreateForm, CurriculumCreateForm, TeachingCreateForm
 from .help_request import HelpRequestForm
 from .schedule_create import ScheduleSlotForm, ScheduleExceptionForm
+from .student_request import StudentRequestCreateForm
+from .teacher_request import TeacherRequestCreateForm

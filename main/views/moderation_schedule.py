@@ -34,11 +34,13 @@ def moderation_schedule_slot_create(request):
     else:
         form = ScheduleSlotForm(university=uni, group=group)
 
-    return render(request, "main/moderation/moderation_schedules_slot_form.html", {
+    context = {
         "current_university": uni,
         "current_group": group,
         "form": form,
-    })
+    }
+
+    return render(request, "main/moderation/moderation_schedules_slot_form.html", context)
 
 def moderation_schedule_exception_create(request):
     user = Person.objects.filter(pk=5).first().user
