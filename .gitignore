@@ -6,3 +6,4 @@ __pycache__/
 *.pyd
 db.sqlite3
 max/settings.py
+git rm db.sqlite3

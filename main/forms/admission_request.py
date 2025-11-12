@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from ..models import ApplicationRequest  # Изменили импорт
+from ..models import ApplicationRequest
 
 class AdmissionRequestForm(forms.Form):
     last_name = forms.CharField(max_length=128, label="Фамилия*")
