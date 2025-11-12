@@ -5,9 +5,32 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+
+# === МЕНЕДЖЕРЫ МОДЕЛЕЙ ===
+
+class PersonManager(models.Manager):
+    def create_from_vk_data(self, data):
+        """
+        Создает пользователя из данных MAX
+        """
+        max_user_id = str(data.get('id'))
+        first_name = data.get('first_name', '')
+        last_name = data.get('last_name', '')
+        username = data.get('username', '')
+    
+        
+        return self.create(
+            vk_user_id=max_user_id,
+            first_name=first_name,
+            last_name=last_name,
+            email='',
+            is_active=True
+        )
 
 # === ОБЪЕКТЫ ЛЮДЕЙ ===
 
+# models.py
 class Person(models.Model):
     """
     Базовый объект человека.
@@ -20,10 +43,7 @@ class Person(models.Model):
     last_name = models.CharField("Фамилия", max_length=128)
     first_name = models.CharField("Имя", max_length=128)
     middle_name = models.CharField("Отчество", max_length=128, blank=True)
-
-    # временное поле
     role = models.ForeignKey('Role', related_name='role', on_delete=models.SET_NULL, null=True, blank=True)
-
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=32, blank=True)
     vk_user_id = models.CharField(

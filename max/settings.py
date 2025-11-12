@@ -51,6 +51,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'csp.middleware.CSPMiddleware',
+    'authentication.middleware.PersonMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'authentication.backends.VKAuthBackend',  # кастомный бэкенд
 ]
 
 # # Настройки CSP
