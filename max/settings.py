@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.humanize",
+    'csp',
     'main',
     'authentication',
 ]
@@ -49,8 +50,31 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
+
+# Настройки CSP
+CSP_DEFAULT_SRC = ["'self'"]
+CSP_SCRIPT_SRC = [
+    "'self'", 
+    "https://st.max.ru",
+    "'unsafe-inline'"  # Add this if the script uses inline scripts
+]
+CSP_CONNECT_SRC = [
+    "'self'",
+    "https://st.max.ru"  # Add this if the script makes API calls
+]
+CSP_FRAME_SRC = [
+    "'self'",
+    "https://st.max.ru"  # Add this if it uses iframes
+]
+CSP_FRAME_ANCESTORS = [
+    "'self'", 
+    "https://st.max.ru", 
+    "https://maxcampus.ru"
+]
+CSP_OBJECT_SRC = ["'none'"]
+CSP_BASE_URI = ["'self'"]
 
 ROOT_URLCONF = 'max.urls'
 
@@ -127,3 +151,17 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Секретный ключ для MAX бота (получить у администраторов MAX)
+MAX_BOT_TOKEN = 'f9LHodD0cOJAdEBMW8PcUvjzNhrIsxKkE0wlveax46Iz2lPWlaiyQVrSOe9UG2Rxf0d2ExSz0CwXyX8GYlC4'
+
+# Настройки сессии для безопасности
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True  # Для HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = True
+
+# Для разработки можно временно отключить
+if DEBUG:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False

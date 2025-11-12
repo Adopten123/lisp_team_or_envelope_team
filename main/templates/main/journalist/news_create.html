@@ -12,11 +12,11 @@
         <div class="status-card">
             <div class="status-icon">👨‍💼</div>
             <div class="status-info">
-                <h3 id="journalistName">Загрузка...</h3>
+                <h3 id="journalistName">{{ person }}</h3>
                 <p>Журналист студенческого пресс-центра</p>
                 <div class="stats">
-                    <span class="stat" id="newsCount">📊 Опубликовано: загрузка...</span>
-                    <span class="stat">⭐ Роль: Журналист</span>
+                    <span class="stat" id="newsCount">📊 Опубликовано: {{ posts_count }}</span>
+                    <span class="stat">⭐ Роль: {{ person.role }}</span>
                 </div>
             </div>
         </div>

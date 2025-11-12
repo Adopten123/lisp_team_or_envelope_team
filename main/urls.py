@@ -32,5 +32,4 @@ urlpatterns = [
     path('acts/', views.acts_view, name='acts_view'),
     path('news/<slug:news_slug>/', views.news_moderation, name='news_moderation'),
     path('news/<slug:group_slug>/<slug:news_slug>/', views.group_news_moderation, name='group_news_moderation'),
-
 ]

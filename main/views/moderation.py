@@ -2,11 +2,11 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 from main.utils.permissions import is_moderator_min
-from main.forms import TeacherCreateForm
-from main.models import Teacher, University, Role
+from main.forms import TeacherCreateForm, ProgramCreateForm, FacultyCreateForm
+from main.models import Person, Teacher, University, Role, Faculty, Program
 
 
 def _resolve_current_university(user):
@@ -29,7 +29,7 @@ def _resolve_current_university(user):
 
 def moderation_staff(request):
 
-    user = Teacher.objects.filter(pk=2).first().person.user
+    user = Person.objects.filter(pk=5).first().user
     # Только модераторы 2 и 3 уровня
     if not is_moderator_min(user, 2):
         return HttpResponseForbidden("Недостаточно прав")
@@ -96,17 +96,73 @@ def moderation_staff(request):
     else:
         form = TeacherCreateForm()
 
-    return render(request, "main/moderation/moderation_staff.html", {
+    context = {
         "current_university": current_uni,
         "page_obj": page_obj,
         "paginator": paginator,
         "can_manage": True,
         "form": form,
         "department_q": department_q,
-    })
+    }
+
+    return render(request, "main/moderation/moderation_staff.html", context)
 
 def moderation_university(request):
-    return HttpResponse("Страница управления университетом, тут будет выдача ролей и создание кафедр")
+    user = Person.objects.filter(pk=5).first().user
+
+    if not is_moderator_min(user, 2):
+        return HttpResponseForbidden("Недостаточно прав")
+
+    current_uni = _resolve_current_university(user)
+    if not current_uni:
+        messages.error(request, "Нет университета для управления.")
+        return render(request, "main/moderation/moderation_university.html", {
+            "current_university": None,
+            "faculties": [],
+            "can_create_faculty": False,
+            "program_form": None,
+            "faculty_form": None,
+        })
+
+    can_create_faculty = is_moderator_min(user, 3)
+
+    faculty_form = FacultyCreateForm()
+    program_form = ProgramCreateForm(university=current_uni)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "create_faculty":
+            if not can_create_faculty:
+                return HttpResponseForbidden("Недостаточно прав для создания факультетов")
+            faculty_form = FacultyCreateForm(request.POST)
+            if faculty_form.is_valid():
+                faculty_form.save(university=current_uni)
+                messages.success(request, "Факультет создан.")
+                return redirect("moderation_university")
+            else:
+                messages.error(request, "Проверьте данные факультета.")
+        elif action == "create_program":
+            program_form = ProgramCreateForm(request.POST, university=current_uni)
+            if program_form.is_valid():
+                program_form.save()
+                messages.success(request, "Кафедра/направление создано.")
+                return redirect("moderation_university")
+            else:
+                messages.error(request, "Проверьте данные кафедры/направления.")
+
+    faculties = (
+        Faculty.objects.filter(university=current_uni)
+        .prefetch_related(Prefetch("programs", queryset=Program.objects.order_by("name")))
+        .order_by("name")
+    )
+
+    return render(request, "main/moderation/moderation_university.html", {
+        "current_university": current_uni,
+        "faculties": faculties,
+        "can_create_faculty": can_create_faculty,
+        "faculty_form": faculty_form,
+        "program_form": program_form,
+    })
 
 def moderation_schedules(request):
     return HttpResponse(f"Страница редактирования расписания групп")
