@@ -55,8 +55,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'authentication.backends.VKAuthBackend',  # ваш кастомный бэкенд
-    'django.contrib.auth.backends.ModelBackend',  # стандартный бэкенд
+    'authentication.backends.VKAuthBackend',  # кастомный бэкенд
 ]
 
 # # Настройки CSP
