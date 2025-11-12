@@ -215,7 +215,7 @@ def moderation_teaching_list(request):
         "q": q,
     }
 
-    return render(request, "main/moderation/subjects_teaching_list.html", context)
+    return render(request, "main/moderation/moderation_subjects_teaching_list.html", context)
 
 
 def moderation_teaching_edit(request, pk: int):
@@ -247,7 +247,7 @@ def moderation_teaching_edit(request, pk: int):
         "item": item,
     }
 
-    return render(request, "main/moderation/subjects_teaching_edit.html", context)
+    return render(request, "main/moderation/moderation_subjects_teaching_edit.html", context)
 
 
 def moderation_teaching_delete(request, pk: int):
