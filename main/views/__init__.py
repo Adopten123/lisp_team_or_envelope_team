@@ -1,5 +1,5 @@
 from .news import news_view, news_detail_view
-from .index import index, max_web_app_auth
+from .index import index
 from .student import student_schedule_view, student_grades_view, student_group_view, student_request_view
 from .headman import headman_group_news_view
 from .journalist import journalist_news_view
