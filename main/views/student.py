@@ -1,10 +1,15 @@
 from django.utils import timezone
 from django.http import HttpResponse, HttpResponseForbidden
 from django.db.models import Prefetch, Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
+from main.forms import StudentRequestCreateForm
 
-from ..models import Person, Student, Enrollment, Assessment, AssessmentResult, StudentRole, ScheduleSlot
+from ..models import (
+    Person, Student, Enrollment,
+    Assessment, AssessmentResult, StudentRole,
+    ScheduleSlot, StudentRequest
+)
 from main.utils.grades_helper import normalize_total, to_5pt
 def student_schedule_view(request):
     """
@@ -211,4 +216,53 @@ def student_group_view(request):
     return render(request, 'main/group/group_list.html', context)
 
 def student_request_view(request):
-    return HttpResponse("Страница просмотра справок")
+
+    person = Person.objects.filter(pk=1).select_related("student").first()
+    student = getattr(person, "student", None)
+
+    if not student:
+        return HttpResponseForbidden("Доступно только студентам")
+
+    if request.method == "POST":
+        form = StudentRequestCreateForm(request.POST)
+        if form.is_valid():
+            note = (request.POST.get("note") or "").strip()
+            obj = form.save(commit=False)
+            obj.university = student.university
+            obj.student = student
+            obj.status = "submitted"
+            obj.payload_json = {"note": note} if note else {}
+            obj.save()
+            return redirect("student_request_view")
+    else:
+        form = StudentRequestCreateForm()
+
+    f_type = request.GET.get("type") or ""
+    f_status = request.GET.get("status") or ""
+    q = (request.GET.get("q") or "").strip()
+
+    qs = StudentRequest.objects.filter(student=student).order_by("-created_at")
+    if f_type:
+        qs = qs.filter(type=f_type)
+    if f_status:
+        qs = qs.filter(status=f_status)
+    if q:
+        qs = qs.filter(
+            Q(type__icontains=q) |
+            Q(status__icontains=q) |
+            Q(payload_json__icontains=q)
+        )
+
+    paginator = Paginator(qs, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    context = {
+        "current_university": student.university,
+        "form": form,
+        "page_obj": page_obj,
+        "type_choices": StudentRequest.TYPE_CHOICES,
+        "status_choices": StudentRequest.STATUS_CHOICES,
+        "f_type": f_type, "f_status": f_status, "q": q,
+    }
+
+    return render(request, "main/requests/student_request_page.html", context)

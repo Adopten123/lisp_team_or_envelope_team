@@ -23,6 +23,6 @@ def admission_request_page(request):
     else:
         form = AdmissionRequestForm()
 
-    return render(request, 'main/admission_request/admission_request_page.html', {
+    return render(request, 'main/requests/admission_request_page.html', {
         'form': form
     })
