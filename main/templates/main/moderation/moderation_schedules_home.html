@@ -14,8 +14,6 @@
         <!-- Фильтры: поиск + выбор группы -->
         <section class="user-card" style="margin-bottom:12px;">
             <form method="get" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                <input type="text" name="q" value="{{ q }}" placeholder="Поиск группы или программы"
-                       class="action-card" style="padding:10px; border-radius:10px; min-width:260px;">
                 <select name="group" class="action-card" style="padding:10px; border-radius:10px; min-width:260px;">
                     <option value="">— Выберите группу —</option>
                     {% for g in groups %}

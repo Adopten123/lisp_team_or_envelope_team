@@ -184,17 +184,18 @@ def user_permission(request):
     return getattr(role, "permission", None)
 
 def moderation_schedules(request):
+    user = Person.objects.filter(pk=5).first().user
+    person = Person.objects.filter(pk=5).first()
+    current_uni = _resolve_current_university(user)
 
-    perm = user_permission(request)
-    if perm not in ALLOWED_ROLES:
+    if not is_moderator_min(user, 1):
         return HttpResponseForbidden("Недостаточно прав")
 
     q = (request.GET.get("q") or "").strip()
-    groups = StudentGroup.objects.all().select_related("program", "university").order_by("name")
+    groups = StudentGroup.objects.filter(university=current_uni).select_related("program", "university").order_by("name")
     if q:
         groups = groups.filter(Q(name__icontains=q) | Q(program__name__icontains=q))
 
-    # Выбранная группа
     group_id = request.GET.get("group")
     group = get_object_or_404(StudentGroup, pk=group_id) if group_id else None
 
@@ -225,7 +226,7 @@ def moderation_schedules(request):
             })
 
     context = {
-        "perm": perm,
+        "perm": "Moderator_3lvl",
         "q": q,
         "groups": groups,
         "group": group,
