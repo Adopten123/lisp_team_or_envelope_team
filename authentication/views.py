@@ -47,6 +47,8 @@ def max_auth_view(request):
             user, user_created = User.objects.get_or_create( 
                 username=f"max_{vk_user_id}",
                 defaults={
+                    'first_name': first_name,
+                    'last_name': last_name,
                     'password': 'none_password',
                     'last_login': datetime.now()
                 }
@@ -64,7 +66,7 @@ def max_auth_view(request):
             )
         
         # Логиним пользователя
-        login(request, user)
+        login(request, person.user)
 
         # Обновляем данные пользователя, если они изменились
         if person.first_name != person.user.first_name or person.last_name != person.user.last_name:
