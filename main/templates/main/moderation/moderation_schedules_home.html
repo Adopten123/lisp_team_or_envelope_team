@@ -1,0 +1,101 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% load ui_extras %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/schedule_moderation_forms.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">🗓️ Расписания — {{ current_university.short_name }}</h2>
+
+        <!-- Быстрые действия -->
+        <section class="user-card" style="margin-bottom:12px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="{% url 'schedule_slot_create' %}{% if current_group %}?group={{ current_group.id }}{% endif %}"
+                   class="btn btn-indigo">Добавить ячейку (ScheduleSlot)</a>
+                <a href="
+                        {% url 'schedule_exception_create' %}{% if current_group %}?group={{ current_group.id }}{% endif %}"
+                   class="btn btn-ghost">Добавить исключение (ScheduleException)</a>
+            </div>
+        </section>
+
+        <!-- Фильтры: выбор группы (поиск по input) и неделя -->
+        <section class="user-card" style="margin-bottom:12px;">
+            <form method="get" class="filters" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                <select name="group" class="action-card" style="padding:10px; border-radius:10px; min-width:260px;">
+                    <option value="">— Выберите группу —</option>
+                    {% for g in groups %}
+                        <option value="{{ g.id }}"
+                                {% if current_group and g.id == current_group.id %}selected{% endif %}>
+                            {{ g.name }} · {{ g.program.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="date" name="week" value="{{ week_start|date:'Y-m-d' }}"
+                       class="action-card" style="padding:10px; border-radius:10px;">
+                <button class="btn btn-indigo" type="submit">Показать</button>
+                <a class="btn btn-ghost" href="{% url 'moderation_schedules' %}">Сбросить</a>
+            </form>
+        </section>
+
+        <!-- Превью недели -->
+        <section class="notifications">
+            <h3 class="section-title" style="font-size:1.05rem;">Предпросмотр недели
+                (с {{ week_start|date:"d.m.Y" }})</h3>
+
+            {% if current_group %}
+                <div class="week-grid">
+                    {% for day in week_days %}
+                        <div class="day-column">
+                            <div class="day-head">
+              <span class="day-title">
+                {{ day|date:"l" }} <small>{{ day|date:"d.m" }}</small>
+              </span>
+                            </div>
+
+                            <div class="day-body">
+                                {% if slots_by_day.day %}
+                                    {# — это не сработает, поэтому просто отрисуем внизу через dict lookup — #}
+                                {% endif %}
+
+                                {% for item in slots_by_day|get_item:day %}
+                                    <div class="slot-card {% if item.cancelled %}slot-cancelled{% endif %}">
+                                        <div class="slot-time">
+                                            {% if item.cancelled %}—{% else %}{{ item.start|time:"H:i" }}–
+                                                {{ item.end|time:"H:i" }}{% endif %}
+                                        </div>
+                                        <div class="slot-main">
+                                            <div class="slot-title">
+                                                {{ item.slot.teaching.curriculum.discipline.title }}
+                                            </div>
+                                            <div class="slot-meta">
+                                                {{ item.slot.teaching.teacher.person.last_name }} {{ item.slot.teaching.teacher.person.first_name }}
+                                                {% if item.building or item.room %} · {{ item.building }}
+                                                    {{ item.room }}{% endif %}
+                                                {% if item.note %} · {{ item.note }}{% endif %}
+                                                {% if item.cancelled %} · <strong>ОТМЕНА</strong>{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="slot-empty">Нет пар</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="notification-item">
+                    <div class="notification-icon">ℹ️</div>
+                    <div class="notification-content">
+                        <p class="notification-text">Выберите группу, чтобы увидеть расписание.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+    </section>
+{% endblock %}

@@ -34,6 +34,11 @@ from .moderation_subject import (
     moderation_teaching_list, moderation_teaching_edit, moderation_teaching_delete,
 )
 
+from .moderation_schedule import (
+    moderation_schedule_slot_create,
+    moderation_schedule_exception_create,
+)
+
 """
 Полезные импорты
 

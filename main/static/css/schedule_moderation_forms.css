@@ -1,0 +1,176 @@
+.week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 980px) {
+    .week-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .week-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.day-column {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.day-head {
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #667eea22, #764ba222);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.day-title {
+    font-weight: 700;
+    color: #2f3542;
+}
+
+.day-title small {
+    color: #667eea;
+    margin-left: 6px;
+}
+
+.day-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.slot-card {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    gap: 10px;
+    align-items: start;
+    background: #fff;
+    border: 1.5px solid rgba(102, 126, 234, 0.25);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.slot-time {
+    font-weight: 700;
+    color: #667eea;
+}
+
+.slot-title {
+    font-weight: 700;
+    color: #2f3542;
+}
+
+.slot-meta {
+    font-size: .9rem;
+    color: #6b7280;
+}
+
+.slot-cancelled {
+    opacity: .6;
+    border-style: dashed;
+}
+
+.slot-empty {
+    border: 1.5px dashed rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Сетка форм */
+.ui-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.form-grid.two {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.form-grid.three {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 860px) {
+    .form-grid.two, .form-grid.three {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ui-label {
+    font-size: .9rem;
+    font-weight: 600;
+    color: #2f3542;
+}
+
+.hint {
+    font-size: .85rem;
+    color: #6b7280;
+}
+
+/* Инпуты/селекты */
+.ui-input,
+.user-card input[type="text"],
+.user-card input[type="number"],
+.user-card input[type="date"],
+.user-card input[type="time"],
+.user-card select,
+.user-card textarea {
+    width: 100%;
+    border: 1.5px solid rgba(102, 126, 234, 0.35);
+    background: rgba(255, 255, 255, 0.95);
+    color: #2f3542;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.user-card select.ui-select {
+    padding-right: 34px;
+}
+
+.user-card select.ui-multiselect {
+    min-height: 230px; /* 👈 видно много групп */
+    padding: 10px 12px;
+}
+
+/* Фокус/hover */
+.user-card input:hover,
+.user-card select:hover,
+.user-card textarea:hover {
+    border-color: #667eea;
+}
+
+.user-card input:focus,
+.user-card select:focus,
+.user-card textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 6px 18px rgba(102, 126, 234, 0.18);
+    background: #ffffff;
+}
+

@@ -1,0 +1,82 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/schedule_moderation_forms.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">➕ Новая ячейка расписания — {{ current_university.short_name }}</h2>
+
+        <section class="user-card">
+            <form method="post" novalidate class="ui-form">
+                {% csrf_token %}
+
+                <div class="form-grid two">
+                    <div class="form-field">
+                        <label class="ui-label">Курс (Teaching)</label>
+                        {{ form.teaching }}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Чётность недели</label>
+                        {{ form.week_parity }}
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="ui-label">Группы (можно несколько)</label>
+                    {{ form.groups }}
+                    <div class="hint">Удерживайте Ctrl/Cmd для выбора нескольких.</div>
+                </div>
+
+                <div class="form-grid three">
+                    <div class="form-field">
+                        <label class="ui-label">День недели</label>
+                        {{ form.weekday }}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Начало</label>
+                        {{ form.start_time }}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Конец</label>
+                        {{ form.end_time }}
+                    </div>
+                </div>
+
+                <div class="form-grid two">
+                    <div class="form-field">
+                        <label class="ui-label">Дата начала</label>
+                        {{ form.start_date }}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Дата окончания</label>
+                        {{ form.end_date }}
+                    </div>
+                </div>
+
+                <div class="form-grid three">
+                    <div class="form-field">
+                        <label class="ui-label">Корпус</label>
+                        {{ form.building }}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Аудитория</label>
+                        {{ form.room }}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Примечание</label>
+                        {{ form.note }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-indigo" type="submit">Сохранить</button>
+                    <a class="btn btn-ghost" href="{% url 'moderation_schedules' %}">Отмена</a>
+                </div>
+            </form>
+        </section>
+    </section>
+{% endblock %}
