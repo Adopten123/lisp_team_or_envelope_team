@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('school_name', models.CharField(blank=True, max_length=255)),
                 ('graduation_year', models.PositiveSmallIntegerField(blank=True, null=True)),
                 ('linked_student', models.OneToOneField(blank=True, help_text='Связь после зачисления', null=True, on_delete=django.db.models.deletion.SET_NULL, to='main.student')),
-                ('person', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='applicant', to='main.person')),
+                ('person', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='applicant_rating', to='main.person')),
             ],
         ),
         migrations.CreateModel(
@@ -33,11 +33,11 @@ class Migration(migrations.Migration):
                 ('submitted_at', models.DateTimeField(auto_now_add=True)),
                 ('payload_json', models.JSONField(blank=True, default=dict)),
                 ('program', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='admission_applications', to='main.program')),
-                ('applicant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='main.applicant')),
+                ('applicant_rating', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='main.applicant_rating')),
             ],
             options={
                 'indexes': [models.Index(fields=['status', 'priority'], name='main_admiss_status_fed98f_idx')],
-                'unique_together': {('applicant', 'program')},
+                'unique_together': {('applicant_rating', 'program')},
             },
         ),
         migrations.CreateModel(
@@ -47,10 +47,10 @@ class Migration(migrations.Migration):
                 ('subject', models.CharField(max_length=128)),
                 ('exam_type', models.CharField(choices=[('ege', 'ЕГЭ'), ('internal', 'Внутренний'), ('other', 'Другое')], default='ege', max_length=16)),
                 ('score', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('applicant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='exams', to='main.applicant')),
+                ('applicant_rating', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='exams', to='main.applicant_rating')),
             ],
             options={
-                'unique_together': {('applicant', 'subject', 'exam_type')},
+                'unique_together': {('applicant_rating', 'subject', 'exam_type')},
             },
         ),
     ]
