@@ -1,0 +1,64 @@
+{% extends "main/index.html" %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/nl_paginator.css' %}">
+    <link rel="stylesheet" href="{% static 'css/indigo_buttons.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">🎓 Курсы (Teaching) — {{ current_university.short_name }}</h2>
+
+        <section class="user-card" style="margin-bottom:12px;">
+            <form method="get" class="filters" style="display:flex; gap:12px; flex-wrap:wrap;">
+                <input type="text"
+                       name="q"
+                       value="{{ q }}"
+                       placeholder="Поиск по ФИО/дисциплине/группе/году"
+                       class="action-card"
+                       style="padding:10px; border-radius:10px; min-width:300px;">
+                <button type="submit" class="btn btn-indigo">Искать</button>
+                <a href="{% url 'teaching_list' %}" class="btn btn-ghost" role="button">Сбросить</a>
+            </form>
+        </section>
+
+        <section class="notifications">
+            <div class="notifications-list">
+                {% for t in page_obj.object_list %}
+                    <div class="notification-item">
+                        <div class="notification-icon">📖</div>
+                        <div class="notification-content" style="flex:1;">
+                            <p class="notification-text">
+                                <strong>{{ t.curriculum.discipline.title }}</strong>
+                                · {{ t.teacher.person.last_name }} {{ t.teacher.person.first_name }}
+                                {% if t.group %} · группа {{ t.group.name }}{% else %} · поток{% endif %}
+                            </p>
+                            <span class="notification-time">
+              {{ t.academic_year }}, семестр: {{ t.get_semester_in_year_display }}
+            </span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <a class="btn btn-ghost" href="{% url 'teaching_edit' t.id %}">Редактировать</a>
+                            <form method="post"
+                                  action="{% url 'teaching_delete' t.id %}"
+                                  onsubmit="return confirm('Удалить курс и все зачисления?');">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" type="submit">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="notification-item">
+                        <div class="notification-icon">ℹ️</div>
+                        <div class="notification-content">
+                            <p class="notification-text">Нет курсов.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% include 'main/menu/paginator.html' %}
+        </section>
+    </section>
+{% endblock %}
