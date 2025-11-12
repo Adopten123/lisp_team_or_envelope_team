@@ -44,20 +44,25 @@ def max_auth_view(request):
             person = Person.objects.get(vk_user_id=vk_user_id)
             
         except Person.DoesNotExist:
-            # Создаем нового пользователя
-            user = User.objects.get_or_create(
-                first_name=first_name,
-                last_name=last_name,
-                username=vk_user_id,
-                password='none_password',
-                last_login=datetime.now()
+            user, user_created = User.objects.get_or_create( 
+                username=f"max_{vk_user_id}",
+                defaults={
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'password': 'none_password',
+                    'last_login': datetime.now()
+                }
             )
-            person = Person.objects.get_or_create(
-                user=user,
+            
+            # Создаем нового Person
+            person, person_created = Person.objects.get_or_create( 
                 vk_user_id=vk_user_id,
-                first_name=first_name,
-                last_name=last_name,
-                email="",
+                defaults={
+                    'user': user,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': "",
+                }
             )
         
         # Логиним пользователя
