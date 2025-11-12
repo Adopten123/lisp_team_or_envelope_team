@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.http import HttpResponse
 from django.utils import timezone
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.db.models import Q
 
-from main.models import Person, StudentRole, Student
+from main.models import Person, StudentRole, Student, GroupNotification
 
 from main.forms import HeadmanNotificationForm
 
@@ -23,23 +24,20 @@ def headman_group_news_view(request):
     if not is_headman:
         return HttpResponseForbidden("Только староста может отправлять оповещения.")
 
+    base_instance = GroupNotification(
+        university=student.university,
+        group=student.student_group,
+        sender=person,
+        created_at=timezone.now(),
+    )
     if request.method == "POST":
-        form = HeadmanNotificationForm(
-            request.POST,
-            university=student.university,
-            group=group,
-            sender=person,
-        )
+        form = HeadmanNotificationForm(request.POST, instance=base_instance)
         if form.is_valid():
             form.save()
             messages.success(request, "Оповещение отправлено группе.")
-            return redirect("headman_group_news")
+            return redirect('index')
     else:
-        form = HeadmanNotificationForm(
-            university=student.university,
-            group=group,
-            sender=person,
-        )
+        form = HeadmanNotificationForm(initial={"icon": "📰"})
 
     context = {
         "current_university": student.university,

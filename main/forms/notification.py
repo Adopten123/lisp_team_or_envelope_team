@@ -7,25 +7,21 @@ class HeadmanNotificationForm(forms.ModelForm):
         model = GroupNotification
         fields = ("icon", "text")
         widgets = {
-            "icon": forms.TextInput(attrs={"placeholder": "Напр. 📝", "class": "ui-input"}),
-            "text": forms.Textarea(attrs={"rows": 3, "placeholder": "Сообщение для группы...", "class": "ui-textarea"}),
+            "icon": forms.TextInput(
+                attrs={
+                    "class": "ui-input",
+                    "placeholder": "Например: 🔔",
+                    "maxlength": "4",
+                }
+            ),
+            "text": forms.Textarea(
+                attrs={
+                    "class": "ui-textarea",
+                    "placeholder": "Текст оповещения для группы...",
+                    "rows": 4,
+                }
+            ),
         }
-
-    def __init__(self, *args, **kwargs):
-        # ожидаем extra аргументы: university, group, sender
-        self.university = kwargs.pop("university")
-        self.group = kwargs.pop("group")
-        self.sender = kwargs.pop("sender")
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        obj = super().save(commit=False)
-        obj.university = self.university
-        obj.group = self.group
-        obj.sender = self.sender
-        if commit:
-            obj.save()
-        return obj
 
 
 class TeacherNotificationForm(forms.ModelForm):
