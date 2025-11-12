@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
-
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q, Prefetch
 
 from main.utils.permissions import is_moderator_min
+from main.utils.week import monday_of
 
 from main.forms import (
     TeacherCreateForm, ProgramCreateForm, FacultyCreateForm,
@@ -16,7 +17,8 @@ from main.forms import (
 from main.models import (
     Person, Teacher, University,
     Role, Faculty, Program,
-    Enrollment, Student
+    Enrollment, Student,
+    StudentGroup, ScheduleSlot, ScheduleException
 )
 
 
@@ -174,8 +176,78 @@ def moderation_university(request):
     return render(request, "main/moderation/moderation_university.html", context)
 
 def moderation_schedules(request):
-    return HttpResponse(f"Страница редактирования дисциплин")
+    import datetime as dt
+    user = Person.objects.filter(pk=5).first().user
 
+    if not is_moderator_min(user, 1):
+        return HttpResponseForbidden("Недостаточно прав")
+
+    current_university = _resolve_current_university(user)
+
+    group_id = request.GET.get("group")
+    group = get_object_or_404(StudentGroup, pk=group_id, university=current_university) if group_id else None
+
+    # неделя
+    week_param = request.GET.get("week")
+    try:
+        base_date = dt.datetime.strptime(week_param, "%Y-%m-%d").date() if week_param else timezone.localdate()
+    except Exception:
+        base_date = timezone.localdate()
+    week_start = monday_of(base_date)
+    week_days = [week_start + dt.timedelta(days=i) for i in range(7)]
+
+    # пустая неделя по умолчанию (важно: dict, не None)
+    week = {d: [] for d in week_days}
+
+    if group:
+        # выбираем слоты для группы: либо M2M groups, либо teaching.group
+        slots = (
+            ScheduleSlot.objects
+            .filter(university=current_university)
+            .filter(Q(groups=group) | Q(teaching__group=group))
+            .select_related(
+                "teaching",
+                "teaching__curriculum",
+                "teaching__curriculum__discipline",
+                "teaching__teacher",
+                "teaching__teacher__person",
+            )
+            .prefetch_related("groups", "exceptions")
+            .distinct()
+            .order_by("weekday", "start_time")
+        )
+
+        # заполняем неделю: слот входит в день, если applies_on_date вернул True
+        for slot in slots:
+            for day in week_days:
+                eff = slot.effective_for_date(day)  # учитывает диапазон дат, чётность, исключения
+                if not eff:
+                    continue
+                is_cancelled, start, end, bld, room, note, eff_date = eff
+                week[day].append({
+                    "slot": slot,
+                    "cancelled": bool(is_cancelled),
+                    "start": start,
+                    "end": end,
+                    "building": bld,
+                    "room": room,
+                    "note": note,
+                    "date": eff_date,
+                })
+
+        # можно отсортировать пары внутри дня по времени
+        for d in week_days:
+            week[d].sort(key=lambda x: (x["cancelled"], x["start"] or dt.time(0, 0)))
+
+    context = {
+        "current_university": current_university,
+        "groups": StudentGroup.objects.filter(university=current_university).order_by("name"),
+        "current_group": group,
+        "week_start": week_start,
+        "week_days": week_days,
+        "week": week,  # точно dict
+    }
+    return render(request, "main/moderation/moderation_schedules_home.html", context)
 def moderation_subjects(request):
     user = Person.objects.filter(pk=5).first().user
 
