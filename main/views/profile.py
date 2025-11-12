@@ -8,7 +8,7 @@ def profile_view(request):
     try:
         # Получаем объект Person, связанный с текущим пользователем
         person = request.user
-
+        """
         # Получаем роль пользователя для меню
         role_name = "Student"  # значение по умолчанию
         if person.role:
@@ -26,7 +26,14 @@ def profile_view(request):
             'applicant': applicant,
             'menu_buttons': get_menu_buttons(role_name),
         }
-
+        """
+        context = {
+            'person': person,
+            'student': None,
+            'teacher': None,
+            'applicant': None,
+            'menu_buttons': get_menu_buttons('Student'),
+        }
     except Exception as e:
         # Если объект Person не найден для текущего пользователя
         context = {
