@@ -26,26 +26,37 @@ class HeadmanNotificationForm(forms.ModelForm):
 
 class TeacherNotificationForm(forms.ModelForm):
     group = forms.ModelChoiceField(
-        label="Группа", queryset=StudentGroup.objects.none(),
-        widget=forms.Select(attrs={"class": "ui-select"})
+        queryset=StudentGroup.objects.none(),
+        label="Группа",
+        widget=forms.Select(attrs={"class": "ui-select"}),
     )
 
     class Meta:
         model = GroupNotification
-        fields = ("group", "icon", "text")
+        fields = ("icon", "group", "text")
         widgets = {
-            "icon": forms.TextInput(attrs={"placeholder": "Напр. 📅", "class": "ui-input"}),
-            "text": forms.Textarea(attrs={"rows": 3, "placeholder": "Сообщение для выбранной группы...", "class": "ui-textarea"}),
+            "icon": forms.TextInput(
+                attrs={
+                    "class": "ui-input",
+                    "placeholder": "Например: 📢",
+                    "maxlength": "4",
+                }
+            ),
+            "text": forms.Textarea(
+                attrs={
+                    "class": "ui-textarea",
+                    "placeholder": "Сообщение для выбранной группы...",
+                    "rows": 4,
+                }
+            ),
         }
 
     def __init__(self, *args, **kwargs):
-        teacher = kwargs.pop("teacher")
-        university = kwargs.pop("university")
+        university = kwargs.pop("university", None)
         super().__init__(*args, **kwargs)
-
-        # группы, которые ведёт преподаватель
-        qs = StudentGroup.objects.filter(
-            teachings__teacher=teacher,
-            university=university,
-        ).distinct().order_by("name")
-        self.fields["group"].queryset = qs
+        if university is not None:
+            self.fields["group"].queryset = StudentGroup.objects.filter(
+                university=university
+            )
+        else:
+            self.fields["group"].queryset = StudentGroup.objects.all()

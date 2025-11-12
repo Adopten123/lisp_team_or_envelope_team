@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from main.models import (
     Person, Teaching, ScheduleSlot,
-    TeacherRequest,
+    TeacherRequest, GroupNotification
 )
 from main.forms import (
     TeacherRequestCreateForm, TeacherNotificationForm
@@ -168,27 +168,39 @@ def teacher_request_form(request):
     return render(request, "main/requests/teacher_request_page.html", context)
 
 def teacher_make_alert_form(request):
-    user = Person.objects.filter(pk=2).first().user
-    person = getattr(user, "person", None)
-    if not person or not hasattr(person, "teacher"):
-        return HttpResponseForbidden("Доступно только преподавателям.")
+    person = Person.objects.filter(pk=2).first()
+    teacher = getattr(person, "teacher", None)
 
-    teacher = person.teacher
+    if not teacher:
+        return HttpResponseForbidden("Доступно только преподавателям")
+
     university = teacher.university
 
-    if request.method == "POST":
-        form = TeacherNotificationForm(request.POST, teacher=teacher, university=university)
-        if form.is_valid():
-            obj = form.save(commit=False)
-            obj.university = university
-            obj.sender = person
-            obj.save()
-            messages.success(request, "Оповещение отправлено выбранной группе.")
-            return redirect("teacher_make_alert")
-    else:
-        form = TeacherNotificationForm(teacher=teacher, university=university)
+    base_instance = GroupNotification(
+        university=teacher.university,
+        sender=teacher.person,
+    )
 
-    return render(request, "main/notifications/teacher_form.html", {
+    if request.method == "POST":
+        form = TeacherNotificationForm(
+            request.POST,
+            instance=base_instance,
+            university=teacher.university,
+        )
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Оповещение отправлено.")
+            return redirect('index')
+    else:
+        form = TeacherNotificationForm(
+            instance=base_instance,
+            university=teacher.university,
+            initial={"icon": "📢"},
+        )
+
+    context = {
         "current_university": university,
         "form": form,
-    })
+    }
+
+    return render(request, "main/notifications/teacher_form.html", context)
