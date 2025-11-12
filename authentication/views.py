@@ -62,8 +62,6 @@ def max_auth_view(request):
             person.first_name = first_name
             person.last_name = last_name
             person.save()
-        
-        last_login = person.last_login.isoformat if person.last_login else None
 
         return JsonResponse({
             'success': True,
@@ -73,7 +71,7 @@ def max_auth_view(request):
                 'last_name': person.last_name,
                 'email': person.email,
                 'vk_user_id': person.vk_user_id,
-                'last_login': last_login
+                'last_login': str(person.last_login)
             },
             'message': 'Authorization successful'
         })
