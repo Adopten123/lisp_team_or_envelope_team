@@ -127,7 +127,7 @@ def moderation_curriculum_list(request):
         "q": q,
     }
 
-    return render(request, "main/moderation/subjects_curriculum_list.html", context)
+    return render(request, "main/moderation/moderation_subjects_curriculum_list.html", context)
 
 
 def moderation_curriculum_edit(request, pk: int):
