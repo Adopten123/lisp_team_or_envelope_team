@@ -49,6 +49,7 @@ class Person(models.Model):
     vk_user_id = models.CharField(
         "VK/Max user id", max_length=64, blank=True, db_index=True
     )
+    last_login = models.DateTimeField("Последний вход", null=True, blank=True)
 
     class Meta:
         indexes = [models.Index(fields=["vk_user_id"])]
