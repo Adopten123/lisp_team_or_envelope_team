@@ -21,7 +21,7 @@
                     {% if person.first_name and person.last_name %}
                         {{ person.first_name|first }}{{ person.last_name|first }}
                     {% else %}
-                        👤
+                        👤 
                     {% endif %}
                 </div>
                 <div class="profile-info">
@@ -46,7 +46,7 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="info-label">Имя пользователя:</span>
-                            <span class="info-value">{{ person.user.username }}</span>
+                            <span class="info-value">{{ person.username }}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Email:</span>
