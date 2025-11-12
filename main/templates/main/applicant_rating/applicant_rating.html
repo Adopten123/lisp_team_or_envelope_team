@@ -1,0 +1,177 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/applicant_rating.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="applicant-rating-page">
+    <div class="applicant-rating-container">
+        <div class="applicant-rating-header">
+            <h1>🏆 Рейтинг абитуриентов</h1>
+            <p>Текущий рейтинг по результатам вступительных испытаний</p>
+        </div>
+
+        {% if messages %}
+        <div class="applicant-rating-messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Кнопка генерации тестовых данных -->
+        {% if not ranked_applicants %}
+        <div class="test-data-section">
+            <div class="test-data-card">
+                <h3>📊 Нет данных для отображения</h3>
+                <p>Хотите создать тестовых абитуриентов для демонстрации работы рейтинга?</p>
+                <a href="{% url 'generate_test_applicants' %}" class="submit-btn">
+                    🎲 Создать тестовые данные
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if ranked_applicants %}
+        <!-- Статистика -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ total_applicants }}</span>
+                        <span class="stat-label">Абитуриентов</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ exam_stats.avg_score|floatformat:1 }}</span>
+                        <span class="stat-label">Средний балл</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ ranked_applicants.0.total_score|floatformat:1 }}</span>
+                        <span class="stat-label">Максимальный балл</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Полная таблица рейтинга -->
+        <div class="rating-table-section">
+            <h2>📋 Полный рейтинг</h2>
+
+            <div class="table-container">
+                <table class="rating-table">
+                    <thead>
+                        <tr>
+                            <th class="position-col">Место</th>
+                            <th class="name-col">Абитуриент</th>
+                            <th class="exams-col">Экзамены</th>
+                            <th class="score-col">Общий балл</th>
+                            <th class="status-col">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in ranked_applicants %}
+                        <tr class="applicant-row {% if item.position <= 3 %}top-applicant{% endif %}">
+                            <td class="position-cell">
+                                <div class="position-badge {% if item.position == 1 %}first-badge{% elif item.position == 2 %}second-badge{% elif item.position == 3 %}third-badge{% else %}normal-badge{% endif %}">
+                                    {% if item.position <= 3 %}
+                                        {{ item.position }}
+                                    {% else %}
+                                        #{{ item.position }}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="name-cell">
+                                <div class="applicant-info">
+                                    <div class="applicant-name">
+                                        {{ item.applicant.person.last_name }} {{ item.applicant.person.first_name }} {{ item.applicant.person.middle_name }}
+                                    </div>
+                                    <div class="applicant-details">
+                                        <span class="detail-item">📧 {{ item.applicant.person.email|default:"Email не указан" }}</span>
+                                        {% if item.applicant.school_name %}
+                                        <span class="detail-item">🎓 {{ item.applicant.school_name }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="exams-cell">
+                                <div class="exams-list">
+                                    {% for exam in item.exams %}
+                                    <div class="exam-item">
+                                        <span class="exam-subject">{{ exam.subject }}</span>
+                                        <span class="exam-type">
+                                            {% if exam.exam_type == "USE" %}
+                                                (ЕГЭ)
+                                            {% elif exam.exam_type == "internal" %}
+                                                (внутр.)
+                                            {% else %}
+                                                (др.)
+                                            {% endif %}
+                                        </span>
+                                        <span class="exam-score">{{ exam.score }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="score-cell">
+                                <div class="total-score">
+                                    {{ item.total_score|floatformat:1 }}
+                                </div>
+                            </td>
+                            <td class="status-cell">
+                                <span class="status-badge
+                                    {% if item.total_score >= 250 %}status-excellent
+                                    {% elif item.total_score >= 200 %}status-good
+                                    {% elif item.total_score >= 150 %}status-average
+                                    {% else %}status-poor
+                                    {% endif %}">
+                                    {% if item.total_score >= 250 %}Высокий
+                                    {% elif item.total_score >= 200 %}Хороший
+                                    {% elif item.total_score >= 150 %}Средний
+                                    {% else %}Низкий
+                                    {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Легенда -->
+        <div class="legend-section">
+            <h3>📖 Легенда статусов</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-color status-excellent"></span>
+                    <span>Высокий (250+ баллов)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color status-good"></span>
+                    <span>Хороший (200-249 баллов)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color status-average"></span>
+                    <span>Средний (150-199 баллов)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color status-poor"></span>
+                    <span>Низкий (до 149 баллов)</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
