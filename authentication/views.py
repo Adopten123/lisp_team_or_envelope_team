@@ -6,7 +6,7 @@ from django.middleware.csrf import get_token
 from django.contrib.auth import login
 from main.models import Person
 from django.contrib.auth.models import User
-from time import timezone
+from datetime import datetime
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -50,7 +50,7 @@ def max_auth_view(request):
                 last_name=last_name,
                 username=vk_user_id,
                 password='none_password',
-                last_login=timezone.now()
+                last_login=datetime.now()
             )
             person = Person.objects.create_user(
                 user=user,
