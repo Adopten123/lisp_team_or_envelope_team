@@ -1,0 +1,168 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/help_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="help-page">
+    <div class="help-container">
+        <div class="help-header">
+            <h1>📞 Центр поддержки</h1>
+            <p>Заполните форму ниже, и мы поможем решить вашу проблему</p>
+        </div>
+
+        {% if messages %}
+        <div class="help-messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="help-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3>📋 Основная информация</h3>
+                
+                <div class="form-group">
+                    <label for="id_category" class="form-label">
+                        Категория проблемы *
+                    </label>
+                    <select id="id_category" name="category" class="form-select" required>
+                        <option value="">Выберите категорию</option>
+                        <option value="technical" {% if form.category.value == "technical" %}selected{% endif %}>
+                            Техническая проблема
+                        </option>
+                        <option value="study" {% if form.category.value == "study" %}selected{% endif %}>
+                            Учебные вопросы
+                        </option>
+                        <option value="schedule" {% if form.category.value == "schedule" %}selected{% endif %}>
+                            Проблемы с расписанием
+                        </option>
+                        <option value="profile" {% if form.category.value == "profile" %}selected{% endif %}>
+                            Проблемы с профилем
+                        </option>
+                        <option value="other" {% if form.category.value == "other" %}selected{% endif %}>
+                            Другое
+                        </option>
+                    </select>
+                    {% if form.category.errors %}
+                    <div class="error-list">
+                        {% for error in form.category.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_email" class="form-label">
+                        Email для обратной связи *
+                    </label>
+                    <input type="email" id="id_email" name="email" 
+                           class="form-input" 
+                           value="{{ form.email.value|default:'' }}"
+                           placeholder="your@email.com" required>
+                    {% if form.email.errors %}
+                    <div class="error-list">
+                        {% for error in form.email.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>📝 Описание проблемы</h3>
+                
+                <div class="form-group">
+                    <label for="id_subject" class="form-label">
+                        Тема обращения *
+                    </label>
+                    <input type="text" id="id_subject" name="subject" 
+                           class="form-input" 
+                           value="{{ form.subject.value|default:'' }}"
+                           placeholder="Кратко опишите проблему" required>
+                    {% if form.subject.errors %}
+                    <div class="error-list">
+                        {% for error in form.subject.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_description" class="form-label">
+                        Подробное описание *
+                    </label>
+                    <textarea id="id_description" name="description" 
+                              class="form-textarea" 
+                              placeholder="Опишите проблему подробно..." 
+                              rows="6" required>{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                    <div class="error-list">
+                        {% for error in form.description.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>⚡ Дополнительные параметры</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Приоритет *</label>
+                    <div class="priority-options">
+                        <label class="priority-option">
+                            <input type="radio" name="priority" value="low" 
+                                   {% if form.priority.value == "low" %}checked{% endif %}>
+                            <span class="priority-label low">Низкий</span>
+                        </label>
+                        <label class="priority-option">
+                            <input type="radio" name="priority" value="medium" 
+                                   {% if not form.priority.value or form.priority.value == "medium" %}checked{% endif %}>
+                            <span class="priority-label medium">Средний</span>
+                        </label>
+                        <label class="priority-option">
+                            <input type="radio" name="priority" value="high" 
+                                   {% if form.priority.value == "high" %}checked{% endif %}>
+                            <span class="priority-label high">Высокий</span>
+                        </label>
+                    </div>
+                    {% if form.priority.errors %}
+                    <div class="error-list">
+                        {% for error in form.priority.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="is_urgent" 
+                               {% if form.is_urgent.value %}checked{% endif %}>
+                        <span class="checkmark"></span>
+                        Срочная проблема (ответ в течение 2 часов)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    📨 Отправить запрос
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
