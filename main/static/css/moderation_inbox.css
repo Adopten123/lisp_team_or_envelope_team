@@ -1,0 +1,115 @@
+.mod-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mod-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+}
+
+.mod-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.mod-icon {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    height: 50px;
+}
+
+.mod-info h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.mod-author {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 4px 0;
+}
+
+.mod-note {
+    background: rgba(102, 126, 234, 0.1);
+    border-left: 3px solid #667eea;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    margin: 4px 0;
+}
+
+.mod-date {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+/* 🔽 блок кнопок теперь ВЕРТИКАЛЬНЫЙ */
+.mod-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.mod-actions button {
+    width: 85%;
+    max-width: 260px;
+    height: 42px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+/* основные стили кнопок */
+.btn-ghost {
+    background: #fff;
+    border: 2px solid #667eea;
+    color: #4f46e5;
+}
+
+.btn-indigo {
+    background: #667eea;
+    color: #fff;
+    border: none;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+}
+
+.btn-success {
+    background: #16a34a;
+    color: #fff;
+    border: none;
+}
+
+.btn-ghost:hover,
+.btn-indigo:hover,
+.btn-danger:hover,
+.btn-success:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}

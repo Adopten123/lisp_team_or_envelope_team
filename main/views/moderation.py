@@ -1,24 +1,27 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q, Prefetch
+from django.urls import reverse
 
 from main.utils.permissions import is_moderator_min
 from main.utils.week import monday_of
 
 from main.forms import (
     TeacherCreateForm, ProgramCreateForm, FacultyCreateForm,
-    DisciplineCreateForm, CurriculumCreateForm, TeachingCreateForm
+    DisciplineCreateForm, CurriculumCreateForm, TeachingCreateForm,
+    ModerationActionForm, FilterForm, STUDENT_ACTIONS, TEACHER_ACTIONS
 )
 
 from main.models import (
     Person, Teacher, University,
     Role, Faculty, Program,
     Enrollment, Student,
-    StudentGroup, ScheduleSlot, ScheduleException
+    StudentGroup, ScheduleSlot, ScheduleException,
+    StudentRequest, TeacherRequest,
 )
 
 
@@ -308,7 +311,158 @@ def moderation_subjects(request):
     return render(request, "main/moderation/moderation_subjects.html", context)
 
 def moderation_requests(request):
-    return HttpResponse("Страница обработки справок")
+    STUDENT_ALLOWED = {"in_progress", "approved", "rejected", "issued"}
+    TEACHER_ALLOWED = {"in_review", "approved", "rejected", "issued"}
+    user = Person.objects.filter(pk=5).first().user
+
+    if not is_moderator_min(user, 2):
+        return HttpResponseForbidden("Недостаточно прав")
+
+    current_university = _resolve_current_university(user)
+
+    if request.method == "POST" and "obj_id" in request.POST:
+        form = ModerationActionForm(request.POST)
+        if not form.is_valid():
+            return HttpResponseBadRequest("Неверные данные")
+        model = form.cleaned_data["model"]
+        obj_id = form.cleaned_data["obj_id"]
+        new_status = form.cleaned_data["new_status"]
+
+        if model == "student":
+            if new_status not in STUDENT_ALLOWED:
+                return HttpResponseBadRequest("Недопустимый статус")
+            obj = StudentRequest.objects.filter(id=obj_id, university=current_university).first()
+            if not obj:
+                return HttpResponseBadRequest("Заявка не найдена")
+            obj.status = new_status
+            obj.save(update_fields=["status", "updated_at"])
+        elif model == "teacher":
+            if new_status not in TEACHER_ALLOWED:
+                return HttpResponseBadRequest("Недопустимый статус")
+            obj = TeacherRequest.objects.filter(id=obj_id, university=current_university).first()
+            if not obj:
+                return HttpResponseBadRequest("Заявка не найдена")
+            obj.status = new_status
+            obj.save(update_fields=["status", "updated_at"])
+        return redirect(reverse("moderation_requests"))
+
+        # --- Фильтры (GET) ---
+    f = FilterForm(request.GET or None)
+
+    # Базовые запросы
+    s_qs = StudentRequest.objects.filter(university=current_university)
+    t_qs = TeacherRequest.objects.filter(university=current_university)
+
+    # Применяем фильтры
+    source = f.data.get("source") or ""
+    req_type = f.data.get("req_type") or ""
+    status = f.data.get("status") or ""
+    q = (f.data.get("q") or "").strip()
+    date_from = f.data.get("date_from") or ""
+    date_to = f.data.get("date_to") or ""
+
+    # Источник
+    show_student = source in ("", "student")
+    show_teacher = source in ("", "teacher")
+
+    def apply_common_filters(qs, type_field="type", status_field="status", json_note_field="payload_json__note"):
+        if req_type:
+            qs = qs.filter(**{type_field: req_type})
+        if status:
+            qs = qs.filter(**{status_field: status})
+        if q:
+            qs = qs.filter(
+                Q(**{f"{type_field}__icontains": q}) |
+                Q(**{f"{status_field}__icontains": q}) |
+                Q(**{f"{json_note_field}__icontains": q})
+            )
+        if date_from:
+            qs = qs.filter(created_at__date__gte=date_from)
+        if date_to:
+            qs = qs.filter(created_at__date__lte=date_to)
+        return qs
+
+    if show_student:
+        s_qs = apply_common_filters(s_qs)
+    else:
+        s_qs = s_qs.none()
+
+    if show_teacher:
+        t_qs = apply_common_filters(t_qs)
+    else:
+        t_qs = t_qs.none()
+
+    items = []
+    for r in s_qs.select_related("student__person").order_by("-created_at"):
+        items.append({
+            "model": "student",
+            "id": r.id,
+            "created_at": r.created_at,
+            "type": r.get_type_display(),
+            "type_value": r.type,
+            "status": r.status,
+            "status_display": r.get_status_display(),
+            "who": str(r.student.person),
+            "note": (r.payload_json or {}).get("note"),
+        })
+    for r in t_qs.select_related("teacher__person").order_by("-created_at"):
+        items.append({
+            "model": "teacher",
+            "id": r.id,
+            "created_at": r.created_at,
+            "type": r.get_type_display(),
+            "type_value": r.type,
+            "status": r.status,
+            "status_display": r.get_status_display(),
+            "who": str(r.teacher.person),
+            "note": (r.payload_json or {}).get("note"),
+        })
+
+    items.sort(key=lambda x: x["created_at"], reverse=True)
+
+    paginator = Paginator(items, 12)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    type_choices_union = [
+        # StudentRequest
+        *StudentRequest.TYPE_CHOICES,
+        # TeacherRequest
+        *TeacherRequest.TYPE_CHOICES,
+    ]
+
+    seen = set()
+    type_choices = []
+    for v, l in type_choices_union:
+        if v not in seen:
+            seen.add(v)
+            type_choices.append((v, l))
+
+    status_choices_union = [
+        *StudentRequest.STATUS_CHOICES,
+        *TeacherRequest.STATUS,
+    ]
+    seen = set()
+    status_choices = []
+    for v, l in status_choices_union:
+        if v not in seen:
+            seen.add(v)
+            status_choices.append((v, l))
+
+    context = {
+        "current_university": current_university,
+        "page_obj": page_obj,
+        "type_choices": type_choices,
+        "status_choices": status_choices,
+        "source": source,
+        "req_type": req_type,
+        "status": status,
+        "q": q,
+        "date_from": date_from,
+        "date_to": date_to,
+        "STUDENT_ACTIONS": dict(STUDENT_ACTIONS),
+        "TEACHER_ACTIONS": dict(TEACHER_ACTIONS),
+    }
+    return render(request, "main/moderation/moderation_request_page.html", context)
 
 def moderation_acts(request):
     return HttpResponse(f"Страница редактирования актов университета")
