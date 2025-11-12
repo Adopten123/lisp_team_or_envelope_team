@@ -677,3 +677,34 @@ class HelpRequest(models.Model):
     class Meta:
         verbose_name = "Обращение в поддержку"
         verbose_name_plural = "Обращения в поддержку"
+
+
+class ApplicationRequest(models.Model):
+    STUDY_FORM_CHOICES = [
+        ('full_time', 'Очная'),
+        ('part_time', 'Очно-заочная'),
+        ('extramural', 'Заочная'),
+    ]
+
+    last_name = models.CharField("Фамилия", max_length=128)
+    first_name = models.CharField("Имя", max_length=128)
+    middle_name = models.CharField("Отчество", max_length=128, blank=True)
+    email = models.EmailField("Email")
+    phone = models.CharField("Телефон", max_length=20)
+    desired_program = models.CharField("Желаемая программа", max_length=255)
+    study_form = models.CharField("Форма обучения", max_length=20, choices=STUDY_FORM_CHOICES, default='full_time')
+    previous_education = models.CharField("Предыдущее образование", max_length=255, blank=True)
+    comments = models.TextField("Комментарии", blank=True)
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[('new', 'Новое'), ('review', 'На рассмотрении'), ('accepted', 'Принято'), ('rejected', 'Отклонено')],
+        default='new'
+    )
+
+    def __str__(self):
+        return f"{self.last_name} {self.first_name} - {self.desired_program}"
+
+    class Meta:
+        verbose_name = "Заявление на поступление"
+        verbose_name_plural = "Заявления на поступление"

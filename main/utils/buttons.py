@@ -51,7 +51,7 @@ buttons = [
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
     {
-        "id": "applicant_admission_request",
+        "id": "admission_request_page",
         "icon": "🗳️",
         "text": "Подать заявление на поступление",
         "data_action": "admission_request",

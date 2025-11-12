@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db.models import Q, F
 from django.utils import timezone
 from django.utils.html import format_html
+from .models import ApplicationRequest
 
 from .models import (
     Person, Teacher, StudentGroup, Student,
@@ -470,3 +471,23 @@ class ScheduleExceptionAdmin(admin.ModelAdmin):
     @admin.display(description="Преподаватель", ordering="slot__teaching__teacher__person__last_name")
     def slot_teacher(self, obj: ScheduleException):
         return str(obj.slot.teaching.teacher.person)
+
+
+@admin.register(ApplicationRequest)
+class ApplicationRequestAdmin(admin.ModelAdmin):
+    list_display = ['last_name', 'first_name', 'email', 'desired_program', 'study_form', 'status', 'created_at']
+    list_filter = ['study_form', 'status', 'created_at']
+    search_fields = ['last_name', 'first_name', 'email', 'desired_program']
+    readonly_fields = ['created_at']
+
+    fieldsets = (
+        ('Личные данные', {
+            'fields': ('last_name', 'first_name', 'middle_name', 'email', 'phone')
+        }),
+        ('Информация о поступлении', {
+            'fields': ('desired_program', 'study_form', 'previous_education', 'comments')
+        }),
+        ('Системная информация', {
+            'fields': ('status', 'created_at')
+        }),
+    )

@@ -27,6 +27,8 @@ from .in_process import acts_view, news_moderation, group_news_moderation, stude
 from .profile import profile_view
 
 from .help import help_page
+
+from .admission_request import admission_request_page
 """
 Полезные импорты
 

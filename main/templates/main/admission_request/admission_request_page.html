@@ -1,0 +1,146 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/admission_request.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admission-request-page">
+    <div class="admission-request-container">
+        <div class="admission-request-header">
+            <h1>🗳️ Подать заявление на поступление</h1>
+            <p>Заполните форму ниже, чтобы подать заявление на поступление в университет</p>
+        </div>
+
+        {% if messages %}
+        <div class="admission-request-messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="admission-request-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3>👤 Личные данные</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_last_name" class="form-label">Фамилия *</label>
+                        <input type="text" id="id_last_name" name="last_name" class="form-input" 
+                               value="{{ form.last_name.value|default:'' }}" required>
+                        {% if form.last_name.errors %}
+                        <div class="error-list">
+                            {% for error in form.last_name.errors %}
+                            <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_first_name" class="form-label">Имя *</label>
+                        <input type="text" id="id_first_name" name="first_name" class="form-input" 
+                               value="{{ form.first_name.value|default:'' }}" required>
+                        {% if form.first_name.errors %}
+                        <div class="error-list">
+                            {% for error in form.first_name.errors %}
+                            <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_middle_name" class="form-label">Отчество</label>
+                        <input type="text" id="id_middle_name" name="middle_name" class="form-input" 
+                               value="{{ form.middle_name.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_email" class="form-label">Email *</label>
+                        <input type="email" id="id_email" name="email" class="form-input" 
+                               value="{{ form.email.value|default:'' }}" required>
+                        {% if form.email.errors %}
+                        <div class="error-list">
+                            {% for error in form.email.errors %}
+                            <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_phone" class="form-label">Телефон *</label>
+                        <input type="text" id="id_phone" name="phone" class="form-input" 
+                               value="{{ form.phone.value|default:'' }}" required>
+                        {% if form.phone.errors %}
+                        <div class="error-list">
+                            {% for error in form.phone.errors %}
+                            <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>🎓 Информация о поступлении</h3>
+                
+                <div class="form-group">
+                    <label for="id_desired_program" class="form-label">Желаемая программа *</label>
+                    <input type="text" id="id_desired_program" name="desired_program" class="form-input" 
+                           value="{{ form.desired_program.value|default:'' }}" required>
+                    {% if form.desired_program.errors %}
+                    <div class="error-list">
+                        {% for error in form.desired_program.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_study_form" class="form-label">Форма обучения *</label>
+                    <select id="id_study_form" name="study_form" class="form-select" required>
+                        <option value="">Выберите форму обучения</option>
+                        <option value="full_time" {% if form.study_form.value == "full_time" %}selected{% endif %}>Очная</option>
+                        <option value="part_time" {% if form.study_form.value == "part_time" %}selected{% endif %}>Очно-заочная</option>
+                        <option value="extramural" {% if form.study_form.value == "extramural" %}selected{% endif %}>Заочная</option>
+                    </select>
+                    {% if form.study_form.errors %}
+                    <div class="error-list">
+                        {% for error in form.study_form.errors %}
+                        <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_previous_education" class="form-label">Предыдущее образование</label>
+                    <textarea id="id_previous_education" name="previous_education" 
+                              class="form-textarea" rows="3">{{ form.previous_education.value|default:'' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_comments" class="form-label">Комментарии</label>
+                    <textarea id="id_comments" name="comments" 
+                              class="form-textarea" rows="5">{{ form.comments.value|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    📨 Отправить заявление
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
