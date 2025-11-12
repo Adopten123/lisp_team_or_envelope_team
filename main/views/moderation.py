@@ -1,21 +1,30 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
+from django.utils import timezone
+from django.db import transaction
 from django.db.models import Q, Prefetch
 
 from main.utils.permissions import is_moderator_min
-from main.forms import TeacherCreateForm, ProgramCreateForm, FacultyCreateForm
-from main.models import Person, Teacher, University, Role, Faculty, Program
+from main.utils.week import monday_of
+
+from main.forms import (
+    TeacherCreateForm, ProgramCreateForm, FacultyCreateForm,
+    DisciplineCreateForm, CurriculumCreateForm, TeachingCreateForm
+)
+
+from main.models import (
+    Person, Teacher, University,
+    Role, Faculty, Program,
+    Enrollment, Student,
+    StudentGroup, ScheduleSlot, ScheduleException
+)
 
 
 def _resolve_current_university(user):
     """
-    Простейшая стратегия, чтобы взять «текущий университет» модератора:
-    - если у Person есть teacher -> его university
-    - иначе если есть student -> его university
-    - иначе первый в базе (fallback)
-    При желании замени на свой механизм (например, хранить в сессии).
+    Простейшая функция, чтобы получить университет модератора:
     """
     person = getattr(user, "person", None)
     if person:
@@ -156,19 +165,166 @@ def moderation_university(request):
         .order_by("name")
     )
 
-    return render(request, "main/moderation/moderation_university.html", {
+    context = {
         "current_university": current_uni,
         "faculties": faculties,
         "can_create_faculty": can_create_faculty,
         "faculty_form": faculty_form,
         "program_form": program_form,
-    })
+    }
+
+    return render(request, "main/moderation/moderation_university.html", context)
 
 def moderation_schedules(request):
-    return HttpResponse(f"Страница редактирования расписания групп")
+    import datetime as dt
+    user = Person.objects.filter(pk=5).first().user
 
+    if not is_moderator_min(user, 1):
+        return HttpResponseForbidden("Недостаточно прав")
+
+    current_university = _resolve_current_university(user)
+
+    group_id = request.GET.get("group")
+    group = get_object_or_404(StudentGroup, pk=group_id, university=current_university) if group_id else None
+
+    # неделя
+    week_param = request.GET.get("week")
+    try:
+        base_date = dt.datetime.strptime(week_param, "%Y-%m-%d").date() if week_param else timezone.localdate()
+    except Exception:
+        base_date = timezone.localdate()
+    week_start = monday_of(base_date)
+    week_days = [week_start + dt.timedelta(days=i) for i in range(7)]
+
+    # пустая неделя по умолчанию (важно: dict, не None)
+    week = {d: [] for d in week_days}
+
+    if group:
+        # выбираем слоты для группы: либо M2M groups, либо teaching.group
+        slots = (
+            ScheduleSlot.objects
+            .filter(university=current_university)
+            .filter(Q(groups=group) | Q(teaching__group=group))
+            .select_related(
+                "teaching",
+                "teaching__curriculum",
+                "teaching__curriculum__discipline",
+                "teaching__teacher",
+                "teaching__teacher__person",
+            )
+            .prefetch_related("groups", "exceptions")
+            .distinct()
+            .order_by("weekday", "start_time")
+        )
+
+        # заполняем неделю: слот входит в день, если applies_on_date вернул True
+        for slot in slots:
+            for day in week_days:
+                eff = slot.effective_for_date(day)  # учитывает диапазон дат, чётность, исключения
+                if not eff:
+                    continue
+                is_cancelled, start, end, bld, room, note, eff_date = eff
+                week[day].append({
+                    "slot": slot,
+                    "cancelled": bool(is_cancelled),
+                    "start": start,
+                    "end": end,
+                    "building": bld,
+                    "room": room,
+                    "note": note,
+                    "date": eff_date,
+                })
+
+        # можно отсортировать пары внутри дня по времени
+        for d in week_days:
+            week[d].sort(key=lambda x: (x["cancelled"], x["start"] or dt.time(0, 0)))
+
+    context = {
+        "current_university": current_university,
+        "groups": StudentGroup.objects.filter(university=current_university).order_by("name"),
+        "current_group": group,
+        "week_start": week_start,
+        "week_days": week_days,
+        "week": week,  # точно dict
+    }
+    return render(request, "main/moderation/moderation_schedules_home.html", context)
 def moderation_subjects(request):
-    return HttpResponse(f"Страница редактирования дисциплин")
+    user = Person.objects.filter(pk=5).first().user
+
+    if not is_moderator_min(user, 2):
+        return HttpResponseForbidden("Недостаточно прав")
+
+    current_uni = _resolve_current_university(user)
+    if not current_uni:
+        messages.error(request, "Нет университета для управления.")
+        return render(request, "main/moderation/moderation_subjects.html", {
+            "current_university": None,
+            "discipline_form": None,
+            "curriculum_form": None,
+            "teaching_form": None,
+        })
+
+    discipline_form = DisciplineCreateForm()
+    curriculum_form = CurriculumCreateForm(university=current_uni)
+    teaching_form = TeachingCreateForm(university=current_uni)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "create_discipline":
+            discipline_form = DisciplineCreateForm(request.POST)
+            if discipline_form.is_valid():
+                discipline_form.save()
+                messages.success(request, "Дисциплина создана.")
+                return redirect("moderation_subjects")
+            else:
+                messages.error(request, "Проверьте данные дисциплины.")
+
+        elif action == "create_curriculum":
+            curriculum_form = CurriculumCreateForm(request.POST, university=current_uni)
+            if curriculum_form.is_valid():
+                curriculum_form.save()
+                messages.success(request, "Строка учебного плана создана.")
+                return redirect("moderation_subjects")
+            else:
+                messages.error(request, "Проверьте данные учебного плана.")
+
+        elif action == "create_teaching":
+            teaching_form = TeachingCreateForm(request.POST, university=current_uni)
+            if teaching_form.is_valid():
+                with transaction.atomic():
+                    teaching = teaching_form.save()
+                    # Если указана группа — создаём Enrollment всем студентам этой группы
+                    group = teaching.group
+                    if group:
+                        students = Student.objects.filter(student_group=group)
+                        created_count = 0
+                        for st in students:
+                            _, created = Enrollment.objects.get_or_create(
+                                student=st, teaching=teaching
+                            )
+                            if created:
+                                created_count += 1
+                        messages.success(
+                            request,
+                            f"Teaching создан. Создано зачислений: {created_count}."
+                        )
+                    else:
+                        messages.success(request, "Teaching создан (без группы/потока).")
+                return redirect("moderation_subjects")
+            else:
+                messages.error(request, "Проверьте данные проведения курса.")
+
+        else:
+            messages.error(request, "Неизвестное действие.")
+
+    context = {
+        "current_university": current_uni,
+        "discipline_form": discipline_form,
+        "curriculum_form": curriculum_form,
+        "teaching_form": teaching_form,
+    }
+    return render(request, "main/moderation/moderation_subjects.html", context)
 
 def moderation_requests(request):
     return HttpResponse("Страница обработки справок")

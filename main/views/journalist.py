@@ -29,4 +29,3 @@ def journalist_news_view(request):
 
     except Person.DoesNotExist:
         pass
-

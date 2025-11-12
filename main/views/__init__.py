@@ -29,6 +29,17 @@ from .profile import profile_view
 from .help import help_page
 
 from .admission_request import admission_request_page
+from .moderation_subject import (
+    moderation_disciplines_list, moderation_discipline_edit, moderation_discipline_delete,
+    moderation_curriculum_list, moderation_curriculum_edit, moderation_curriculum_delete,
+    moderation_teaching_list, moderation_teaching_edit, moderation_teaching_delete,
+)
+
+from .moderation_schedule import (
+    moderation_schedule_slot_create,
+    moderation_schedule_exception_create,
+)
+
 """
 Полезные импорты
 

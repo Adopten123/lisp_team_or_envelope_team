@@ -1,0 +1,67 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">✏️ Редактирование курса</h2>
+
+        <section class="user-card">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-row two">
+                    <div class="form-field">
+                        <label class="ui-label">Преподаватель</label>
+                        {{ form.teacher }}
+                        {% if form.teacher.errors %}
+                            <div class="ui-error">{{ form.teacher.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Учебный план (Curriculum)</label>
+                        {{ form.curriculum }}
+                        {% if form.curriculum.errors %}
+                            <div class="ui-error">{{ form.curriculum.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row two">
+                    <div class="form-field">
+                        <label class="ui-label">Группа</label>
+                        {{ form.group }}
+                        {% if form.group.errors %}
+                            <div class="ui-error">{{ form.group.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Семестр в году</label>
+                        {{ form.semester_in_year }}
+                        {% if form.semester_in_year.errors %}
+                            <div class="ui-error">{{ form.semester_in_year.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="ui-label">Учебный год</label>
+                        {{ form.academic_year }}
+                        {% if form.academic_year.errors %}
+                            <div class="ui-error">{{ form.academic_year.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-indigo" type="submit">Сохранить</button>
+                    <a class="btn btn-ghost" href="{% url 'teaching_list' %}">Отмена</a>
+                </div>
+            </form>
+        </section>
+    </section>
+{% endblock %}
