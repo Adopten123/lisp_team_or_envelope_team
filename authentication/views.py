@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.middleware.csrf import get_token
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from main.models import Person
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -65,8 +65,10 @@ def max_auth_view(request):
                 }
             )
         
+        user_authenticate = authenticate(request, username=f"max_{vk_user_id}", password = 'none_password')
+
         # Логиним пользователя
-        login(request, person.user)
+        login(request, user_authenticate)
 
         # Обновляем данные пользователя, если они изменились
         if person.first_name != person.user.first_name or person.last_name != person.user.last_name:
