@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.humanize",
-    'csp',
+    # 'csp',
     'main',
     'authentication',
 ]
@@ -50,31 +50,31 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'csp.middleware.CSPMiddleware',
+    # 'csp.middleware.CSPMiddleware',
 ]
 
 # Настройки CSP
-CSP_DEFAULT_SRC = ["'self'"]
-CSP_SCRIPT_SRC = [
-    "'self'", 
-    "https://st.max.ru",
-    "'unsafe-inline'"  # Add this if the script uses inline scripts
-]
-CSP_CONNECT_SRC = [
-    "'self'",
-    "https://st.max.ru"  # Add this if the script makes API calls
-]
-CSP_FRAME_SRC = [
-    "'self'",
-    "https://st.max.ru"  # Add this if it uses iframes
-]
-CSP_FRAME_ANCESTORS = [
-    "'self'", 
-    "https://st.max.ru", 
-    "https://maxcampus.ru"
-]
-CSP_OBJECT_SRC = ["'none'"]
-CSP_BASE_URI = ["'self'"]
+# CSP_DEFAULT_SRC = ["'self'"]
+# CSP_SCRIPT_SRC = [
+#     "'self'",
+#     "https://st.max.ru",
+#     "'unsafe-inline'"  # Add this if the script uses inline scripts
+# ]
+# CSP_CONNECT_SRC = [
+#     "'self'",
+#     "https://st.max.ru"  # Add this if the script makes API calls
+# ]
+# CSP_FRAME_SRC = [
+#     "'self'",
+#     "https://st.max.ru"  # Add this if it uses iframes
+# ]
+# CSP_FRAME_ANCESTORS = [
+#     "'self'",
+#     "https://st.max.ru",
+#     "https://maxcampus.ru"
+# ]
+# CSP_OBJECT_SRC = ["'none'"]
+# CSP_BASE_URI = ["'self'"]
 
 ROOT_URLCONF = 'max.urls'
 
