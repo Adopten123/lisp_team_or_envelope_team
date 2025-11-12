@@ -175,14 +175,6 @@ def moderation_university(request):
 
     return render(request, "main/moderation/moderation_university.html", context)
 
-ALLOWED_ROLES = {"Moderator_1lvl", "Moderator_2lvl", "Moderator_3lvl"}
-
-def user_permission(request):
-    user = Person.objects.filter(pk=5).first().user
-    person = getattr(user, "person", None)
-    role = getattr(person, "role", None)
-    return getattr(role, "permission", None)
-
 def moderation_schedules(request):
     user = Person.objects.filter(pk=5).first().user
     person = Person.objects.filter(pk=5).first()
