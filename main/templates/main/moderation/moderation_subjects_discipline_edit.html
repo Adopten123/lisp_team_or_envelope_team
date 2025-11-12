@@ -1,24 +1,49 @@
 {% extends 'main/index.html' %}
 {% load static %}
 
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
+{% endblock %}
+
 {% block content %}
     <section class="main-content">
         <h2 class="section-title">✏️ Редактирование дисциплины — {{ item.title }}</h2>
+
         <section class="user-card">
-            <form method="post">
+            <form method="post" novalidate>
                 {% csrf_token %}
+
                 <div class="form-row two">
-                    <div><label>Код</label>{{ form.code }}</div>
-                    <div><label>ECTS</label>{{ form.ects }}</div>
+                    <div class="form-field">
+                        <label class="ui-label">Код</label>
+                        {{ form.code }}
+                        {% if form.code.errors %}
+                            <div class="ui-error">{{ form.code.errors|striptags }}</div>{% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">ECTS</label>
+                        {{ form.ects }}
+                        {% if form.ects.errors %}
+                            <div class="ui-error">{{ form.ects.errors|striptags }}</div>{% endif %}
+                    </div>
                 </div>
+
                 <div class="form-row">
-                    <label>Название</label>{{ form.title }}
+                    <div class="form-field">
+                        <label class="ui-label">Название</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="ui-error">{{ form.title.errors|striptags }}</div>{% endif %}
+                    </div>
                 </div>
+
                 <div class="form-actions">
-                    <button class="btn-indigo" type="submit">Сохранить</button>
-                    <a class="btn-ghost" href="{% url 'disciplines_list' %}">Отмена</a>
+                    <button class="btn btn-indigo" type="submit">Сохранить</button>
+                    <a class="btn btn-ghost" href="{% url 'disciplines_list' %}">Отмена</a>
                 </div>
             </form>
         </section>
     </section>
 {% endblock %}
+
