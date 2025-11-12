@@ -7,7 +7,7 @@ def profile_view(request):
     """Страница профиля пользователя"""
     try:
         # Получаем объект Person, связанный с текущим пользователем
-        person = Person.objects.get(user=request.user)
+        person = request.user
 
         # Получаем роль пользователя для меню
         role_name = "Student"  # значение по умолчанию
@@ -27,11 +27,11 @@ def profile_view(request):
             'menu_buttons': get_menu_buttons(role_name),
         }
 
-    except:
+    except Exception as e:
         # Если объект Person не найден для текущего пользователя
         context = {
             'person': None,
-            'error': f'Профиль не найден',
+            'error': f'Профиль не найден: {e}',
             'menu_buttons': get_menu_buttons("Student"),  # роль по умолчанию
         }
 
