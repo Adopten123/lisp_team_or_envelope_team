@@ -46,7 +46,6 @@ def max_auth_view(request):
                 first_name=first_name,
                 last_name=last_name,
                 email="",  # временный email
-                is_active=True
             )
         
         # Логиним пользователя
