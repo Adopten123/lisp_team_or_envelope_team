@@ -1,0 +1,120 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/org_tree.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">📚 Дисциплины и учебные планы — {{ current_university.short_name }}</h2>
+
+        <section class="user-card" style="margin-bottom:12px;">
+            <div class="forms-grid">
+
+                <details class="collapsible">
+                    <summary class="btn-indigo-outline">➕ Создать дисциплину</summary>
+                    <div class="form-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="create_discipline">
+                            <div class="form-row two">
+                                <div>
+                                    <label>Код</label>
+                                    {{ discipline_form.code }}
+                                </div>
+                                <div>
+                                    <label>ECTS</label>
+                                    {{ discipline_form.ects }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label>Название</label>
+                                {{ discipline_form.title }}
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-indigo">Создать дисциплину</button>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+
+                <details class="collapsible">
+                    <summary class="btn-indigo-outline">➕ Создать строку учебного плана (Curriculum)</summary>
+                    <div class="form-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="create_curriculum">
+                            <div class="form-row">
+                                <label>Программа</label>
+                                {{ curriculum_form.program }}
+                            </div>
+                            <div class="form-row">
+                                <label>Дисциплина</label>
+                                {{ curriculum_form.discipline }}
+                            </div>
+                            <div class="form-row two">
+                                <div>
+                                    <label>Семестр (1–12)</label>
+                                    {{ curriculum_form.semester }}
+                                </div>
+                                <div>
+                                    <label>Часы</label>
+                                    {{ curriculum_form.hours }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label>Форма контроля</label>
+                                {{ curriculum_form.control_form }}
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-indigo">Создать Curriculum</button>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+
+                <details class="collapsible">
+                    <summary class="btn-indigo-outline">➕ Создать проведение курса (Teaching)</summary>
+                    <div class="form-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="create_teaching">
+                            <div class="form-row">
+                                <label>Преподаватель</label>
+                                {{ teaching_form.teacher }}
+                            </div>
+                            <div class="form-row">
+                                <label>Учебный план (Curriculum)</label>
+                                {{ teaching_form.curriculum }}
+                            </div>
+                            <div class="form-row">
+                                <label>Группа (опционально для потока)</label>
+                                {{ teaching_form.group }}
+                            </div>
+                            <div class="form-row two">
+                                <div>
+                                    <label>Учебный год</label>
+                                    {{ teaching_form.academic_year }}
+                                </div>
+                                <div>
+                                    <label>Семестр в году</label>
+                                    {{ teaching_form.semester_in_year }}
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-indigo">Создать Teaching</button>
+                            </div>
+                            <p style="font-size:.85rem; color:#666; margin-top:6px;">
+                                При указании группы всем студентам этой группы будут созданы зачисления (Enrollment),
+                                если их ещё нет.
+                            </p>
+                        </form>
+                    </div>
+                </details>
+
+            </div>
+        </section>
+
+    </section>
+{% endblock %}
