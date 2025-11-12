@@ -16,7 +16,7 @@ def headman_group_news_view(request):
     group = student.student_group
 
     is_headman = StudentRole.objects.filter(
-        student=student, role="headman"s
+        student=student, role="headman",
         start_date__lte=timezone.localdate(),
     ).filter(Q(end_date__isnull=True) | Q(end_date__gte=timezone.localdate())).exists()
 
