@@ -28,12 +28,13 @@ def profile_view(request):
             'menu_buttons': get_menu_buttons(role_name),
         }
 
-    except:
+    except Exception as e:
         # Если объект Person не найден для текущего пользователя
         context = {
             'person': None,
-            'error': f'Профиль не найден',
+            'error': f'Профиль не найден: {e}',
             'menu_buttons': get_menu_buttons("Student"),  # роль по умолчанию
         }
 
     return render(request, 'main/profile/profile.html', context)
+
