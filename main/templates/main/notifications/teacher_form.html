@@ -1,0 +1,36 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+  <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">📣 Оповещение для группы — {{ current_university.short_name }}</h2>
+
+        <section class="user-card">
+            <form method="post" class="ui-form">
+                {% csrf_token %}
+                <div class="form-row two">
+                    <div>
+                        <label>Группа</label>
+                        {{ form.group }}
+                    </div>
+                    <div>
+                        <label>Иконка</label>
+                        {{ form.icon }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Текст</label>
+                    {{ form.text }}
+                </div>
+                <div class="form-actions">
+                    <button class="btn-indigo" type="submit">Отправить</button>
+                    <a class="btn-ghost" href="{% url 'index' %}">Отмена</a>
+                </div>
+            </form>
+        </section>
+    </section>
+{% endblock %}

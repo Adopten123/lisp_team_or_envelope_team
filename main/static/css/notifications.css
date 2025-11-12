@@ -1,0 +1,199 @@
+/* ========= Notifications & forms (indigo theme) ========= */
+
+/* Общий контейнер формы */
+.ui-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Ряды полей */
+.form-row {
+    display: grid;
+    gap: 12px;
+}
+
+.form-row.one {
+    grid-template-columns: 1fr;
+}
+
+.form-row.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-row.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+    .form-row.two,
+    .form-row.three {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Подписи */
+.ui-label, .ui-form label, .form-row label {
+    display: block;
+    font-size: .9rem;
+    font-weight: 600;
+    color: #4c4f6b;
+    margin: 2px 0 6px;
+}
+
+/* Базовый инпут/селект/текстовое поле в стиле «индиго» */
+.ui-input,
+.ui-select,
+.ui-textarea,
+.ui-form input[type="text"],
+.ui-form input[type="time"],
+.ui-form input[type="date"],
+.ui-form select,
+.ui-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, .25);
+    background: #fff;
+    color: #2b2b38;
+    box-shadow: 0 4px 18px rgba(71, 61, 255, .08);
+    transition: box-shadow .2s ease, border-color .2s ease, transform .06s ease;
+}
+
+.ui-textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+/* disabled поле (например, название группы у старосты) */
+.ui-input[disabled],
+.ui-select[disabled] {
+    background: #f7f8ff;
+    color: #8a8fad;
+    cursor: not-allowed;
+}
+
+/* hover/focus */
+.ui-input:hover,
+.ui-select:hover,
+.ui-textarea:hover {
+    box-shadow: 0 6px 22px rgba(71, 61, 255, .12);
+}
+
+.ui-input:focus,
+.ui-select:focus,
+.ui-textarea:focus,
+.ui-form input:focus,
+.ui-form select:focus,
+.ui-form textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, .18);
+}
+
+/* Кнопки действий формы (центрируем) */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.form-actions .btn-indigo,
+.form-actions .btn-ghost {
+    min-width: 140px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 14px;
+    font-weight: 700;
+}
+
+/* Чип для отображения выбранной группы (если используешь) */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(102, 126, 234, .12);
+    color: #3f49a1;
+    font-weight: 600;
+    font-size: .85rem;
+}
+
+/* --------- Улучшения блока уведомлений на главной --------- */
+.notifications .section-title {
+    margin-bottom: 10px;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Карточка уведомления */
+.notification-item {
+    background: rgba(255, 255, 255, .96);
+    border-radius: 16px;
+    padding: 14px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border: 1px solid rgba(255, 255, 255, .25);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .08);
+}
+
+/* Иконка — круг с «индиго»-градиентом */
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    background: radial-gradient(120% 120% at 30% 20%, #9aa8ff 0%, #667eea 40%, #764ba2 100%);
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, .25), 0 6px 16px rgba(118, 75, 162, .25);
+}
+
+/* Текст и время */
+.notification-content {
+    flex: 1;
+}
+
+.notification-text {
+    font-weight: 600;
+    color: #2f3542;
+}
+
+.notification-time {
+    font-size: .8rem;
+    color: #7a7f9a;
+}
+
+/* --------- Сообщения/алерты (messages) --------- */
+.alert {
+    background: rgba(255, 255, 255, .96);
+    border-left: 4px solid #667eea;
+    border-radius: 12px;
+    padding: 10px 12px;
+    color: #2f3550;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+}
+
+.alert.success {
+    border-left-color: #2ed573;
+}
+
+.alert.error {
+    border-left-color: #ff4757;
+}
+
+/* Немного сжать user-card-формы для аккуратности */
+.user-card .ui-form {
+    max-width: 960px;
+    margin: 0 auto;
+}

@@ -8,7 +8,9 @@ from main.models import (
     Person, Teaching, ScheduleSlot,
     TeacherRequest,
 )
-from main.forms import TeacherRequestCreateForm
+from main.forms import (
+    TeacherRequestCreateForm, TeacherNotificationForm
+)
 
 def teacher_schedule_view(request):
 
@@ -165,4 +167,27 @@ def teacher_request_form(request):
     return render(request, "main/requests/teacher_request_page.html", context)
 
 def teacher_make_alert_form(request):
-    return HttpResponse("Страница создания оповещения о паре учителем")
+    user = Person.objects.filter(pk=2).first().user
+    person = getattr(user, "person", None)
+    if not person or not hasattr(person, "teacher"):
+        return HttpResponseForbidden("Доступно только преподавателям.")
+
+    teacher = person.teacher
+    university = teacher.university
+
+    if request.method == "POST":
+        form = TeacherNotificationForm(request.POST, teacher=teacher, university=university)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.university = university
+            obj.sender = person
+            obj.save()
+            messages.success(request, "Оповещение отправлено выбранной группе.")
+            return redirect("teacher_make_alert")
+    else:
+        form = TeacherNotificationForm(teacher=teacher, university=university)
+
+    return render(request, "main/notifications/teacher_form.html", {
+        "current_university": university,
+        "form": form,
+    })
