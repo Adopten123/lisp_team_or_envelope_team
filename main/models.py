@@ -639,3 +639,41 @@ class ScheduleException(models.Model):
 
         if errs:
             raise ValidationError(errs)
+
+
+class HelpRequest(models.Model):
+    CATEGORY_CHOICES = [
+        ('technical', 'Техническая проблема'),
+        ('study', 'Учебные вопросы'),
+        ('schedule', 'Проблемы с расписанием'),
+        ('profile', 'Проблемы с профилем'),
+        ('other', 'Другое'),
+    ]
+
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default='technical'
+    )
+    email = models.EmailField("Email для обратной связи")
+    subject = models.CharField("Тема обращения", max_length=255)
+    description = models.TextField("Подробное описание проблемы")
+    priority = models.CharField(
+        max_length=10,
+        choices=[('low', 'Низкий'), ('medium', 'Средний'), ('high', 'Высокий')],
+        default='medium'
+    )
+    is_urgent = models.BooleanField("Срочная проблема", default=False)
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[('new', 'Новый'), ('in_progress', 'В работе'), ('resolved', 'Решено')],
+        default='new'
+    )
+
+    def __str__(self):
+        return f"{self.subject} ({self.get_category_display()})"
+
+    class Meta:
+        verbose_name = "Обращение в поддержку"
+        verbose_name_plural = "Обращения в поддержку"

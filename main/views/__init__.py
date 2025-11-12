@@ -25,6 +25,8 @@ from .applicant import applicant_admission_request, applicant_chat, applicant_ra
 from .in_process import acts_view, news_moderation, group_news_moderation, student_admin_list
 
 from .profile import profile_view
+
+from .help import help_page
 """
 Полезные импорты
 
