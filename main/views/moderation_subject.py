@@ -156,7 +156,7 @@ def moderation_curriculum_edit(request, pk: int):
         "item": item,
     }
 
-    return render(request, "main/moderation/subjects_curriculum_edit.html", context)
+    return render(request, "main/moderation/moderation_subjects_curriculum_edit.html", context)
 
 
 def moderation_curriculum_delete(request, pk: int):

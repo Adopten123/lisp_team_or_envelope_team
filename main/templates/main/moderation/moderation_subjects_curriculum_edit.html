@@ -1,0 +1,67 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">✏️ Редактирование учебного плана</h2>
+
+        <section class="user-card">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-row two">
+                    <div class="form-field">
+                        <label class="ui-label">Программа</label>
+                        {{ form.program }}
+                        {% if form.program.errors %}
+                            <div class="ui-error">{{ form.program.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Дисциплина</label>
+                        {{ form.discipline }}
+                        {% if form.discipline.errors %}
+                            <div class="ui-error">{{ form.discipline.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row two">
+                    <div class="form-field">
+                        <label class="ui-label">Семестр</label>
+                        {{ form.semester }}
+                        {% if form.semester.errors %}
+                            <div class="ui-error">{{ form.semester.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="ui-label">Часы</label>
+                        {{ form.hours }}
+                        {% if form.hours.errors %}
+                            <div class="ui-error">{{ form.hours.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="ui-label">Форма контроля</label>
+                        {{ form.control_form }}
+                        {% if form.control_form.errors %}
+                            <div class="ui-error">{{ form.control_form.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-indigo" type="submit">Сохранить</button>
+                    <a class="btn btn-ghost" href="{% url 'curriculum_list' %}">Отмена</a>
+                </div>
+            </form>
+        </section>
+    </section>
+{% endblock %}
