@@ -175,36 +175,37 @@ def moderation_university(request):
 
     return render(request, "main/moderation/moderation_university.html", context)
 
-def moderation_schedules(request):
-    import datetime as dt
-    user = Person.objects.filter(pk=5).first().user
+ALLOWED_ROLES = {"Moderator_1lvl", "Moderator_2lvl", "Moderator_3lvl"}
 
-    if not is_moderator_min(user, 1):
+def user_permission(request):
+    user = Person.objects.filter(pk=5).first().user
+    person = getattr(user, "person", None)
+    role = getattr(person, "role", None)
+    return getattr(role, "permission", None)
+
+def moderation_schedules(request):
+
+    perm = user_permission(request)
+    if perm not in ALLOWED_ROLES:
         return HttpResponseForbidden("Недостаточно прав")
 
-    current_university = _resolve_current_university(user)
+    q = (request.GET.get("q") or "").strip()
+    groups = StudentGroup.objects.all().select_related("program", "university").order_by("name")
+    if q:
+        groups = groups.filter(Q(name__icontains=q) | Q(program__name__icontains=q))
 
+    # Выбранная группа
     group_id = request.GET.get("group")
-    group = get_object_or_404(StudentGroup, pk=group_id, university=current_university) if group_id else None
+    group = get_object_or_404(StudentGroup, pk=group_id) if group_id else None
 
-    # неделя
-    week_param = request.GET.get("week")
-    try:
-        base_date = dt.datetime.strptime(week_param, "%Y-%m-%d").date() if week_param else timezone.localdate()
-    except Exception:
-        base_date = timezone.localdate()
-    week_start = monday_of(base_date)
-    week_days = [week_start + dt.timedelta(days=i) for i in range(7)]
-
-    # пустая неделя по умолчанию (важно: dict, не None)
-    week = {d: [] for d in week_days}
+    today = timezone.localdate()
+    week = {i: [] for i in range(1, 7 + 1)}
 
     if group:
-        # выбираем слоты для группы: либо M2M groups, либо teaching.group
         slots = (
             ScheduleSlot.objects
-            .filter(university=current_university)
-            .filter(Q(groups=group) | Q(teaching__group=group))
+            .filter(university_id=group.university_id)
+            .filter(Q(groups__id=group.id) | Q(teaching__group_id=group.id))
             .select_related(
                 "teaching",
                 "teaching__curriculum",
@@ -217,37 +218,24 @@ def moderation_schedules(request):
             .order_by("weekday", "start_time")
         )
 
-        # заполняем неделю: слот входит в день, если applies_on_date вернул True
         for slot in slots:
-            for day in week_days:
-                eff = slot.effective_for_date(day)  # учитывает диапазон дат, чётность, исключения
-                if not eff:
-                    continue
-                is_cancelled, start, end, bld, room, note, eff_date = eff
-                week[day].append({
-                    "slot": slot,
-                    "cancelled": bool(is_cancelled),
-                    "start": start,
-                    "end": end,
-                    "building": bld,
-                    "room": room,
-                    "note": note,
-                    "date": eff_date,
-                })
-
-        # можно отсортировать пары внутри дня по времени
-        for d in week_days:
-            week[d].sort(key=lambda x: (x["cancelled"], x["start"] or dt.time(0, 0)))
+            week[slot.weekday].append({
+                "slot": slot,
+                "today_effective": slot.effective_for_date(today),
+            })
 
     context = {
-        "current_university": current_university,
-        "groups": StudentGroup.objects.filter(university=current_university).order_by("name"),
-        "current_group": group,
-        "week_start": week_start,
-        "week_days": week_days,
-        "week": week,  # точно dict
+        "perm": perm,
+        "q": q,
+        "groups": groups,
+        "group": group,
+        "week": week,
+        "today": today,
+        "weekdays": range(1, 8),
     }
     return render(request, "main/moderation/moderation_schedules_home.html", context)
+
+
 def moderation_subjects(request):
     user = Person.objects.filter(pk=5).first().user
 
