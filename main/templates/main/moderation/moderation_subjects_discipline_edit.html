@@ -1,0 +1,24 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="main-content">
+        <h2 class="section-title">✏️ Редактирование дисциплины — {{ item.title }}</h2>
+        <section class="user-card">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-row two">
+                    <div><label>Код</label>{{ form.code }}</div>
+                    <div><label>ECTS</label>{{ form.ects }}</div>
+                </div>
+                <div class="form-row">
+                    <label>Название</label>{{ form.title }}
+                </div>
+                <div class="form-actions">
+                    <button class="btn-indigo" type="submit">Сохранить</button>
+                    <a class="btn-ghost" href="{% url 'disciplines_list' %}">Отмена</a>
+                </div>
+            </form>
+        </section>
+    </section>
+{% endblock %}

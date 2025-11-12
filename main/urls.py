@@ -32,4 +32,16 @@ urlpatterns = [
     path('acts/', views.acts_view, name='acts_view'),
     path('news/<slug:news_slug>/', views.news_moderation, name='news_moderation'),
     path('news/<slug:group_slug>/<slug:news_slug>/', views.group_news_moderation, name='group_news_moderation'),
+
+    path("moderation_subject/disciplines/", views.moderation_disciplines_list, name="disciplines_list"),
+    path("moderation_subject/disciplines/<int:pk>/edit/", views.moderation_discipline_edit, name="discipline_edit"),
+    path("moderation_subject/disciplines/<int:pk>/delete/", views.moderation_discipline_delete, name="discipline_delete"),
+
+    path("moderation_subject/curriculum/", views.moderation_curriculum_list, name="curriculum_list"),
+    path("moderation_subject/curriculum/<int:pk>/edit/", views.moderation_curriculum_edit, name="curriculum_edit"),
+    path("moderation_subject/curriculum/<int:pk>/delete/", views.moderation_curriculum_delete, name="curriculum_delete"),
+
+    path("moderation_subject/teaching/", views.moderation_teaching_list, name="teaching_list"),
+    path("moderation_subject/teaching/<int:pk>/edit/", views.moderation_teaching_edit, name="teaching_edit"),
+    path("moderation_subject/teaching/<int:pk>/delete/", views.moderation_teaching_delete, name="teaching_delete"),
 ]

@@ -3,6 +3,7 @@
 
 {% block extra_styles %}
     <link rel="stylesheet" href="{% static 'css/org_tree.css' %}">
+    <link rel="stylesheet" href="{% static 'css/indigo_buttons.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -115,6 +116,18 @@
 
             </div>
         </section>
-
+        <section class="user-card" style="margin-bottom:12px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <a class="btn btn-indigo" href="{% url 'disciplines_list' %}" role="button">
+                    Дисциплины
+                </a>
+                <a class="btn btn-ghost" href="{% url 'curriculum_list' %}" role="button">
+                    Учебные планы
+                </a>
+                <a class="btn btn-ghost" href="{% url 'teaching_list' %}" role="button">
+                    Курсы
+                </a>
+            </div>
+        </section>
     </section>
 {% endblock %}
