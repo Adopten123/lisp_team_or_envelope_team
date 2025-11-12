@@ -5,6 +5,8 @@ from django.views.decorators.http import require_http_methods
 from django.middleware.csrf import get_token
 from django.contrib.auth import login
 from main.models import Person
+from django.contrib.auth.models import User
+from time import timezone
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -28,6 +30,8 @@ def max_auth_view(request):
         first_name = user_data.get('first_name', '')
         last_name = user_data.get('last_name', '')
         username = user_data.get('username', '')
+        email = user_data.get('email', '')
+
         
         if not vk_user_id:
             return JsonResponse({
@@ -41,26 +45,28 @@ def max_auth_view(request):
             
         except Person.DoesNotExist:
             # Создаем нового пользователя
-            person = Person.objects.create(
+            user = User.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                username=vk_user_id,
+                password='none_password',
+                last_login=timezone.now()
+            )
+            person = Person.objects.create_user(
+                user=user,
                 vk_user_id=vk_user_id,
                 first_name=first_name,
                 last_name=last_name,
-                email="",  # временный email
+                email="",
             )
         
         # Логиним пользователя
-        login(request, person)
-        
-        # Обновляем last_login
-        from django.utils import timezone
-        person.last_login = timezone.now()
-        person.save()
-
+        login(request, person.user)
 
         # Обновляем данные пользователя, если они изменились
-        if person.first_name != first_name or person.last_name != last_name:
-            person.first_name = first_name
-            person.last_name = last_name
+        if person.first_name != person.user.first_name or person.last_name != person.user.last_name:
+            person.first_name = person.user.first_name
+            person.last_name = person.user.last_name
             person.save()
 
         return JsonResponse({
@@ -71,7 +77,7 @@ def max_auth_view(request):
                 'last_name': person.last_name,
                 'email': person.email,
                 'vk_user_id': person.vk_user_id,
-                'last_login': str(person.last_login)
+                'last_login': str(person.user.last_login)
             },
             'message': 'Authorization successful'
         })

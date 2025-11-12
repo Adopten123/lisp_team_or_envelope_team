@@ -5,28 +5,6 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-
-# === МЕНЕДЖЕРЫ МОДЕЛЕЙ ===
-
-class PersonManager(models.Manager):
-    def create_from_vk_data(self, data):
-        """
-        Создает пользователя из данных MAX
-        """
-        max_user_id = str(data.get('id'))
-        first_name = data.get('first_name', '')
-        last_name = data.get('last_name', '')
-        username = data.get('username', '')
-    
-        
-        return self.create(
-            vk_user_id=max_user_id,
-            first_name=first_name,
-            last_name=last_name,
-            email='',
-            is_active=True
-        )
 
 # === ОБЪЕКТЫ ЛЮДЕЙ ===
 
@@ -49,7 +27,6 @@ class Person(models.Model):
     vk_user_id = models.CharField(
         "VK/Max user id", max_length=64, blank=True, db_index=True
     )
-    last_login = models.DateTimeField("Последний вход", null=True, blank=True)
 
     class Meta:
         indexes = [models.Index(fields=["vk_user_id"])]
