@@ -29,7 +29,6 @@ def max_auth_view(request):
         vk_user_id = user_data.get('id')
         first_name = user_data.get('first_name', '')
         last_name = user_data.get('last_name', '')
-        username = user_data.get('username', '')
         email = user_data.get('email', '')
 
         
@@ -42,6 +41,7 @@ def max_auth_view(request):
         # Ищем пользователя по vk_user_id
         try:
             person = Person.objects.get(vk_user_id=vk_user_id)
+            user = person.user
             
         except Person.DoesNotExist:
             user, user_created = User.objects.get_or_create( 
@@ -61,14 +61,12 @@ def max_auth_view(request):
                     'user': user,
                     'first_name': first_name,
                     'last_name': last_name,
-                    'email': "",
+                    'email': email,
                 }
             )
-        
-        user_authenticate = authenticate(request, username=f"max_{vk_user_id}", password = 'none_password')
 
         # Логиним пользователя
-        login(request, user_authenticate)
+        login(request, user)
 
         # Обновляем данные пользователя, если они изменились
         if person.first_name != person.user.first_name or person.last_name != person.user.last_name:
