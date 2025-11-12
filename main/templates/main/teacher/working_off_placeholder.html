@@ -1,0 +1,15 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/placeholder.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="blur-overlay">
+  <div class="blur-card">
+    <h1>🛠️ Страница в разработке</h1>
+    <p>Скоро здесь появится функционал отработок преподавателя.</p>
+  </div>
+</section>
+{% endblock %}
