@@ -51,6 +51,12 @@ def max_auth_view(request):
         # Логиним пользователя
         login(request, person)
         
+        # Обновляем last_login
+        from django.utils import timezone
+        person.last_login = timezone.now()
+        person.save()
+
+
         # Обновляем данные пользователя, если они изменились
         if person.first_name != first_name or person.last_name != last_name:
             person.first_name = first_name
@@ -64,7 +70,8 @@ def max_auth_view(request):
                 'first_name': person.first_name,
                 'last_name': person.last_name,
                 'email': person.email,
-                'vk_user_id': person.vk_user_id
+                'vk_user_id': person.vk_user_id,
+                'last_login': person.last_login.isoformat if person.last_login else None
             },
             'message': 'Authorization successful'
         })
