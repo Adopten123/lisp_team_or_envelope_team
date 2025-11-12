@@ -59,8 +59,6 @@ class WebAppAuth {
                 body: JSON.stringify({
                     // Передаем только нужные данные пользователя
                     user: userData.user,
-                    auth_date: userData.auth_date,
-                    hash: userData.hash,
                 })
             });
 

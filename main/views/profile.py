@@ -27,7 +27,7 @@ def profile_view(request):
             'menu_buttons': get_menu_buttons(role_name),
         }
 
-    except Person.DoesNotExist:
+    except:
         # Если объект Person не найден для текущего пользователя
         context = {
             'person': None,
