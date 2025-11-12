@@ -53,7 +53,7 @@ MIDDLEWARE = [
     # 'csp.middleware.CSPMiddleware',
 ]
 
-# Настройки CSP
+# # Настройки CSP
 # CSP_DEFAULT_SRC = ["'self'"]
 # CSP_SCRIPT_SRC = [
 #     "'self'",
