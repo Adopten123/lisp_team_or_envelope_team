@@ -41,18 +41,7 @@ INSTALLED_APPS = [
     # 'csp',
     'main',
     'authentication',
-    'rest_framework',
-    'rest_framework.authtoken',
 ]
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication', # Использование токенной аутентификации по умолчанию
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly', # Пример политики доступа
-    ]
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
