@@ -7,7 +7,7 @@ def index(request):
     """Главная страница"""
 
     #menu_buttons = get_menu_buttons("University Moderator 3lvl")
-    menu_buttons = get_menu_buttons("Applicant")
+    menu_buttons = get_menu_buttons("University Moderator 3lvl")
     student = Student.objects.filter(pk=2).first()
     person = student.person
     group = person.student.student_group
