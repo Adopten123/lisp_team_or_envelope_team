@@ -16,9 +16,17 @@ class WebAppAuth {
 
     async initializeWebApp() {
         try {
-            console.log('1 - Начинаем инициализацию WebApp');
+            console.log('1 - Проверяем платформу WebApp');
+            
+            console.log('Платформа: ', window.WebApp.platform);
 
-            console.log('2 - WebApp инициализирован');
+            if (window.WebApp.platform === 'web') {
+                console.log('Авторизация невозможна - страница открыта в web версии мессенджера')
+                this.showWebBrowserMessage();
+                return;
+            }
+
+            console.log('2 - Получаем данные из WebApp');
             
             // Получаем данные пользователя         
             const params = new URLSearchParams(window.WebApp.initData);
@@ -36,7 +44,6 @@ class WebAppAuth {
                 }
             }
             
-            console.log('Платформа: ', window.WebApp.platform);
             console.log('WebApp пользователь:', data.user.id);
             
             // Автоматическая авторизация на бэкенде
@@ -83,6 +90,39 @@ class WebAppAuth {
             .find(row => row.startsWith('csrftoken='))
             ?.split('=')[1];
         return cookieValue || '';
+    }
+
+    showWebBrowserMessage() {
+        // Создаем сообщение для пользователя
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        `;
+        
+        messageDiv.innerHTML = `
+            <strong>⚠️ Страница открыта в веб-браузере</strong><br>
+            Для работы с этим сервисом используйте приложение для Android/IOS/PC
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        // Скрываем основной контент
+        const mainContent = document.querySelector('main, .content, #app');
+        if (mainContent) {
+            mainContent.style.opacity = '0.5';
+            mainContent.style.pointerEvents = 'none';
+        }
     }
 }
 
