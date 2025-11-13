@@ -413,31 +413,40 @@ class ApplicantExam(models.Model):
         unique_together = [("applicant", "subject", "exam_type")]
 
 
-class AdmissionRequest(models.Model):
-    """
-    Заявка абитуриента на программу (с приоритетами и статусами).
-    """
-    STATUS = [
-        ("draft", "Черновик"),
-        ("submitted", "Подано"),
-        ("under_review", "На рассмотрении"),
-        ("accepted", "Принято"),
-        ("rejected", "Отклонено"),
-        ("enrolled", "Зачислен"),
+class ApplicationRequest(models.Model):
+    STUDY_FORM_CHOICES = [
+        ('full_time', 'Очная'),
+        ('part_time', 'Очно-заочная'),
+        ('extramural', 'Заочная'),
     ]
-    applicant = models.ForeignKey(Applicant, on_delete=models.CASCADE, related_name='applications')
-    program = models.ForeignKey(Program, on_delete=models.PROTECT, related_name='admission_request')
-    priority = models.PositiveSmallIntegerField(default=1)
-    status = models.CharField(max_length=16, choices=STATUS, default="submitted")
-    submitted_at = models.DateTimeField(auto_now_add=True)
-    payload_json = models.JSONField(default=dict, blank=True)  # загрузка файлов/доков/льгот и пр.
+
+    last_name = models.CharField("Фамилия", max_length=128)
+    first_name = models.CharField("Имя", max_length=128)
+    middle_name = models.CharField("Отчество", max_length=128, blank=True)
+    email = models.EmailField("Email")
+    phone = models.CharField("Телефон", max_length=20)
+    desired_program = models.CharField("Желаемая программа", max_length=255)
+    study_form = models.CharField("Форма обучения", max_length=20, choices=STUDY_FORM_CHOICES, default='full_time')
+    previous_education = models.CharField("Предыдущее образование", max_length=255, blank=True)
+    comments = models.TextField("Комментарии", blank=True)
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('new', 'Новое'),
+            ('review', 'На рассмотрении'),
+            ('accepted', 'Принято'),
+            ('rejected', 'Отклонено')
+        ],
+        default='new'
+    )
 
     class Meta:
-        unique_together = [("applicant", "program")]
-        indexes = [models.Index(fields=["status", "priority"])]
+        verbose_name = "Заявление на поступление"
+        verbose_name_plural = "Заявления на поступление"
 
     def __str__(self):
-        return f"{self.applicant} → {self.program} ({self.status})"
+        return f"{self.last_name} {self.first_name} - {self.desired_program}"
 
 # === НОВОСТИ ===
 
@@ -709,13 +718,14 @@ class HelpRequest(models.Model):
         verbose_name_plural = "Обращения в поддержку"
 
 
-class ApplicationRequest(models.Model):
+class AdmissionRequest(models.Model):
     STUDY_FORM_CHOICES = [
         ('full_time', 'Очная'),
         ('part_time', 'Очно-заочная'),
         ('extramural', 'Заочная'),
     ]
 
+    # Поля формы
     last_name = models.CharField("Фамилия", max_length=128)
     first_name = models.CharField("Имя", max_length=128)
     middle_name = models.CharField("Отчество", max_length=128, blank=True)
@@ -725,16 +735,23 @@ class ApplicationRequest(models.Model):
     study_form = models.CharField("Форма обучения", max_length=20, choices=STUDY_FORM_CHOICES, default='full_time')
     previous_education = models.CharField("Предыдущее образование", max_length=255, blank=True)
     comments = models.TextField("Комментарии", blank=True)
+
+    # Системные поля
     created_at = models.DateTimeField("Дата создания", auto_now_add=True)
     status = models.CharField(
         max_length=20,
-        choices=[('new', 'Новое'), ('review', 'На рассмотрении'), ('accepted', 'Принято'), ('rejected', 'Отклонено')],
+        choices=[
+            ('new', 'Новое'),
+            ('review', 'На рассмотрении'),
+            ('accepted', 'Принято'),
+            ('rejected', 'Отклонено')
+        ],
         default='new'
     )
-
-    def __str__(self):
-        return f"{self.last_name} {self.first_name} - {self.desired_program}"
 
     class Meta:
         verbose_name = "Заявление на поступление"
         verbose_name_plural = "Заявления на поступление"
+
+    def __str__(self):
+        return f"{self.last_name} {self.first_name} - {self.desired_program}"

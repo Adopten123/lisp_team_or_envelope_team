@@ -3,9 +3,6 @@ from django.shortcuts import render
 from django.db.models import Sum, Avg, Count
 from ..models import Applicant, ApplicantExam
 
-def applicant_chat(request):
-    return HttpResponse("Страница чата абитуриентов")
-
 def applicant_rating(request):
     """Рейтинг абитуриентов на основе существующих моделей"""
 
