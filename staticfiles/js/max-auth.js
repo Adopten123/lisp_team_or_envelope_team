@@ -116,12 +116,18 @@ class WebAppAuth {
         `;
         
         document.body.appendChild(messageDiv);
-        
+
         // Скрываем основной контент
-        const mainContent = document.querySelector('main, .container, head');
-        if (mainContent) {
-            mainContent.style.opacity = '0.5';
-            mainContent.style.pointerEvents = 'none';
+        const container = document.querySelector('.container');
+        if (container) {
+            container.style.opacity = '0.5';
+            container.style.pointerEvents = 'none';
+        }
+
+        const navMenu = document.querySelector('.bottom-nav');
+        if (navMenu) {
+            navMenu.style.opacity = '0.5';
+            navMenu.style.pointerEvents = 'none';
         }
     }
 }
