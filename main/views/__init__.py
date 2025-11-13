@@ -20,7 +20,9 @@ from .moderation import (
     moderation_acts
 )
 
-from .applicant import applicant_chat, applicant_rating
+from .applicant import applicant_rating
+
+from .applicant_chat import applicant_chat_working_off_view
 
 from .in_process import acts_view, news_moderation, group_news_moderation, student_admin_list
 
