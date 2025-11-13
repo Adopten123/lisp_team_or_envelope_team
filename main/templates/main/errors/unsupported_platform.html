@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Доступ через приложение</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -24,99 +25,187 @@
         .container {
             background: white;
             border-radius: 20px;
-            padding: 40px;
+            padding: 30px 25px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            max-width: 500px;
+            max-width: 400px;
             width: 100%;
+            margin: 0 auto;
         }
 
         .icon {
-            font-size: 80px;
+            font-size: 64px;
             margin-bottom: 20px;
+            color: #667eea;
         }
 
         h1 {
             color: #333;
             margin-bottom: 15px;
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: 600;
         }
 
         p {
             color: #666;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-size: 15px;
         }
 
         .app-badges {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
         .app-badge {
             background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            border: 1.5px solid #e9ecef;
             border-radius: 12px;
-            padding: 15px;
+            padding: 15px 8px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
         }
 
         .app-badge:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background: white;
         }
 
         .badge-icon {
-            font-size: 30px;
-            margin-bottom: 8px;
+            font-size: 24px;
+            margin-bottom: 6px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
         }
 
         .badge-text {
-            font-size: 12px;
+            font-size: 11px;
             color: #333;
             font-weight: 500;
+            line-height: 1.2;
         }
 
+        /* Мобильная адаптация */
         @media (max-width: 480px) {
+            body {
+                padding: 15px;
+                align-items: flex-start;
+                min-height: 100vh;
+            }
+            
             .container {
-                padding: 30px 20px;
+                padding: 25px 20px;
+                margin-top: 20px;
+            }
+            
+            .icon {
+                font-size: 56px;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            
+            p {
+                font-size: 14px;
+                margin-bottom: 20px;
             }
             
             .app-badges {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .app-badge {
+                padding: 12px 6px;
+                min-height: 70px;
+            }
+            
+            .badge-icon {
+                font-size: 22px;
+                margin-bottom: 5px;
+            }
+            
+            .badge-text {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .app-badges {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+        }
+
+        /* Отключение hover на тач-устройствах */
+        @media (hover: none) {
+            .app-badge:hover {
+                transform: none;
+                box-shadow: none;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">📱</div>
+        <div class="icon">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
         <h1>Откройте в приложении</h1>
-        <p>Этот сервис доступен только через официальное приложение мессенджера Max. Скачайте приложение для полного доступа ко всем функциям.</p>
+        <p>Этот сервис доступен только через официальное приложение Максимаркет</p>
         
         <div class="app-badges">
             <div class="app-badge" onclick="window.open('https://trk.mail.ru/c/t1vskr9', '_blank')">
-                <div class="badge-icon">🤖</div>
+                <div class="badge-icon">
+                    <i class="fab fa-android"></i>
+                </div>
                 <div class="badge-text">Android</div>
             </div>
+            
             <div class="app-badge" onclick="window.open('https://trk.mail.ru/c/it0i34', '_blank')">
-                <div class="badge-icon">🍎</div>
+                <div class="badge-icon">
+                    <i class="fab fa-apple"></i>
+                </div>
                 <div class="badge-text">iOS</div>
             </div>
+            
             <div class="app-badge" onclick="window.open('https://trk.mail.ru/c/h172vv5', '_blank')">
-                <div class="badge-icon">🪟</div>
+                <div class="badge-icon">
+                    <i class="fab fa-windows"></i>
+                </div>
                 <div class="badge-text">Windows</div>
             </div>
+            
             <div class="app-badge" onclick="window.open('https://trk.mail.ru/c/la7zf18', '_blank')">
-                <div class="badge-icon">💻</div>
+                <div class="badge-icon">
+                    <i class="fab fa-apple"></i>
+                </div>
                 <div class="badge-text">Mac OS</div>
             </div>
+            
             <div class="app-badge" onclick="window.open('https://trk.mail.ru/c/dr9tt3', '_blank')">
-                <div class="badge-icon">🐧</div>
+                <div class="badge-icon">
+                    <i class="fab fa-linux"></i>
+                </div>
                 <div class="badge-text">Linux</div>
             </div>
         </div>
