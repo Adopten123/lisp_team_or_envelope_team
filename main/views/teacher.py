@@ -12,6 +12,8 @@ from main.models import (
 from main.forms import (
     TeacherRequestCreateForm, TeacherNotificationForm
 )
+from main.utils.placeholder import render_under_development
+
 
 def teacher_schedule_view(request):
 
@@ -108,7 +110,12 @@ def teacher_subjects_view(request):
     return render(request, 'main/teacher/teacher_subjects.html', context)
 
 def teacher_working_off_view(request):
-    return render(request, "main/teacher/working_off_placeholder.html")
+    return render_under_development(
+        request,
+        title="🛠️ Функционал отработок",
+        message="Скоро здесь появится полный функционал для отработок преподавателя.",
+        additional_info="Вы сможете создавать, просматривать и управлять отработками."
+    )
 
 def teacher_request_form(request):
     user = Person.objects.filter(pk=2).first().user
