@@ -66,15 +66,6 @@ class ApplicantExamInline(admin.TabularInline):
     fields = ("subject", "exam_type", "score")
     show_change_link = True
 
-
-class AdmissionRequestInline(admin.TabularInline):
-    model = AdmissionRequest
-    extra = 0
-    autocomplete_fields = ("program",)
-    fields = ("program", "priority", "status", "submitted_at")
-    readonly_fields = ("submitted_at",)
-    show_change_link = True
-
 class TeachingInline(admin.TabularInline):
     model = Teaching
     extra = 0
@@ -259,7 +250,6 @@ class ApplicantAdmin(admin.ModelAdmin):
     list_display = ("person", "birth_date", "school_name", "graduation_year", "linked_student")
     search_fields = ("person__last_name", "person__first_name", "school_name", "passport_number")
     autocomplete_fields = ("person", "linked_student")
-    inlines = [ApplicantExamInline, AdmissionRequestInline]
 
 
 @admin.register(ApplicantExam)
@@ -272,13 +262,11 @@ class ApplicantExamAdmin(admin.ModelAdmin):
 
 @admin.register(AdmissionRequest)
 class AdmissionRequestAdmin(admin.ModelAdmin):
-    list_display = ("applicant", "program", "priority", "status", "submitted_at")
-    list_filter = ("status", "priority", "program__faculty__university", "program__faculty")
-    search_fields = ("applicant__person__last_name", "program__name", "program__code")
-    autocomplete_fields = ("applicant", "program")
-    readonly_fields = ("submitted_at",)
-    date_hierarchy = "submitted_at"
-
+    list_display = ("last_name", "first_name", "email", "desired_program", "study_form", "status", "created_at")
+    list_filter = ("study_form", "status", "created_at")
+    search_fields = ("last_name", "first_name", "email", "desired_program")
+    readonly_fields = ("created_at",)
+    date_hierarchy = "created_at"
 
 # ===============================
 #  Новости
