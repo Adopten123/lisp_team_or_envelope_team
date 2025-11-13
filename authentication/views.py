@@ -5,7 +5,7 @@ from django.contrib.auth import login
 from main.models import Person
 from django.contrib.auth.models import User
 from datetime import datetime
-
+from django.shortcuts import render
 
 @require_http_methods(["POST"])
 def max_auth_view(request):
@@ -97,3 +97,8 @@ def max_auth_view(request):
             'error': f'Internal server error: {str(e)}'
         }, status=500)
 
+
+def unsupported_platform_view(request):
+    """Выводит ошибку о неподдерживаемой платформе"""
+
+    return render(request, 'main/errors/unsupported_platform.html')
