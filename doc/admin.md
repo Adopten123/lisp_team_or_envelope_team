@@ -17,7 +17,7 @@ main/
     people.py
     learning.py
     requests_admin.py
-    admissions.py
+    applicant.py
     news.py
     schedule_admin.py
     notifications.py
@@ -45,7 +45,7 @@ main/
   from .people import *
   from .learning import *
   from .requests_admin import *
-  from .admissions import *
+  from .applicant import *
   from .news import *
   from .schedule_admin import *
   from .notifications import *
@@ -516,7 +516,7 @@ main/
 
 ---
 
-## 8. `admin/admissions.py` - абитуриенты и их заявки
+## 8. `admin/applicant.py` - абитуриенты и их заявки
 
 **Модели:**
 
