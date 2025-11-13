@@ -22,7 +22,7 @@ class WebAppAuth {
 
             if (window.WebApp.platform === 'web') {
                 console.log('Авторизация невозможна - страница открыта в web версии мессенджера')
-                this.showWebBrowserMessage();
+                this.redirectToUnsupportedPage();
                 return;
             }
 
@@ -51,7 +51,7 @@ class WebAppAuth {
             
         } catch (error) {
             console.error('Ошибка инициализации WebApp:', error);
-            this.showWebBrowserMessage();
+            this.redirectToUnsupportedPage();
             return;
         }
     }
@@ -92,6 +92,11 @@ class WebAppAuth {
             .find(row => row.startsWith('csrftoken='))
             ?.split('=')[1];
         return cookieValue || '';
+    }
+
+    redirectToUnsupportedPage() {
+        // Перенаправляем на страницу с сообщением
+        window.location.href = '/unsupported-platform/';
     }
 
     showWebBrowserMessage() {
