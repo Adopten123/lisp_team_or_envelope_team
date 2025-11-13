@@ -1,11 +1,15 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
 from django.contrib.auth import login
-from main.models import Person
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from main.models import Person
+from main.forms.student_create import StudentCreateForm
+
 
 @require_http_methods(["POST"])
 def max_auth_view(request):
@@ -99,6 +103,32 @@ def max_auth_view(request):
 
 
 def unsupported_platform_view(request):
-    """Выводит ошибку о неподдерживаемой платформе"""
+    """
+    Выводит ошибку о неподдерживаемой платформе
+    """
 
     return render(request, 'main/errors/unsupported_platform.html')
+
+
+def create_student_view(request):
+    """
+    Страница создания студента.
+    """
+
+    if request.method == "POST":
+        form = StudentCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Студент создан успешно.")
+            return redirect("/")
+        else:
+            messages.error(request, "Проверьте форму — есть ошибки.")
+    else:
+        form = StudentCreateForm()
+
+    context = {
+        "form": form,
+        "title": "Создание студента",
+    }
+
+    return render(request, "main/auth/create_student.html", context)

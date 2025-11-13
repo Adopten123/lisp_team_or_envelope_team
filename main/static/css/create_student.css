@@ -1,0 +1,188 @@
+/* Стили для страницы создания студента */
+
+.main-content {
+    padding: 20px;
+    min-height: calc(100vh - 60px); /* Учитываем высоту меню */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-student-form {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.create-student-form h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-student-form .form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.create-student-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 16px;
+}
+
+.create-student-form input[type="text"],
+.create-student-form input[type="number"],
+.create-student-form select {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    color: #333;
+}
+
+.create-student-form input[type="text"]:focus,
+.create-student-form input[type="number"]:focus,
+.create-student-form select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.create-student-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    padding-right: 45px;
+}
+
+.create-student-form .help-text {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.create-student-form .errorlist {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.create-student-form button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.create-student-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.create-student-form button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.create-student-form button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 10px;
+    }
+
+    .create-student-form {
+        padding: 20px;
+        margin: 10px;
+        border-radius: 10px;
+    }
+
+    .create-student-form h1 {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+    .create-student-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .create-student-form label {
+        font-size: 15px;
+    }
+
+    .create-student-form input[type="text"],
+    .create-student-form input[type="number"],
+    .create-student-form select {
+        padding: 12px 15px;
+        font-size: 16px; /* Предотвращает зум на iOS */
+    }
+
+    .create-student-form button {
+        padding: 12px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .create-student-form {
+        padding: 15px;
+        margin: 5px;
+    }
+
+    .create-student-form h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .create-student-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .create-student-form input[type="text"],
+    .create-student-form input[type="number"],
+    .create-student-form select {
+        padding: 10px 12px;
+    }
+
+    .create-student-form button {
+        padding: 10px;
+        font-size: 15px;
+    }
+}

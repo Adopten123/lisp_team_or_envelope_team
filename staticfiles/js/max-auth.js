@@ -96,7 +96,10 @@ class WebAppAuth {
 
     redirectToUnsupportedPage() {
         // Перенаправляем на страницу с сообщением
-        window.location.href = '/unsupported-platform/';
+        let isDoRedirect = false; //Выключили для разработки
+        if (isDoRedirect) {
+            window.location.href = '/unsupported-platform/';
+        }
     }
 
     showWebBrowserMessage() {

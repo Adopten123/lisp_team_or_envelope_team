@@ -1,0 +1,30 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'css/create_student.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="container">
+        <form class="create-student-form" method="post">
+            {% csrf_token %}
+            <h1>{{ title }}</h1>
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                <div class="help-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit">Создать студента</button>
+        </form>
+    </div>
+</main>
+{% endblock %}
