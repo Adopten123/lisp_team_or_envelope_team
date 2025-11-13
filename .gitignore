@@ -4,5 +4,5 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-db.sqlite3ы
+db.sqlite3
 max/settings.py
