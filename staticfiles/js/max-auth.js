@@ -118,7 +118,7 @@ class WebAppAuth {
         document.body.appendChild(messageDiv);
         
         // Скрываем основной контент
-        const mainContent = document.querySelector('main, .content, #app');
+        const mainContent = document.querySelector('main, .container, head');
         if (mainContent) {
             mainContent.style.opacity = '0.5';
             mainContent.style.pointerEvents = 'none';
