@@ -16,7 +16,7 @@ class WebAppAuth {
 
     async initializeWebApp() {
         try {
-            console.log('1 - Проверяем платформу WebApp');
+            console.log('1 - Проверяем платформу');
             
             console.log('Платформа: ', window.WebApp.platform);
 
@@ -51,6 +51,8 @@ class WebAppAuth {
             
         } catch (error) {
             console.error('Ошибка инициализации WebApp:', error);
+            this.showWebBrowserMessage();
+            return;
         }
     }
 
