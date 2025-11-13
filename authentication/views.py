@@ -1,14 +1,12 @@
 import json
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.middleware.csrf import get_token
 from django.contrib.auth import login
 from main.models import Person
 from django.contrib.auth.models import User
 from datetime import datetime
 
-@csrf_exempt
+
 @require_http_methods(["POST"])
 def max_auth_view(request):
     """
@@ -98,41 +96,4 @@ def max_auth_view(request):
             'success': False,
             'error': f'Internal server error: {str(e)}'
         }, status=500)
-
-def get_csrf_token(request):
-    """
-    Endpoint для получения CSRF токена
-    """
-    return JsonResponse({'csrfToken': get_token(request)})
-
-@require_http_methods(["GET"])
-def get_current_user(request):
-    """
-    Endpoint для получения данных текущего пользователя
-    """
-    if request.user.is_authenticated and isinstance(request.user, Person):
-        return JsonResponse({
-            'authenticated': True,
-            'user': {
-                'id': request.user.id,
-                'first_name': request.user.first_name,
-                'last_name': request.user.last_name,
-                'email': request.user.email,
-                'vk_user_id': request.user.vk_user_id
-            }
-        })
-    else:
-        return JsonResponse({
-            'authenticated': False,
-            'user': None
-        })
-
-@require_http_methods(["POST"])
-def logout_view(request):
-    """
-    Endpoint для выхода из системы
-    """
-    from django.contrib.auth import logout
-    logout(request)
-    return JsonResponse({'success': True, 'message': 'Logout completed'})
 

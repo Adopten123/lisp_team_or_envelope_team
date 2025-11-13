@@ -36,6 +36,7 @@ class WebAppAuth {
                 }
             }
             
+            console.log('Платформа: ', window.WebApp.platform);
             console.log('WebApp пользователь:', data.user.id);
             
             // Автоматическая авторизация на бэкенде
