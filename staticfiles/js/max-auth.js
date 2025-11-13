@@ -126,7 +126,7 @@ class WebAppAuth {
 
         const navMenu = document.querySelector('.bottom-nav');
         if (navMenu) {
-            navMenu.style.opacity = '0.5';
+            navMenu.style.opacity = '0.9';
             navMenu.style.pointerEvents = 'none';
         }
     }
