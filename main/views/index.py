@@ -17,7 +17,7 @@ def index(request):
     University Moderator 2lvl - модератор 2 уровня
     University Moderator 3lvl - модератор 3 уровня
     """
-    menu_buttons = get_menu_buttons("University Moderator 3lvl")
+    menu_buttons = get_menu_buttons("Guest")
 
     student = Student.objects.filter(pk=1).first()
     person = student.person

@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from main.utils.placeholder import render_under_development
 
 """
 Пока что не трогать то, что ниже
