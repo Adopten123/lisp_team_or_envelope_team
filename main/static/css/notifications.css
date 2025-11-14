@@ -98,6 +98,33 @@
     padding: 0 18px;
     border-radius: 14px;
     font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-actions .btn-indigo {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.form-actions .btn-indigo:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    transform: translateY(-2px);
+}
+
+.form-actions .btn-ghost {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.form-actions .btn-ghost:hover {
+    background: #667eea;
+    color: #fff;
+    transform: translateY(-2px);
 }
 
 .chip {

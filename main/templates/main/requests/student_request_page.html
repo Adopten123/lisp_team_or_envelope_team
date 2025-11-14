@@ -9,7 +9,7 @@
     <section class="main-content">
         <h2 class="section-title">🧾 Мои заявления — {{ current_university.short_name }}</h2>
 
-        <section class="user-card" style="margin-bottom:12px;">
+        <section class="user-card filters-section">
             <form method="get" class="filters">
                 <div class="cell">
                     <select name="type" class="filter-select">
@@ -37,18 +37,18 @@
                            placeholder="Поиск по типу/статусу/примечанию">
                 </div>
 
-                <div class="actions">
+                <div class="actions actions-cell">
                     <button class="btn-indigo" type="submit">Искать</button>
                     <a class="btn-ghost" href="{% url 'student_request_view' %}">Сбросить</a>
                 </div>
             </form>
         </section>
 
-        <section class="user-card" style="margin-bottom:12px;">
+        <section class="user-card create-request-section">
             <details class="collapsible">
                 <summary class="btn-summary">Создать заявление</summary>
 
-                <form method="post" class="ui-form" style="margin-top:14px;">
+                <form method="post" class="ui-form request-form">
                     {% csrf_token %}
 
                     <div class="form-row two">
@@ -66,7 +66,7 @@
                                   placeholder="Например: прошу выдать 2 экземпляра, для деканата и по месту требования"></textarea>
                     </div>
 
-                    <div class="form-actions" style="display:flex; gap:10px;">
+                    <div class="form-actions">
                         <button class="btn-indigo" type="submit">Отправить</button>
                         <a class="btn-ghost" href="{% url 'student_request_view' %}">Отмена</a>
                     </div>
