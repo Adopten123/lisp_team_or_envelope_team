@@ -9,7 +9,6 @@
     <section class="main-content">
         <h2 class="section-title">🏛 Университет: {{ current_university.short_name }}</h2>
 
-        {# ФОРМЫ #}
         <section class="user-card" style="margin-bottom:12px;">
             <div class="forms-grid">
                 {% if can_create_faculty %}
@@ -73,7 +72,6 @@
             </div>
         </section>
 
-        {# ДЕРЕВО #}
         <section class="user-card">
             <h3 class="tree-title">Структура факультетов и кафедр</h3>
             {% if faculties %}
