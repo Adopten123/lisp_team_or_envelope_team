@@ -9,7 +9,6 @@
     <section class="main-content">
         <h2 class="section-title">🧾 Мои заявления — {{ current_university.short_name }}</h2>
 
-        <!-- Фильтры -->
         <section class="user-card" style="margin-bottom:12px;">
             <form method="get" class="filters">
                 <div class="cell">
@@ -45,7 +44,6 @@
             </form>
         </section>
 
-        <!-- Создание заявления -->
         <section class="user-card" style="margin-bottom:12px;">
             <details class="collapsible">
                 <summary class="btn-summary">Создать заявление</summary>
@@ -76,7 +74,6 @@
             </details>
         </section>
 
-        <!-- Список заявлений -->
         <section class="notifications">
             <div class="notifications-list">
                 {% if page_obj.object_list %}
