@@ -51,4 +51,4 @@ def news_detail_view(request, news_id):
     post = get_object_or_404(NewsPost, pk=news_id, is_published=True)
     context = {"post": post}
 
-    return render(request, "main/news/news_detail.html",context)
+    return render(request, 'main/news/news_detail.html',context)
