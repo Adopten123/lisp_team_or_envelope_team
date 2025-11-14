@@ -27,23 +27,23 @@ def moderation_schedule_slot_create(request):
 
     group_id = request.GET.get("group")
     group = get_object_or_404(StudentGroup, pk=group_id) if group_id else None
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
 
     if request.method == "POST":
-        form = ScheduleSlotForm(request.POST, university=uni, group=group)
+        form = ScheduleSlotForm(request.POST, university=current_university, group=group)
         if form.is_valid():
             slot = form.save(commit=False)
-            slot.university = uni
+            slot.university = current_university
             slot.save()
             form.save_m2m()
             messages.success(request, "Ячейка расписания добавлена.")
             back = f"{reverse('moderation_schedules')}?group={group.id}" if group else reverse('moderation_schedules')
             return redirect(back)
     else:
-        form = ScheduleSlotForm(university=uni, group=group)
+        form = ScheduleSlotForm(university=current_university, group=group)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "current_group": group,
         "form": form,
     }
@@ -64,20 +64,20 @@ def moderation_schedule_exception_create(request):
         }
         return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
 
     if request.method == "POST":
-        form = ScheduleExceptionForm(request.POST, university=uni)
+        form = ScheduleExceptionForm(request.POST, university=current_university)
         if form.is_valid():
             form.save()
             messages.success(request, "Исключение добавлено.")
             redirect_group = request.GET.get("group") or ""
             return redirect(f"{reverse('moderation_schedules')}?group={redirect_group}")
     else:
-        form = ScheduleExceptionForm(university=uni)
+        form = ScheduleExceptionForm(university=current_university)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "form": form,
     }
     return render(request, 'main/moderation/moderation_schedules_exception_form.html', context)

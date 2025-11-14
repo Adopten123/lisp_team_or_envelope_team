@@ -19,37 +19,55 @@ from main.views.moderation import _resolve_current_university
 # =====DISCIPLINES=====
 
 def moderation_disciplines_list(request):
+    """
+    Страница просмотра дисциплин
+    """
+    PAGINATOR_COUNT = 20
+
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может создавать дисциплины.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
     qs = Discipline.objects.all().order_by("title")
 
     q = (request.GET.get("q") or "").strip()
     if q:
         qs = qs.filter(Q(title__icontains=q) | Q(code__icontains=q))
 
-    paginator = Paginator(qs, 20)
+    paginator = Paginator(qs, PAGINATOR_COUNT)
     page_obj = paginator.get_page(request.GET.get("page") or 1)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "page_obj": page_obj,
         "paginator": paginator,
         "q": q,
     }
-    return render(request, "main/moderation/moderation_subjects_disciplines_list.html", context)
+    return render(request, 'main/moderation/moderation_subjects_disciplines_list.html', context)
 
 
-def moderation_discipline_edit(request, pk: int):
+def moderation_discipline_edit(request, pk):
+    """
+    Страница редактирования дисциплины
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может редактировать дисциплины.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
     discipline = get_object_or_404(Discipline, pk=pk)
 
     if request.method == "POST":
@@ -57,29 +75,37 @@ def moderation_discipline_edit(request, pk: int):
         if form.is_valid():
             form.save()
             messages.success(request, "Дисциплина обновлена.")
-            return redirect("disciplines_list")
+            return redirect('disciplines_list')
         else:
             messages.error(request, "Проверьте форму.")
     else:
         form = DisciplineCreateForm(instance=discipline)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "form": form,
         "item": discipline,
     }
-    return render(request, "main/moderation/moderation_subjects_discipline_edit.html", context)
+    return render(request, 'main/moderation/moderation_subjects_discipline_edit.html', context)
 
 
-def moderation_discipline_delete(request, pk: int):
+def moderation_discipline_delete(request, pk):
+    """
+    Удаление дисциплины
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if request.method != "POST":
         raise Http404()
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может удалять дисциплины.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
     discipline = get_object_or_404(Discipline, pk=pk)
 
     with transaction.atomic():
@@ -91,24 +117,34 @@ def moderation_discipline_delete(request, pk: int):
         discipline.delete()
 
     messages.success(request, "Дисциплина и все связанные сущности удалены.")
-    return redirect("disciplines_list")
+    return redirect('disciplines_list')
 
 
 # =====CURRICULUM=====
 
 def moderation_curriculum_list(request):
+    """
+    Страница просмотра учебных планов
+    """
+    PAGINATOR_COUNT = 20
+
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может создавать учебный план.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+
+    current_university = _resolve_current_university(user)
     qs = (Curriculum.objects
-          .filter(program__faculty__university=uni)
+          .filter(program__faculty__university=current_university)
           .select_related("program", "discipline", "program__faculty")
           .order_by("program__name", "discipline__title"))
 
-    # Поиск по программе/дисциплине/коду
     q = (request.GET.get("q") or "").strip()
     if q:
         qs = qs.filter(
@@ -117,58 +153,75 @@ def moderation_curriculum_list(request):
             Q(discipline__code__icontains=q)
         )
 
-    paginator = Paginator(qs, 20)
+    paginator = Paginator(qs, PAGINATOR_COUNT)
     page_obj = paginator.get_page(request.GET.get("page") or 1)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "page_obj": page_obj,
         "paginator": paginator,
         "q": q,
     }
 
-    return render(request, "main/moderation/moderation_subjects_curriculum_list.html", context)
+    return render(request, 'main/moderation/moderation_subjects_curriculum_list.html', context)
 
 
-def moderation_curriculum_edit(request, pk: int):
+def moderation_curriculum_edit(request, pk):
+    """
+    Страница редактирования учебного плана
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может редактировать учебный план.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
-    item = get_object_or_404(Curriculum, pk=pk, program__faculty__university=uni)
+
+    current_university = _resolve_current_university(user)
+    item = get_object_or_404(Curriculum, pk=pk, program__faculty__university=current_university)
 
     if request.method == "POST":
-        form = CurriculumCreateForm(request.POST, instance=item, university=uni)
+        form = CurriculumCreateForm(request.POST, instance=item, university=current_university)
         if form.is_valid():
             form.save()
             messages.success(request, "Учебный план обновлён.")
-            return redirect("curriculum_list")
+            return redirect('curriculum_list')
         else:
             messages.error(request, "Проверьте форму.")
     else:
-        form = CurriculumCreateForm(instance=item, university=uni)
+        form = CurriculumCreateForm(instance=item, university=current_university)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "form": form,
         "item": item,
     }
 
-    return render(request, "main/moderation/moderation_subjects_curriculum_edit.html", context)
+    return render(request, 'main/moderation/moderation_subjects_curriculum_edit.html', context)
 
 
-def moderation_curriculum_delete(request, pk: int):
+def moderation_curriculum_delete(request, pk):
+    """
+    Удаление дисциплины
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if request.method != "POST":
         raise Http404()
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может удалять учебный план.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
-    item = get_object_or_404(Curriculum, pk=pk, program__faculty__university=uni)
+    current_university = _resolve_current_university(user)
+    item = get_object_or_404(Curriculum, pk=pk, program__faculty__university=current_university)
 
     with transaction.atomic():
         teachings = Teaching.objects.filter(curriculum=item)
@@ -176,25 +229,34 @@ def moderation_curriculum_delete(request, pk: int):
         teachings.delete()
         item.delete()
 
-    messages.success(request, "Учебный план и связанные курсы/зачисления удалены.")
-    return redirect("curriculum_list")
+    messages.success(request, 'Учебный план и связанные курсы/зачисления удалены.')
+    return redirect('curriculum_list')
 
 
 # =====TEACHING=====
 
 def moderation_teaching_list(request):
+    """
+    Страница просмотра конкретных курсов
+    """
+    PAGINATOR_COUNT = 20
+
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может создавать курсы.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
     qs = (Teaching.objects
-          .filter(teacher__university=uni)
+          .filter(teacher__university=current_university)
           .select_related("teacher__person", "curriculum__discipline", "curriculum__program", "group")
           .order_by("-academic_year", "curriculum__discipline__title"))
 
-    # Поиск по ФИО, дисциплине, группе, году
     q = (request.GET.get("q") or "").strip()
     if q:
         qs = qs.filter(
@@ -205,65 +267,81 @@ def moderation_teaching_list(request):
             Q(academic_year__icontains=q)
         )
 
-    paginator = Paginator(qs, 20)
+    paginator = Paginator(qs, PAGINATOR_COUNT)
     page_obj = paginator.get_page(request.GET.get("page") or 1)
 
     context =  {
-        "current_university": uni,
+        "current_university": current_university,
         "page_obj": page_obj,
         "paginator": paginator,
         "q": q,
     }
 
-    return render(request, "main/moderation/moderation_subjects_teaching_list.html", context)
+    return render(request, 'main/moderation/moderation_subjects_teaching_list.html', context)
 
 
-def moderation_teaching_edit(request, pk: int):
+def moderation_teaching_edit(request, pk):
+    """
+    Страница редактирования курса
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может редактировать курсы.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
     item = get_object_or_404(
         Teaching.objects.select_related("teacher__person", "curriculum__discipline", "group"),
-        pk=pk, teacher__university=uni
+        pk=pk, teacher__university=current_university
     )
 
     if request.method == "POST":
-        form = TeachingCreateForm(request.POST, instance=item, university=uni)
+        form = TeachingCreateForm(request.POST, instance=item, university=current_university)
         if form.is_valid():
             form.save()
-            messages.success(request, "Курс (teaching) обновлён.")
-            return redirect("teaching_list")
+            messages.success(request, "Курс обновлён.")
+            return redirect('teaching_list')
         else:
             messages.error(request, "Проверьте форму.")
     else:
-        form = TeachingCreateForm(instance=item, university=uni)
+        form = TeachingCreateForm(instance=item, university=current_university)
 
     context = {
-        "current_university": uni,
+        "current_university": current_university,
         "form": form,
         "item": item,
     }
 
-    return render(request, "main/moderation/moderation_subjects_teaching_edit.html", context)
+    return render(request, 'main/moderation/moderation_subjects_teaching_edit.html', context)
 
 
-def moderation_teaching_delete(request, pk: int):
+def moderation_teaching_delete(request, pk):
+    """
+    Удаление курса
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if request.method != "POST":
         raise Http404()
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может удалять курсы.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    uni = _resolve_current_university(user)
-    item = get_object_or_404(Teaching, pk=pk, teacher__university=uni)
+    current_university = _resolve_current_university(user)
+    item = get_object_or_404(Teaching, pk=pk, teacher__university=current_university)
 
     with transaction.atomic():
         Enrollment.objects.filter(teaching=item).delete()
         item.delete()
 
     messages.success(request, "Курс и все его зачисления удалены.")
-    return redirect("teaching_list")
+    return redirect('teaching_list')
