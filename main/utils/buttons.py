@@ -67,14 +67,14 @@ buttons = [
     {
         "id": "applicant_chat",
         "icon": "📁",
-        "text": "Чат абитуриентов",
+        "text": "Ссылка на чат",
         "data_action": "applicant_chat",
         "roles": {"Applicant"}
     },
     {
         "id": "applicant_rating",
         "icon": "📊",
-        "text": "Рейтинг абитуриентов",
+        "text": "Рейтинг",
         "data_action": "applicant_rating",
         "roles": {"Applicant"}
     },
