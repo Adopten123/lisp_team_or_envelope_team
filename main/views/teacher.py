@@ -16,12 +16,19 @@ from main.utils.placeholder import render_under_development
 
 
 def teacher_schedule_view(request):
-
+    """
+    Просмотр расписания преподавателя
+    """
     person = Person.objects.filter(pk=2).first()
     teacher = getattr(person, "teacher", None) if person else None
 
     if not teacher:
-        return HttpResponseForbidden("Доступно только для преподавателя")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только преподаватель может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     today = timezone.localdate()
 
@@ -41,7 +48,7 @@ def teacher_schedule_view(request):
         .order_by("weekday", "start_time")
     )
 
-    week = {i: [] for i in range(1, 8)}  # 1..7
+    week = {i: [] for i in range(1, 8)}
     for slot in slots:
         week[slot.weekday].append({
             "slot": slot,
@@ -54,17 +61,24 @@ def teacher_schedule_view(request):
         "today": today,
     }
 
-    return render(request, "main/schedule/teacher_schedule.html", context)
+    return render(request, 'main/schedule/teacher_schedule.html', context)
 
 def teacher_subjects_view(request):
-
+    """
+    Просмотр своих дисциплин преподавателем
+    """
     PAGINATOR_COUNT = 10
 
     person = Person.objects.filter(pk=2).first()
     teacher = getattr(person, "teacher", None) if person else None
 
     if not teacher:
-        return HttpResponseForbidden("Доступно только для преподавателя")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только преподаватель может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     year = request.GET.get("year")
     sem = request.GET.get("sem")
@@ -110,6 +124,9 @@ def teacher_subjects_view(request):
     return render(request, 'main/teacher/teacher_subjects.html', context)
 
 def teacher_working_off_view(request):
+    """
+    Страница обработок
+    """
     return render_under_development(
         request,
         title="🛠️ Функционал отработок",
@@ -118,30 +135,36 @@ def teacher_working_off_view(request):
     )
 
 def teacher_request_form(request):
+    """
+    Страница отправки заявлений
+    """
     user = Person.objects.filter(pk=2).first().user
     person = getattr(user, "person", None)
     teacher = getattr(person, "teacher", None) if person else None
+
     if not teacher:
-        return HttpResponseForbidden("Доступно только преподавателям")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только преподаватель может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     current_university = teacher.university
 
-    # создание
     if request.method == "POST":
         form = TeacherRequestCreateForm(request.POST)
         if form.is_valid():
             obj: TeacherRequest = form.save(commit=False)
             obj.university = current_university
             obj.teacher = teacher
-            # оборачиваем текст «примечание» в payload_json
             note = (request.POST.get("note") or "").strip()
             obj.payload_json = {"note": note} if note else {}
             obj.save()
-            return redirect(reverse("teacher_request_form"))
+            return redirect(reverse('teacher_request_form'))
     else:
         form = TeacherRequestCreateForm()
 
-    # фильтры
     f_type = request.GET.get("type") or ""
     f_status = request.GET.get("status") or ""
     q = (request.GET.get("q") or "").strip()
@@ -172,14 +195,22 @@ def teacher_request_form(request):
         "f_type": f_type, "f_status": f_status, "q": q,
         "page_obj": page_obj,
     }
-    return render(request, "main/requests/teacher_request_page.html", context)
+    return render(request, 'main/requests/teacher_request_page.html', context)
 
 def teacher_make_alert_form(request):
+    """
+    Страница создания GroupNotification преподавателем
+    """
     person = Person.objects.filter(pk=2).first()
     teacher = getattr(person, "teacher", None)
 
     if not teacher:
-        return HttpResponseForbidden("Доступно только преподавателям")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только преподаватель может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     university = teacher.university
 
@@ -210,4 +241,4 @@ def teacher_make_alert_form(request):
         "form": form,
     }
 
-    return render(request, "main/notifications/teacher_form.html", context)
+    return render(request, 'main/notifications/teacher_form.html', context)
