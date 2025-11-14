@@ -229,6 +229,10 @@
 }
 
 /* Управление новостями */
+.news-management {
+    margin-top: 30px;
+}
+
 .news-list {
     display: flex;
     flex-direction: column;

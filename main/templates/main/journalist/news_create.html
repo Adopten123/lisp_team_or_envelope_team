@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<main class="main-content">
+<main class="main-content" style="padding-bottom: 80px;">
     <!-- Статус журналиста -->
     <section class="journalist-status">
         <div class="status-card">
@@ -118,18 +118,7 @@
         </form>
     </section>
 
-    <!-- Управление новостями -->
-    <section class="news-management">
-        <h2 class="section-title">
-            <span class="section-icon">📋</span>
-            Мои новости
-        </h2>
 
-        <div class="news-list" id="publishedNewsList">
-            <!-- Список опубликованных новостей будет загружен здесь -->
-            <div class="loading-text">⏳ Загрузка новостей...</div>
-        </div>
-    </section>
 </main>
 
 <!-- Модальное окно предпросмотра -->
@@ -144,8 +133,8 @@
                 <div class="preview-icon" id="previewIcon">📢</div>
                 <h2 id="previewTitle">Заголовок новости</h2>
                 <div class="preview-meta">
-                    <span id="previewAuthor">Автор</span>
-                    <span id="previewDate">Дата публикации</span>
+                    <span id="previewAuthor">{{ person }}</span>
+                    <span id="previewDate">{{ "now"|date:"d.m.Y H:i" }}</span>
                 </div>
                 <div class="preview-image" id="previewImageContainer" style="display: none;">
                     <img id="previewImage" src="" alt="Preview">
@@ -161,5 +150,86 @@
     </div>
 </div>
 
-<script src="{% static 'js/journalist-news.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const previewBtn = document.getElementById('previewNews');
+    const previewModal = document.getElementById('previewModal');
+    const closePreview = document.getElementById('closePreview');
+    const closePreviewBtn = document.getElementById('closePreviewBtn');
+    const newsIcon = document.getElementById('newsIcon');
+    const newsTitle = document.getElementById('newsTitle');
+    const newsContent = document.getElementById('newsContent');
+    const newsImage = document.getElementById('newsImage');
+    const uploadArea = document.getElementById('uploadArea');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeImage = document.getElementById('removeImage');
+    const previewIcon = document.getElementById('previewIcon');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewText = document.getElementById('previewText');
+    const previewImageContainer = document.getElementById('previewImageContainer');
+    const previewImage = document.getElementById('previewImage');
+
+    // Image upload functionality
+    uploadArea.addEventListener('click', function() {
+        newsImage.click();
+    });
+
+    newsImage.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    removeImage.addEventListener('click', function() {
+        newsImage.value = '';
+        imagePreview.style.display = 'none';
+    });
+
+    // Open preview modal
+    previewBtn.addEventListener('click', function() {
+        // Populate preview with form data
+        previewIcon.textContent = newsIcon.value || '📢';
+        previewTitle.textContent = newsTitle.value || 'Заголовок новости';
+        previewText.textContent = newsContent.value || 'Текст новости...';
+
+        // Handle image preview
+        if (newsImage.files && newsImage.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImageContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(newsImage.files[0]);
+        } else {
+            previewImageContainer.style.display = 'none';
+        }
+
+        // Show modal
+        previewModal.style.display = 'flex';
+    });
+
+    // Close preview modal
+    closePreview.addEventListener('click', function() {
+        previewModal.style.display = 'none';
+    });
+
+    closePreviewBtn.addEventListener('click', function() {
+        previewModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    previewModal.addEventListener('click', function(e) {
+        if (e.target === previewModal) {
+            previewModal.style.display = 'none';
+        }
+    });
+});
+</script>
+
 {% endblock %}

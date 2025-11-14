@@ -121,17 +121,6 @@ body {
     font-size: 0.9rem;
 }
 
-.user-badge {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #ff4757;
-}
-
-.user-badge.connected {
-    background: #2ed573;
-}
-
 /* Section Titles */
 .section-title {
     color: white;
