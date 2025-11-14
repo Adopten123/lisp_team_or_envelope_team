@@ -6,8 +6,12 @@
 {% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
 <main class="main-content" style="padding-bottom: 80px;">
     <!-- Статус журналиста -->
+=======
+<main class="main-content">
+>>>>>>> 72d385bd292e6b4af586dc267667fc23df0c51ac
     <section class="journalist-status">
         <div class="status-card">
             <div class="status-icon">👨‍💼</div>
@@ -22,7 +26,6 @@
         </div>
     </section>
 
-    <!-- Форма создания новости -->
     <section class="news-creation">
         <h2 class="section-title">
             <span class="section-icon">✍️</span>
@@ -31,8 +34,7 @@
 
         <form id="newsForm" class="news-form" method="POST" enctype="multipart/form-data" action="">
             {% csrf_token %}
-            
-            <!-- Эмодзи для новости -->
+
             <div class="form-group">
                 <label for="newsIcon" class="form-label">
                     <span class="label-icon">🎨</span>
@@ -50,7 +52,6 @@
                 >
             </div>
 
-            <!-- Заголовок новости -->
             <div class="form-group">
                 <label for="newsTitle" class="form-label">
                     <span class="label-icon">📝</span>
@@ -68,7 +69,6 @@
                 <div class="char-counter" id="titleCounter">0/255</div>
             </div>
 
-            <!-- Текст новости -->
             <div class="form-group">
                 <label for="newsContent" class="form-label">
                     <span class="label-icon">📄</span>
@@ -84,7 +84,6 @@
                 ></textarea>
             </div>
 
-            <!-- Изображение новости -->
             <div class="form-group">
                 <label class="form-label">
                     <span class="label-icon">🖼️</span>
@@ -104,7 +103,6 @@
                 </div>
             </div>
 
-            <!-- Кнопки действий -->
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" id="previewNews">
                     <span class="btn-icon">👁️</span>
@@ -118,10 +116,22 @@
         </form>
     </section>
 
+<<<<<<< HEAD
 
+=======
+    <section class="news-management">
+        <h2 class="section-title">
+            <span class="section-icon">📋</span>
+            Мои новости
+        </h2>
+
+        <div class="news-list" id="publishedNewsList">
+            <div class="loading-text">⏳ Загрузка новостей...</div>
+        </div>
+    </section>
+>>>>>>> 72d385bd292e6b4af586dc267667fc23df0c51ac
 </main>
 
-<!-- Модальное окно предпросмотра -->
 <div class="modal" id="previewModal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">

@@ -156,6 +156,14 @@ buttons = [
         "roles": {"University Moderator 1lvl",
                   "University Moderator 2lvl", "University Moderator 3lvl"}
     },
+{
+        "id": "acts_view",
+        "icon": "📃",
+        "text": "Акты",
+        "data_action": "request_menu",
+        "roles": {"Guest", "Applicant", "Student", "Headman", "Journalist", "Teacher", "University Moderator 1lvl",
+                  "University Moderator 2lvl", "University Moderator 3lvl"}
+    },
     {
         "id": "moderation_acts",
         "icon": "🗂️",

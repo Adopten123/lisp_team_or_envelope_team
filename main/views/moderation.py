@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q, Prefetch
 from django.urls import reverse
+from main.utils.placeholder import render_under_development
 
 from main.utils.permissions import is_moderator_min
 from main.utils.week import monday_of
@@ -513,4 +514,12 @@ def moderation_requests(request):
     return render(request, 'main/moderation/moderation_request_page.html', context)
 
 def moderation_acts(request):
-    return HttpResponse(f"Страница редактирования актов университета")
+    """
+    Страница модерирования актов
+    """
+    return render_under_development(
+        request,
+        title="🛠️ Функционал модерирования актов",
+        message="Скоро здесь появится полный функционал модерирования актов.",
+        additional_info="Вы сможете модерировать акты."
+    )

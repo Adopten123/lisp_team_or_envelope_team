@@ -10,8 +10,6 @@
 .btn-indigo:hover{box-shadow:0 10px 24px rgba(102,126,234,.35)}
 .btn-ghost{background:#fff;color:#4f46e5;border-color:rgba(102,126,234,.35)}
 
-/* ===== Сетки размеров ===== */
-
 .form-row--pair {
   display:grid;
   grid-template-columns: 1fr 1fr;
