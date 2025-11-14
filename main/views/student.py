@@ -11,6 +11,7 @@ from ..models import (
     ScheduleSlot, StudentRequest
 )
 from main.utils.grades_helper import normalize_total, to_5pt
+
 def student_schedule_view(request):
     """
     Функция для просмотра расписания студентом
@@ -21,7 +22,12 @@ def student_schedule_view(request):
     student = getattr(person, 'student', None)
 
     if not student:
-        return HttpResponseForbidden("Доступно только студентам")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только студент может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     group = student.student_group
     today = timezone.localdate()
@@ -56,7 +62,7 @@ def student_schedule_view(request):
         "today": today,
     }
 
-    return render(request, "main/schedule/student_schedule.html", context)
+    return render(request, 'main/schedule/student_schedule.html', context)
 
 def student_grades_view(request):
     """
@@ -74,7 +80,12 @@ def student_grades_view(request):
     student = getattr(person, 'student', None)
 
     if not student:
-        return HttpResponseForbidden("Доступно только для студентов")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только студент может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     enrollments = (
         Enrollment.objects
@@ -163,7 +174,7 @@ def student_grades_view(request):
         "is_paginated": page_obj.has_other_pages(),
     }
 
-    return render(request, "main/grades/student_grades.html", context)
+    return render(request, 'main/grades/student_grades.html', context)
 
 def student_group_view(request):
     """
@@ -172,8 +183,14 @@ def student_group_view(request):
     PAGINATOR_COUNT = 20
     person = Person.objects.filter(pk=1).first()
     student = getattr(person, "student", None) if person else None
+
     if not student:
-        return HttpResponseForbidden("Доступно только для студентов")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только студент может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     group = student.student_group
     curator = group.curator.person if group else None
@@ -221,7 +238,12 @@ def student_request_view(request):
     student = getattr(person, "student", None)
 
     if not student:
-        return HttpResponseForbidden("Доступно только студентам")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только студент может просматривать эту страницу.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     if request.method == "POST":
         form = StudentRequestCreateForm(request.POST)
@@ -233,7 +255,7 @@ def student_request_view(request):
             obj.status = "submitted"
             obj.payload_json = {"note": note} if note else {}
             obj.save()
-            return redirect("student_request_view")
+            return redirect('student_request_view')
     else:
         form = StudentRequestCreateForm()
 
@@ -265,4 +287,4 @@ def student_request_view(request):
         "f_type": f_type, "f_status": f_status, "q": q,
     }
 
-    return render(request, "main/requests/student_request_page.html", context)
+    return render(request, 'main/requests/student_request_page.html', context)
