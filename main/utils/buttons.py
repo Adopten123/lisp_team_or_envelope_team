@@ -60,7 +60,7 @@ buttons = [
     {
         "id": "admission_request_page",
         "icon": "🗳️",
-        "text": "Подать заявление на поступление",
+        "text": "Поступить!",
         "data_action": "admission_request",
         "roles": {"Applicant"}
     },

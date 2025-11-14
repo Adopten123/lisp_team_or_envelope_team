@@ -3,6 +3,7 @@ from .index import index
 from .student import student_schedule_view, student_grades_view, student_group_view, student_request_view
 from .headman import headman_group_news_view
 from .journalist import journalist_news_view
+from .errors import *
 
 from .teacher import (
     teacher_schedule_view,

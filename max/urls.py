@@ -22,3 +22,8 @@ urlpatterns = [
     path('', include('main.urls')),
     path('', include('authentication.urls')),
 ]
+
+handler400 = "main.views.error_400"
+handler403 = "main.views.error_403"
+handler404 = "main.views.error_404"
+handler500 = "main.views.error_500"
