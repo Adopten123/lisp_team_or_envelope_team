@@ -1,19 +1,19 @@
 {% load static %}
 
 <nav class="bottom-nav">
-    <a href="{% url 'index' %}" class="nav-item active" data-page="main">
+    <a href="{% url 'index' %}" class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}" data-page="main">
         <span class="nav-icon"><i class="fas fa-home"></i></span>
         <span class="nav-text">Главная</span>
     </a>
-    <a href="{% url 'news_view' %}" class="nav-item" data-page="news">
+    <a href="{% url 'news_view' %}" class="nav-item {% if request.resolver_match.url_name == 'news_view' %}active{% endif %}" data-page="news">
         <span class="nav-icon"><i class="fas fa-globe"></i></span>
         <span class="nav-text">Новости</span>
     </a>
-    <a href="{% url 'profile_view' %}" class="nav-item" data-page="profile">
+    <a href="{% url 'profile_view' %}" class="nav-item {% if request.resolver_match.url_name == 'profile_view' %}active{% endif %}" data-page="profile">
         <span class="nav-icon"><i class="fas fa-user"></i></span>
         <span class="nav-text">Профиль</span>
     </a>
-    <a href="{% url 'help_page' %}" class="nav-item" data-page="help">
+    <a href="{% url 'help_page' %}" class="nav-item {% if request.resolver_match.url_name == 'help_page' %}active{% endif %}" data-page="help">
         <span class="nav-icon"><i class="fas fa-question"></i></span>
         <span class="nav-text">Помощь</span>
     </a>
