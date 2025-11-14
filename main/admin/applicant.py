@@ -19,15 +19,6 @@ class ApplicantExamAdmin(admin.ModelAdmin):
     autocomplete_fields = ("applicant",)
 
 
-@admin.register(AdmissionRequest)
-class AdmissionRequestAdmin(admin.ModelAdmin):
-    list_display = ("last_name", "first_name", "email", "desired_program", "study_form", "status", "created_at")
-    list_filter = ("study_form", "status", "created_at")
-    search_fields = ("last_name", "first_name", "email", "desired_program")
-    readonly_fields = ("created_at",)
-    date_hierarchy = "created_at"
-
-
 @admin.register(ApplicationRequest)
 class ApplicationRequestAdmin(admin.ModelAdmin):
     list_display = ["last_name", "first_name", "email", "desired_program", "study_form", "status", "created_at"]

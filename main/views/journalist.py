@@ -11,7 +11,9 @@ def journalist_news_view(request):
     try:
         PAGINATOR_COUNT = 10
 
-        person = Person.objects.get(user=request.user)
+        user = Person.objects.filter(pk=5).first().user
+
+        person = Person.objects.get(user=user)
         posts = NewsPost.objects.filter(
             author=person
         )

@@ -6,8 +6,19 @@ from ..models import Student, GroupNotification
 def index(request):
     """Главная страница"""
 
-    #menu_buttons = get_menu_buttons("University Moderator 3lvl")
+    """
+    Guest - гость
+    Applicant - абитуриент
+    Student - студент
+    Headman - староста 
+    Journalist - журналист
+    Teacher - учитель
+    University Moderator 1lvl - модератор 1 уровня
+    University Moderator 2lvl - модератор 2 уровня
+    University Moderator 3lvl - модератор 3 уровня
+    """
     menu_buttons = get_menu_buttons("University Moderator 3lvl")
+
     student = Student.objects.filter(pk=1).first()
     person = student.person
     group = person.student.student_group
