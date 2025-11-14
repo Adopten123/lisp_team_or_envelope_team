@@ -1,0 +1,20 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/placeholder.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="blur-overlay">
+        <div class="blur-card">
+            <h1>{{ title }}</h1>
+            <p>{{ message }}</p>
+            {% if additional_info %}
+                <div class="additional-info">
+                    {{ additional_info }}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

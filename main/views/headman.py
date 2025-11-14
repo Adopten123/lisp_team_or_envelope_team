@@ -16,13 +16,24 @@ def headman_group_news_view(request):
 
     group = student.student_group
 
-    is_headman = StudentRole.objects.filter(
-        student=student, role="headman",
-        start_date__lte=timezone.localdate(),
-    ).filter(Q(end_date__isnull=True) | Q(end_date__gte=timezone.localdate())).exists()
+    is_headman = (StudentRole.objects
+        .filter(
+            student=student, role="headman",
+            start_date__lte=timezone.localdate(),
+        )
+        .filter(
+                Q(end_date__isnull=True) | Q(end_date__gte=timezone.localdate())
+        )
+        .exists()
+    )
 
     if not is_headman:
-        return HttpResponseForbidden("Только староста может отправлять оповещения.")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только староста может отправлять оповещения.",
+            "additional_info": "Обратитесь к старосте группы или администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     base_instance = GroupNotification(
         university=student.university,
@@ -45,4 +56,4 @@ def headman_group_news_view(request):
         "form": form,
     }
 
-    return render(request, "main/notifications/headman_form.html", context)
+    return render(request, 'main/notifications/headman_form.html', context)
