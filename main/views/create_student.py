@@ -15,7 +15,12 @@ def create_student_view(request):
     user = request.user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав для создания студентов")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня может создавать студентов.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     if request.method == "POST":
         form = StudentCreateForm(request.POST)
