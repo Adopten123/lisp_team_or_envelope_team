@@ -12,10 +12,18 @@ from main.models import (
 )
 
 def moderation_schedule_slot_create(request):
+    """
+    Страница создания пары
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 1):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 1 уровня и выше может создавать пары.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     group_id = request.GET.get("group")
     group = get_object_or_404(StudentGroup, pk=group_id) if group_id else None
@@ -29,7 +37,7 @@ def moderation_schedule_slot_create(request):
             slot.save()
             form.save_m2m()
             messages.success(request, "Ячейка расписания добавлена.")
-            back = f"{reverse('moderation_schedules')}?group={group.id}" if group else reverse("moderation_schedules")
+            back = f"{reverse('moderation_schedules')}?group={group.id}" if group else reverse('moderation_schedules')
             return redirect(back)
     else:
         form = ScheduleSlotForm(university=uni, group=group)
@@ -40,13 +48,21 @@ def moderation_schedule_slot_create(request):
         "form": form,
     }
 
-    return render(request, "main/moderation/moderation_schedules_slot_form.html", context)
+    return render(request, 'main/moderation/moderation_schedules_slot_form.html', context)
 
 def moderation_schedule_exception_create(request):
+    """
+    Страница создания переноса пары
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 1):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 1 уровня и выше может создавать перенос пары.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     uni = _resolve_current_university(user)
 
@@ -64,4 +80,4 @@ def moderation_schedule_exception_create(request):
         "current_university": uni,
         "form": form,
     }
-    return render(request, "main/moderation/moderation_schedules_exception_form.html", context)
+    return render(request, 'main/moderation/moderation_schedules_exception_form.html', context)
