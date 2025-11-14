@@ -513,4 +513,12 @@ def moderation_requests(request):
     return render(request, 'main/moderation/moderation_request_page.html', context)
 
 def moderation_acts(request):
-    return HttpResponse(f"Страница редактирования актов университета")
+    """
+    Страница модерирования актов
+    """
+    return render_under_development(
+        request,
+        title="🛠️ Функционал модерирования актов",
+        message="Скоро здесь появится полный функционал модерирования актов.",
+        additional_info="Вы сможете модерировать акты."
+    )
