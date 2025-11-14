@@ -5,11 +5,6 @@ from datetime import datetime
 from ..models import Person, Student, University, StudentGroup, Role
 
 class StudentCreateForm(forms.Form):
-    person = forms.ModelChoiceField(
-        queryset=Person.objects.filter(student__isnull=True),
-        label="Человек",
-        help_text="Выберите Person без роли Student",
-    )
     university = forms.ModelChoiceField(
         queryset=University.objects.all(),
         label="Университет",
@@ -36,7 +31,12 @@ class StudentCreateForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        self.person = kwargs.pop("person", None)
         super().__init__(*args, **kwargs)
+
+        if self.person is None:
+            raise ValueError("StudentCreateForm требует параметр 'person'")
+
         # Фильтруем группы по университету, если выбран
         if 'university' in self.data:
             try:
@@ -44,12 +44,6 @@ class StudentCreateForm(forms.Form):
                 self.fields['student_group'].queryset = StudentGroup.objects.filter(university_id=university_id)
             except (ValueError, TypeError):
                 pass
-
-    def clean_person(self):
-        person = self.cleaned_data["person"]
-        if hasattr(person, "student"):
-            raise ValidationError("У этого человека уже есть роль Student.")
-        return person
 
     def clean_student_id(self):
         student_id = self.cleaned_data["student_id"]
@@ -74,10 +68,12 @@ class StudentCreateForm(forms.Form):
         if university and student_group and student_group.university != university:
             raise ValidationError("Выбранная группа не принадлежит выбранному университету.")
 
+        if hasattr(self.person, "student"):
+            raise ValidationError("У этого человека уже есть роль Student.")
+
         return cleaned_data
 
     def save(self):
-        person = self.cleaned_data["person"]
         university = self.cleaned_data["university"]
         student_group = self.cleaned_data["student_group"]
         student_id = self.cleaned_data["student_id"]
@@ -85,7 +81,7 @@ class StudentCreateForm(forms.Form):
         admission_year = self.cleaned_data["admission_year"]
 
         student = Student.objects.create(
-            person=person,
+            person=self.person,
             university=university,
             student_group=student_group,
             student_id=student_id,
@@ -94,7 +90,7 @@ class StudentCreateForm(forms.Form):
         )
 
         student_role, _ = Role.objects.get_or_create(permission="Student", defaults={"name": "Студент"})
-        person.role = student_role
-        person.save(update_fields=["role"])
+        self.person.role = student_role
+        self.person.save(update_fields=["role"])
 
         return student

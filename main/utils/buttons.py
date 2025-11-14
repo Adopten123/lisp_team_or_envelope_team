@@ -8,6 +8,13 @@ buttons = [
     #               "University Moderator 2lvl", "University Moderator 3lvl"}
     # },
     {
+        "id": "create_student",
+        "icon": "👤",
+        "text": "Зарегистрироваться",
+        "data_action": "create-student",
+        "roles": {"Guest"}
+    },
+    {
         "id": "student_schedule_view",
         "icon": "📅",
         "text": "Расписание",

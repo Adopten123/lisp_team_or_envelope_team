@@ -10,8 +10,13 @@
                 <div class="avatar-placeholder">👤</div>
             </div>
             <div class="user-info">
-                <h3 class="user-name">Гость</h3>
-                <p class="user-status">Не авторизован</p>
+                {% if person %}
+                    <h3 class="user-name"> {{ person }}</h3>
+                    <p class="user-status"> Авторизован</p>
+                {% else %}
+                    <h3 class="user-name">Гость</h3>
+                    <p class="user-status">Не авторизован</p>
+                {% endif %}
             </div>
             <div class="user-badge" id="userBadge">●</div>
         </section>

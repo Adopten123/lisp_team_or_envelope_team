@@ -114,9 +114,10 @@ def create_student_view(request):
     """
     Страница создания студента.
     """
-
+    user = request.user
+    person = Person.objects.filter(pk=6).first()
     if request.method == "POST":
-        form = StudentCreateForm(request.POST)
+        form = StudentCreateForm(request.POST, person=person)
         if form.is_valid():
             form.save()
             messages.success(request, "Студент создан успешно.")
@@ -124,7 +125,7 @@ def create_student_view(request):
         else:
             messages.error(request, "Проверьте форму — есть ошибки.")
     else:
-        form = StudentCreateForm()
+        form = StudentCreateForm(person=person)
 
     context = {
         "form": form,

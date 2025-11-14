@@ -7,8 +7,8 @@ def index(request):
     """Главная страница"""
 
     #menu_buttons = get_menu_buttons("University Moderator 3lvl")
-    menu_buttons = get_menu_buttons("University Moderator 3lvl")
-    student = Student.objects.filter(pk=2).first()
+    menu_buttons = get_menu_buttons("Guest")
+    student = Student.objects.filter(pk=1).first()
     person = student.person
     group = person.student.student_group
 
@@ -21,6 +21,7 @@ def index(request):
     context = {
         "menu_buttons": menu_buttons,
         "notif_list": notif_list,
+        "person": person,
     }
 
     return render(request, 'main/main.html', context)
