@@ -27,7 +27,9 @@ from main.models import (
 
 def _resolve_current_university(user):
     """
-    Простейшая функция, чтобы получить университет модератора:
+    Функция для получения уровня модератора.
+    Функция рекомендуема для внутреннего использования внутри файлов: moderation(...).py
+    На данный момент функция временная, так как Role будет убрана на этапе продакшена.
     """
     person = getattr(user, "person", None)
     if person:
@@ -40,58 +42,68 @@ def _resolve_current_university(user):
     return University.objects.order_by("id").first()
 
 def moderation_staff(request):
+    """
+    Страница модерирования персонала университета.
+    На данной странцие можно просмотреть актуальный состав преподавателей,
+    добавить новых сотрудников или удалить уволенных сотрудников.
+    """
+    PAGINATOR_COUNT = 20
 
     user = Person.objects.filter(pk=5).first().user
     # Только модераторы 2 и 3 уровня
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может редактировать персонал.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    current_uni = _resolve_current_university(user)
-    if not current_uni:
+    current_university = _resolve_current_university(user)
+
+    if not current_university:
         messages.error(request, "В системе нет ни одного университета.")
-        return render(request, "main/moderation/moderation_staff.html", {
+        context = {
             "current_university": None,
             "page_obj": None,
             "paginator": None,
             "can_manage": False,
             "form": None,
             "department_q": "",
-        })
+        }
+        return render(request, 'main/moderation/moderation_staff.html', context)
 
-    # Фильтр по кафедре (поиск по contains)
     department_q = (request.GET.get("department") or "").strip()
 
     teachers_qs = (
         Teacher.objects
-        .filter(university=current_uni)
+        .filter(university=current_university)
         .select_related("person", "university")
         .order_by("person__last_name", "person__first_name")
     )
     if department_q:
         teachers_qs = teachers_qs.filter(department__icontains=department_q)
 
-    # Пагинация по 20
-    paginator = Paginator(teachers_qs, 20)
+    paginator = Paginator(teachers_qs, PAGINATOR_COUNT)
     page_number = request.GET.get("page") or 1
     page_obj = paginator.get_page(page_number)
 
-    # POST-действия
     if request.method == "POST":
         action = request.POST.get("action")
 
         if action == "create":
             form = TeacherCreateForm(request.POST)
             if form.is_valid():
-                form.save(university=current_uni)
+                form.save(university=current_university)
                 messages.success(request, "Преподаватель создан, роль человека переключена на Teacher.")
-                return redirect("moderation_staff")
+                return redirect('moderation_staff')
             else:
                 messages.error(request, "Проверьте форму — есть ошибки.")
         elif action == "delete":
             # удаление Teacher -> Person.role = Guest
             teacher_id = request.POST.get("teacher_id")
             try:
-                t = Teacher.objects.select_related("person").get(id=teacher_id, university=current_uni)
+                t = Teacher.objects.select_related("person").get(id=teacher_id, university=current_university)
             except Teacher.DoesNotExist:
                 messages.error(request, "Преподаватель не найден в текущем университете.")
             else:
@@ -101,15 +113,15 @@ def moderation_staff(request):
                 p.role = guest_role
                 p.save(update_fields=["role"])
                 messages.success(request, "Учётка преподавателя удалена, роль человека переключена на Guest.")
-            return redirect("moderation_staff")
+            return redirect('moderation_staff')
         else:
             messages.error(request, "Неизвестное действие.")
-            return redirect("moderation_staff")
+            return redirect('moderation_staff')
     else:
         form = TeacherCreateForm()
 
     context = {
-        "current_university": current_uni,
+        "current_university": current_university,
         "page_obj": page_obj,
         "paginator": paginator,
         "can_manage": True,
@@ -117,77 +129,101 @@ def moderation_staff(request):
         "department_q": department_q,
     }
 
-    return render(request, "main/moderation/moderation_staff.html", context)
+    return render(request, 'main/moderation/moderation_staff.html', context)
 
 def moderation_university(request):
+    """
+    Страница взаимодействия с факультетами и кафедрами
+    """
     user = Person.objects.filter(pk=5).first().user
-
+    err_context = {
+        "title": "Доступ запрещён",
+        "message": "Только Модератор 2 уровня и выше может создавать факультеты.",
+        "additional_info": "Обратитесь к администратору.",
+    }
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        return render(request, 'main/errors/error.html', err_context, status=403)
 
-    current_uni = _resolve_current_university(user)
-    if not current_uni:
+    current_university = _resolve_current_university(user)
+
+    if not current_university:
         messages.error(request, "Нет университета для управления.")
-        return render(request, "main/moderation/moderation_university.html", {
+        context = {
             "current_university": None,
             "faculties": [],
             "can_create_faculty": False,
             "program_form": None,
             "faculty_form": None,
-        })
+        }
+        return render(request, 'main/moderation/moderation_university.html', context)
 
     can_create_faculty = is_moderator_min(user, 3)
 
     faculty_form = FacultyCreateForm()
-    program_form = ProgramCreateForm(university=current_uni)
+    program_form = ProgramCreateForm(university=current_university)
 
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "create_faculty":
             if not can_create_faculty:
-                return HttpResponseForbidden("Недостаточно прав для создания факультетов")
+                return render(request, 'main/errors/error.html', err_context, status=403)
+
             faculty_form = FacultyCreateForm(request.POST)
             if faculty_form.is_valid():
-                faculty_form.save(university=current_uni)
+                faculty_form.save(university=current_university)
                 messages.success(request, "Факультет создан.")
-                return redirect("moderation_university")
+                return redirect('moderation_university')
             else:
                 messages.error(request, "Проверьте данные факультета.")
         elif action == "create_program":
-            program_form = ProgramCreateForm(request.POST, university=current_uni)
+            program_form = ProgramCreateForm(request.POST, university=current_university)
             if program_form.is_valid():
                 program_form.save()
                 messages.success(request, "Кафедра/направление создано.")
-                return redirect("moderation_university")
+                return redirect('moderation_university')
             else:
                 messages.error(request, "Проверьте данные кафедры/направления.")
 
-    faculties = (
-        Faculty.objects.filter(university=current_uni)
+    faculties = (Faculty.objects
+        .filter(university=current_university)
         .prefetch_related(Prefetch("programs", queryset=Program.objects.order_by("name")))
         .order_by("name")
     )
 
     context = {
-        "current_university": current_uni,
+        "current_university": current_university,
         "faculties": faculties,
         "can_create_faculty": can_create_faculty,
         "faculty_form": faculty_form,
         "program_form": program_form,
     }
 
-    return render(request, "main/moderation/moderation_university.html", context)
+    return render(request, 'main/moderation/moderation_university.html', context)
 
 def moderation_schedules(request):
+    """
+    Страница взаимодействия с расписанием
+    """
+
     user = Person.objects.filter(pk=5).first().user
     person = Person.objects.filter(pk=5).first()
-    current_uni = _resolve_current_university(user)
+    current_university = _resolve_current_university(user)
 
     if not is_moderator_min(user, 1):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 1 уровня и выше может редактировать расписание.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     q = (request.GET.get("q") or "").strip()
-    groups = StudentGroup.objects.filter(university=current_uni).select_related("program", "university").order_by("name")
+    groups = (StudentGroup.objects
+              .filter(university=current_university)
+              .select_related("program", "university")
+              .order_by("name")
+    )
+
     if q:
         groups = groups.filter(Q(name__icontains=q) | Q(program__name__icontains=q))
 
@@ -229,28 +265,38 @@ def moderation_schedules(request):
         "today": today,
         "weekdays": range(1, 8),
     }
-    return render(request, "main/moderation/moderation_schedules_home.html", context)
+    return render(request, 'main/moderation/moderation_schedules_home.html', context)
 
 
 def moderation_subjects(request):
+    """
+    Страница редактирования дисциплин, учебных планов и курсов
+    """
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может редактировать дисциплины.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
-    current_uni = _resolve_current_university(user)
-    if not current_uni:
+    current_university = _resolve_current_university(user)
+
+    if not current_university:
         messages.error(request, "Нет университета для управления.")
-        return render(request, "main/moderation/moderation_subjects.html", {
+        context = {
             "current_university": None,
             "discipline_form": None,
             "curriculum_form": None,
             "teaching_form": None,
-        })
+        }
+        return render(request, 'main/moderation/moderation_subjects.html', context)
 
     discipline_form = DisciplineCreateForm()
-    curriculum_form = CurriculumCreateForm(university=current_uni)
-    teaching_form = TeachingCreateForm(university=current_uni)
+    curriculum_form = CurriculumCreateForm(university=current_university)
+    teaching_form = TeachingCreateForm(university=current_university)
 
     if request.method == "POST":
         action = request.POST.get("action")
@@ -260,26 +306,26 @@ def moderation_subjects(request):
             if discipline_form.is_valid():
                 discipline_form.save()
                 messages.success(request, "Дисциплина создана.")
-                return redirect("moderation_subjects")
+                return redirect('moderation_subjects')
             else:
                 messages.error(request, "Проверьте данные дисциплины.")
 
         elif action == "create_curriculum":
-            curriculum_form = CurriculumCreateForm(request.POST, university=current_uni)
+            curriculum_form = CurriculumCreateForm(request.POST, university=current_university)
             if curriculum_form.is_valid():
                 curriculum_form.save()
                 messages.success(request, "Строка учебного плана создана.")
-                return redirect("moderation_subjects")
+                return redirect('moderation_subjects')
             else:
                 messages.error(request, "Проверьте данные учебного плана.")
 
         elif action == "create_teaching":
-            teaching_form = TeachingCreateForm(request.POST, university=current_uni)
+            teaching_form = TeachingCreateForm(request.POST, university=current_university)
             if teaching_form.is_valid():
                 with transaction.atomic():
                     teaching = teaching_form.save()
-                    # Если указана группа — создаём Enrollment всем студентам этой группы
                     group = teaching.group
+
                     if group:
                         students = Student.objects.filter(student_group=group)
                         created_count = 0
@@ -295,7 +341,7 @@ def moderation_subjects(request):
                         )
                     else:
                         messages.success(request, "Teaching создан (без группы/потока).")
-                return redirect("moderation_subjects")
+                return redirect('moderation_subjects')
             else:
                 messages.error(request, "Проверьте данные проведения курса.")
 
@@ -303,20 +349,28 @@ def moderation_subjects(request):
             messages.error(request, "Неизвестное действие.")
 
     context = {
-        "current_university": current_uni,
+        "current_university": current_university,
         "discipline_form": discipline_form,
         "curriculum_form": curriculum_form,
         "teaching_form": teaching_form,
     }
-    return render(request, "main/moderation/moderation_subjects.html", context)
+    return render(request, 'main/moderation/moderation_subjects.html', context)
 
 def moderation_requests(request):
+    """
+    Страница обработки справок
+    """
     STUDENT_ALLOWED = {"in_progress", "approved", "rejected", "issued"}
     TEACHER_ALLOWED = {"in_review", "approved", "rejected", "issued"}
     user = Person.objects.filter(pk=5).first().user
 
     if not is_moderator_min(user, 2):
-        return HttpResponseForbidden("Недостаточно прав")
+        context = {
+            "title": "Доступ запрещён",
+            "message": "Только Модератор 2 уровня и выше может обрабатывать заявки.",
+            "additional_info": "Обратитесь к администратору.",
+        }
+        return render(request, 'main/errors/error.html', context, status=403)
 
     current_university = _resolve_current_university(user)
 
@@ -344,16 +398,13 @@ def moderation_requests(request):
                 return HttpResponseBadRequest("Заявка не найдена")
             obj.status = new_status
             obj.save(update_fields=["status", "updated_at"])
-        return redirect(reverse("moderation_requests"))
+        return redirect(reverse('moderation_requests'))
 
-        # --- Фильтры (GET) ---
     f = FilterForm(request.GET or None)
 
-    # Базовые запросы
     s_qs = StudentRequest.objects.filter(university=current_university)
     t_qs = TeacherRequest.objects.filter(university=current_university)
 
-    # Применяем фильтры
     source = f.data.get("source") or ""
     req_type = f.data.get("req_type") or ""
     status = f.data.get("status") or ""
@@ -361,7 +412,6 @@ def moderation_requests(request):
     date_from = f.data.get("date_from") or ""
     date_to = f.data.get("date_to") or ""
 
-    # Источник
     show_student = source in ("", "student")
     show_teacher = source in ("", "teacher")
 
@@ -424,9 +474,7 @@ def moderation_requests(request):
     page_obj = paginator.get_page(request.GET.get("page"))
 
     type_choices_union = [
-        # StudentRequest
         *StudentRequest.TYPE_CHOICES,
-        # TeacherRequest
         *TeacherRequest.TYPE_CHOICES,
     ]
 
@@ -462,7 +510,7 @@ def moderation_requests(request):
         "STUDENT_ACTIONS": dict(STUDENT_ACTIONS),
         "TEACHER_ACTIONS": dict(TEACHER_ACTIONS),
     }
-    return render(request, "main/moderation/moderation_request_page.html", context)
+    return render(request, 'main/moderation/moderation_request_page.html', context)
 
 def moderation_acts(request):
     return HttpResponse(f"Страница редактирования актов университета")

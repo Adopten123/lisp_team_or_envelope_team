@@ -17,7 +17,7 @@ def create_student_view(request):
     if not is_moderator_min(user, 2):
         context = {
             "title": "Доступ запрещён",
-            "message": "Только Модератор 2 уровня может создавать студентов.",
+            "message": "Только Модератор 2 уровня и выше может создавать студентов.",
             "additional_info": "Обратитесь к администратору.",
         }
         return render(request, 'main/errors/error.html', context, status=403)
