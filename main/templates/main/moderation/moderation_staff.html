@@ -9,7 +9,6 @@
     <section class="main-content">
         <h2 class="section-title">👥 Персонал — {{ current_university.short_name }}</h2>
 
-        {# Фильтр по кафедре #}
         <section class="user-card" style="margin-bottom:12px;">
             <form method="get" class="filters"
                   style="display:flex; gap:12px; width:100%; align-items:flex-end; flex-wrap:wrap;">
@@ -27,7 +26,6 @@
             </form>
         </section>
 
-        {# Сворачиваемая форма создания #}
         {% if can_manage %}
             <section class="user-card" style="margin-bottom:12px;">
                 <details class="collapsible">
@@ -59,7 +57,6 @@
             </section>
         {% endif %}
 
-        {# Список преподавателей #}
         <section class="notifications">
             <h3 class="section-title">Сотрудники</h3>
             <div class="notifications-list">
@@ -101,7 +98,6 @@
                 {% endif %}
             </div>
 
-            {# Пагинация по 20 #}
             {% if page_obj and page_obj.paginator.num_pages > 1 %}
                 <nav class="paginator" aria-label="Пагинация" style="margin-top:14px;">
                     {% if page_obj.has_previous %}

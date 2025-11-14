@@ -62,7 +62,6 @@
     margin-top: 4px;
 }
 
-/* 🔽 блок кнопок теперь ВЕРТИКАЛЬНЫЙ */
 .mod-actions {
     display: flex;
     flex-direction: column;
@@ -81,7 +80,6 @@
     transition: all 0.2s ease;
 }
 
-/* основные стили кнопок */
 .btn-ghost {
     background: #fff;
     border: 2px solid #667eea;
