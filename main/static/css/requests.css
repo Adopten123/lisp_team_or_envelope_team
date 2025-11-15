@@ -183,3 +183,15 @@
   display: flex;
   gap: 10px;
 }
+
+.filters .actions-cell .btn-indigo,
+.filters .actions-cell .btn-ghost {
+    width: 100%;
+    min-width: 140px;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}

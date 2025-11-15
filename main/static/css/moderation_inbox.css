@@ -81,9 +81,12 @@
 }
 
 .btn-ghost {
-    background: #fff;
-    border: 2px solid #667eea;
-    color: #4f46e5;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(102, 126, 234, 0.35);
+    color: #667eea;
+    padding: 10px 14px;
+    border-radius: 12px;
+    text-decoration: none;
 }
 
 .btn-indigo {
@@ -104,10 +107,20 @@
     border: none;
 }
 
-.btn-ghost:hover,
+.btn-ghost:hover {
+    background: #667eea;
+    color: #fff;
+    transform: translateY(-2px);
+}
 .btn-indigo:hover,
 .btn-danger:hover,
 .btn-success:hover {
     transform: translateY(-2px);
     opacity: 0.9;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
 }
