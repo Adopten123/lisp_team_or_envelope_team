@@ -129,7 +129,6 @@ body {
     background: #2ed573;
 }
 
->>>>>>> 72d385bd292e6b4af586dc267667fc23df0c51ac
 .section-title {
     color: white;
     font-size: 1.2rem;
@@ -273,7 +272,7 @@ body {
     border-radius: 12px;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    color: #666;
+    color: #ffffff;
     text-decoration: none;
 }
 
