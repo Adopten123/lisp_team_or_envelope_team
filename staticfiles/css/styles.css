@@ -28,9 +28,10 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding-bottom: 100px;
+    padding-bottom: 100px; /* Отступ для фиксированной навигации */
 }
 
+/* Header Styles */
 .header {
     text-align: center;
     margin-bottom: 24px;
@@ -71,15 +72,17 @@ body {
     margin-top: 8px;
 }
 
+/* Main Content */
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
 }
 
+/* User Card */
 .user-card {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -129,6 +132,7 @@ body {
     background: #2ed573;
 }
 
+/* Section Titles */
 .section-title {
     color: white;
     font-size: 1.2rem;
@@ -137,6 +141,7 @@ body {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Quick Actions */
 .actions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -176,6 +181,7 @@ body {
     color: #333;
 }
 
+/* Notifications */
 .notifications-list {
     display: flex;
     flex-direction: column;
@@ -213,6 +219,7 @@ body {
     font-size: 0.8rem;
 }
 
+/* News */
 .news-carousel {
     position: relative;
     background: rgba(255, 255, 255, 0.95);
@@ -243,6 +250,7 @@ body {
     font-size: 0.9rem;
 }
 
+/* Bottom Navigation - FIXED */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -257,6 +265,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-bottom: none;
     z-index: 1000;
+    /* Учет безопасных зон на iOS */
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
@@ -293,6 +302,7 @@ body {
     font-weight: 500;
 }
 
+/* Responsive Design */
 @media (max-width: 360px) {
     .container {
         padding: 12px;
@@ -317,25 +327,30 @@ body {
     }
 }
 
+/* Для высоких экранов */
 @media (min-height: 800px) {
     .container {
         padding-bottom: 110px;
     }
 }
 
+/* Loading States */
 .loading {
     opacity: 0.7;
     pointer-events: none;
 }
 
+/* Success States */
 .success {
     border-left: 4px solid #2ed573;
 }
 
+/* Плавная прокрутка */
 .main-content {
     scroll-behavior: smooth;
 }
 
+/* Убираем скроллбар на мобильных */
 .main-content::-webkit-scrollbar {
     display: none;
 }

@@ -1,3 +1,4 @@
+/* Кнопки */
 .btn-indigo{
   background:#667eea;color:#fff;border:none;
   padding:10px 14px;border-radius:12px;
@@ -10,11 +11,13 @@
   border:1px solid rgba(102,126,234,.5);color:#667eea;
   padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;
 }
+/* Collapsible */
 .collapsible{display:block;margin-bottom:8px}
 .collapsible>summary{list-style:none}
 .collapsible>summary::-webkit-details-marker{display:none}
 .form-body{margin-top:12px}
 .forms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+/* Form fields */
 .form-row{margin-bottom:10px}
 .form-row.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-row label{display:block;font-size:.85rem;color:#666;margin-bottom:6px}
@@ -26,9 +29,11 @@
   width:100%;border:1px solid rgba(0,0,0,.08);
   border-radius:10px;padding:10px;background:#fff
 }
+/* Заголовок секции дерева */
 .tree-title{
   margin-bottom:12px;font-size:1rem;font-weight:700;color:#2f3542
 }
+/* Сетка факультетов */
 .faculty-grid{
   display:grid;gap:14px;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -53,6 +58,7 @@
   margin-top:8px;font-size:1.05rem;font-weight:700;color:#2f3542
 }
 .faculty-meta{margin-top:4px;color:#666;font-size:.85rem}
+/* Кафедры как чипсы */
 .programs-wrap{
   display:flex;flex-wrap:wrap;gap:8px
 }

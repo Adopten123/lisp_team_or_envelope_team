@@ -118,9 +118,6 @@ body {
     font-size: 0.9rem;
 }
 
-<<<<<<< HEAD
-/* Section Titles */
-=======
 .user-badge {
     width: 12px;
     height: 12px;
@@ -261,7 +258,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-bottom: none;
     z-index: 1000;
-    /* Учет безопасных зон на iOS */
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 

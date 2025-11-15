@@ -1,3 +1,4 @@
+/* static/css/profile_css.css */
 .profile-section {
     padding: 20px;
 }
@@ -137,6 +138,7 @@
     margin-bottom: 15px;
 }
 
+/* Стили для неавторизованных пользователей */
 .auth-required {
     text-align: center;
     padding: 40px 20px;

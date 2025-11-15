@@ -1,3 +1,4 @@
+/* ===== Paginator (индиго-стекло) ===== */
 .paginator{
   margin-top: 14px;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
@@ -41,6 +42,7 @@
   border-color: rgba(102,126,234,.55);
 }
 
+/* Активная страница — градиент */
 .page-btn.is-active{
   color: #fff;
   background: linear-gradient(135deg, #667eea, #764ba2);
@@ -49,21 +51,25 @@
   cursor: default;
 }
 
+/* Прозрачные (Первая/Назад/Вперёд/Последняя) */
 .page-btn.page-btn--ghost{
   background: rgba(255,255,255,0.6);
   color: #494f77;
 }
 
+/* Отключенные */
 .page-btn.is-disabled{
   pointer-events: none;
   opacity: .45;
   filter: grayscale(10%);
 }
 
+/* Эллипсис */
 .page-gap{
   color: #666; padding: 0 4px; min-width: auto; height: 36px;
 }
 
+/* Узкие экраны — компактнее */
 @media (max-width: 360px){
   .page-btn, .page-gap{ height: 34px; min-width: 34px; padding: 0 10px; font-size: .85rem; }
 }

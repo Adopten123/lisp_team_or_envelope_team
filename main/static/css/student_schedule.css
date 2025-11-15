@@ -1,9 +1,13 @@
+/* ===== Расписание (страница студента) ===== */
+
+/* Секция расписания */
 .schedule-section {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
+/* День недели (контейнер) */
 .schedule-day {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
@@ -13,6 +17,7 @@
   border: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Заголовок дня */
 .day-title {
   color: #2f3542;
   font-size: 1rem;
@@ -27,6 +32,7 @@
   font-size: 1rem;
 }
 
+/* Карточка пары */
 .schedule-card {
   display: grid;
   grid-template-columns: 96px 1fr auto;
@@ -42,23 +48,27 @@
   border: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Время пары */
 .schedule-time {
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   color: #667eea;
 }
 
+/* Название предмета */
 .schedule-subject {
   font-weight: 600;
   color: #2f3542;
 }
 
+/* Метаданные пары: корпус, аудитория, примечание */
 .schedule-meta {
   font-size: 0.85rem;
   color: #666;
   text-align: right;
 }
 
+/* Пустое состояние внутри дня */
 .schedule-empty {
   background: rgba(255, 255, 255, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -69,6 +79,7 @@
   font-weight: 500;
 }
 
+/* Состояния (опционально): отмена / перенос — если будешь подсвечивать через класс */
 .schedule-card.is-cancelled {
   opacity: 0.6;
   position: relative;
@@ -85,6 +96,7 @@
   border-radius: 999px;
 }
 
+/* Мобильная адаптация */
 @media (max-width: 420px) {
   .schedule-card {
     grid-template-columns: 80px 1fr;
