@@ -10,7 +10,7 @@
         <h2 class="section-title">✏️ Редактирование курса</h2>
 
         <section class="user-card">
-            <form method="post" novalidate>
+            <form method="post" novalidate class="curriculum-form">
                 {% csrf_token %}
 
                 <div class="form-row two">
@@ -57,9 +57,13 @@
                     </div>
                 </div>
 
-                <div class="form-actions">
+                <div class="form-actions centered">
                     <button class="btn btn-indigo" type="submit">Сохранить</button>
-                    <a class="btn btn-ghost" href="{% url 'teaching_list' %}">Отмена</a>
+                    <button class="btn btn-ghost"
+                            type="button"
+                            onclick="window.location.href='{% url 'teaching_list' %}'">
+                        Отмена
+                    </button>
                 </div>
             </form>
         </section>
