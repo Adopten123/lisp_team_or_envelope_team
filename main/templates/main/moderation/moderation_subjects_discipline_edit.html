@@ -1,7 +1,6 @@
 {% extends 'main/index.html' %}
 {% load static %}
 
-
 {% block extra_styles %}
     <link rel="stylesheet" href="{% static 'css/moderation_forms.css' %}">
 {% endblock %}
@@ -11,7 +10,7 @@
         <h2 class="section-title">✏️ Редактирование дисциплины — {{ item.title }}</h2>
 
         <section class="user-card">
-            <form method="post" novalidate>
+            <form method="post" novalidate class="curriculum-form">
                 {% csrf_token %}
 
                 <div class="form-row two">
@@ -19,13 +18,16 @@
                         <label class="ui-label">Код</label>
                         {{ form.code }}
                         {% if form.code.errors %}
-                            <div class="ui-error">{{ form.code.errors|striptags }}</div>{% endif %}
+                            <div class="ui-error">{{ form.code.errors|striptags }}</div>
+                        {% endif %}
                     </div>
+
                     <div class="form-field">
                         <label class="ui-label">ECTS</label>
                         {{ form.ects }}
                         {% if form.ects.errors %}
-                            <div class="ui-error">{{ form.ects.errors|striptags }}</div>{% endif %}
+                            <div class="ui-error">{{ form.ects.errors|striptags }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -34,16 +36,22 @@
                         <label class="ui-label">Название</label>
                         {{ form.title }}
                         {% if form.title.errors %}
-                            <div class="ui-error">{{ form.title.errors|striptags }}</div>{% endif %}
+                            <div class="ui-error">{{ form.title.errors|striptags }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="form-actions">
+                <div class="form-actions centered">
                     <button class="btn btn-indigo" type="submit">Сохранить</button>
-                    <a class="btn btn-ghost" href="{% url 'disciplines_list' %}">Отмена</a>
+
+                    <button class="btn btn-ghost"
+                            type="button"
+                            onclick="window.location.href='{% url 'disciplines_list' %}'">
+                        Отмена
+                    </button>
                 </div>
+
             </form>
         </section>
     </section>
 {% endblock %}
-
