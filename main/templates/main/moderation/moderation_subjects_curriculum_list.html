@@ -11,12 +11,19 @@
     <section class="main-content">
         <h2 class="section-title">📑 Учебные планы — {{ current_university.short_name }}</h2>
 
-        <section class="user-card" style="margin-bottom:12px;">
-            <form method="get" class="filters" style="display:flex; gap:12px; flex-wrap:wrap;">
-                <input type="text" name="q" value="{{ q }}" placeholder="Поиск по названию или коду"
-                       class="action-card" style="padding:10px; border-radius:10px; min-width:260px;">
-                <button type="submit" class="btn btn-indigo">Искать</button>
-                <a href="{% url 'disciplines_list' %}" class="btn btn-ghost">Сбросить</a>
+        <section class="user-card search-section" style="margin-bottom:12px;">
+            <form method="get" class="discipline-search-form">
+                <div class="search-field">
+                    <input type="text"
+                           name="q"
+                           value="{{ q }}"
+                           placeholder="Поиск по названию или коду"
+                           class="action-card search-input">
+                </div>
+                <div class="search-actions">
+                    <button type="submit" class="btn btn-indigo">Искать</button>
+                    <a href="{% url 'disciplines_list' %}" class="btn btn-ghost">Сбросить</a>
+                </div>
             </form>
         </section>
 
@@ -30,12 +37,13 @@
                                 <strong>{{ c.program.name }}</strong> · {{ c.discipline.title }}
                             </p>
                             <span class="notification-time">
-              Семестр: {{ c.semester }}, часы: {{ c.hours }}, контроль: {{ c.get_control_form_display }}
-            </span>
+                                Семестр: {{ c.semester }}, часы: {{ c.hours }}, контроль: {{ c.get_control_form_display }}
+                            </span>
                         </div>
-                        <div style="display:flex; gap:8px;">
+                        <div class="discipline-actions">
                             <a class="btn btn-ghost" href="{% url 'curriculum_edit' c.id %}">Редактировать</a>
-                            <form method="post" action="{% url 'curriculum_delete' c.id %}"
+                            <form method="post"
+                                  action="{% url 'curriculum_delete' c.id %}"
                                   onsubmit="return confirm('Удалить Curriculum и ВСЁ связанное?');">
                                 {% csrf_token %}
                                 <button class="btn btn-danger" type="submit">Удалить</button>
@@ -45,7 +53,9 @@
                 {% empty %}
                     <div class="notification-item">
                         <div class="notification-icon">ℹ️</div>
-                        <div class="notification-content"><p class="notification-text">Пока пусто.</p></div>
+                        <div class="notification-content">
+                            <p class="notification-text">Пока пусто.</p>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

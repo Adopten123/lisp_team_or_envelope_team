@@ -69,3 +69,49 @@
     padding: 10px;
     background: #fff;
 }
+.filters-section {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.filters--vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.filters--vertical .filters-field {
+  width: 100%;
+}
+
+.filters--vertical .filters-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.filter-input {
+  width: 100%;
+  height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  outline: none;
+  transition: box-shadow .2s ease, transform .02s ease;
+}
+
+.create-teacher-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.create-teacher-section .collapsible {
+  text-align: center;
+}

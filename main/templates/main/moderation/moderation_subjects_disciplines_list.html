@@ -11,12 +11,19 @@
     <section class="main-content">
         <h2 class="section-title">📚 Все дисциплины — {{ current_university.short_name }}</h2>
 
-        <section class="user-card" style="margin-bottom:12px;">
-            <form method="get" class="filters" style="display:flex; gap:12px; flex-wrap:wrap;">
-                <input type="text" name="q" value="{{ q }}" placeholder="Поиск по названию или коду"
-                       class="action-card" style="padding:10px; border-radius:10px; min-width:260px;">
-                <button type="submit" class="btn btn-indigo">Искать</button>
-                <a href="{% url 'disciplines_list' %}" class="btn btn-ghost">Сбросить</a>
+        <section class="user-card search-section" style="margin-bottom:12px;">
+            <form method="get" class="discipline-search-form">
+                <div class="search-field">
+                    <input type="text"
+                           name="q"
+                           value="{{ q }}"
+                           placeholder="Поиск по названию или коду"
+                           class="action-card search-input">
+                </div>
+                <div class="search-actions">
+                    <button type="submit" class="btn btn-indigo">Искать</button>
+                    <a href="{% url 'disciplines_list' %}" class="btn btn-ghost">Сбросить</a>
+                </div>
             </form>
         </section>
 
@@ -31,7 +38,8 @@
                                     {{ d.code }}{% endif %}</p>
                                 <span class="notification-time">ECTS: {{ d.ects|default:"—" }}</span>
                             </div>
-                            <div style="display:flex; gap:6px;">
+
+                            <div class="discipline-actions">
                                 <a class="btn btn-ghost" href="{% url 'discipline_edit' d.id %}">Редактировать</a>
                                 <form method="post" action="{% url 'discipline_delete' d.id %}"
                                       onsubmit="return confirm('Удалить дисциплину и ВСЁ связанное?');">
@@ -39,6 +47,7 @@
                                     <button type="submit" class="btn btn-danger">Удалить</button>
                                 </form>
                             </div>
+
                         </div>
                     {% endfor %}
                 {% else %}

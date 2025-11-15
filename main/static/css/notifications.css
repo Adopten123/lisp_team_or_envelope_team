@@ -91,16 +91,23 @@
     margin-top: 6px;
 }
 
-.form-actions .btn-indigo,
-.form-actions .btn-ghost {
-    min-width: 140px;
-    height: 44px;
-    padding: 0 18px;
-    border-radius: 14px;
-    font-weight: 700;
+.form-actions .btn-indigo {
+    background: #667eea;
+    color: #fff;
     border: none;
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
     cursor: pointer;
-    transition: all 0.2s ease;
+    font-weight: 600;
+}
+.form-actions .btn-ghost {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(102, 126, 234, 0.35);
+    color: #667eea;
+    padding: 10px 14px;
+    border-radius: 12px;
+    text-decoration: none;
 }
 
 .form-actions .btn-indigo {

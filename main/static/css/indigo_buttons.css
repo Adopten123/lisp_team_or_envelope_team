@@ -51,3 +51,46 @@
   outline: 2px solid rgba(102,126,234,0.5);
   outline-offset: 2px;
 }
+
+.search-section {
+  display: flex;
+  justify-content: center;
+}
+
+.discipline-search-form {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.search-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.discipline-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px;
+}
+
+.discipline-actions .btn {
+  width: 100%;
+}

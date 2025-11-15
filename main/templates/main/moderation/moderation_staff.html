@@ -9,25 +9,33 @@
     <section class="main-content">
         <h2 class="section-title">👥 Персонал — {{ current_university.short_name }}</h2>
 
-        <section class="user-card" style="margin-bottom:12px;">
-            <form method="get" class="filters"
-                  style="display:flex; gap:12px; width:100%; align-items:flex-end; flex-wrap:wrap;">
-                <div style="flex:1; min-width:220px;">
-                    <label for="f_department" style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Кафедра
-                        (поиск)</label>
-                    <input id="f_department" name="department" value="{{ department_q }}"
-                           placeholder="Например: ИТ, Математика…" class="action-card"
-                           style="padding:10px; border-radius:10px;">
+        <section class="user-card filters-section">
+            <form method="get" class="filters filters--vertical">
+                <div class="filters-field">
+                    <label for="f_department"
+                           style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">
+                        Факультет (поиск)
+                    </label>
+                    <input id="f_department"
+                           name="department"
+                           type="text"
+                           value="{{ department_q }}"
+                           placeholder="Например: ИТ, Математика…"
+                           class="filter-input">
                 </div>
-                <div>
+
+                <div class="filters-actions">
                     <button type="submit" class="btn-indigo">Применить</button>
-                    <a href="{% url 'moderation_staff' %}" class="btn-ghost" style="margin-left:6px;">Сбросить</a>
+                    <button class="btn-ghost" type="button"
+                            onclick="window.location.href='{% url 'moderation_staff' %}'">
+                        Отмена
+                    </button>
                 </div>
             </form>
         </section>
 
         {% if can_manage %}
-            <section class="user-card" style="margin-bottom:12px;">
+            <section class="user-card create-teacher-section">
                 <details class="collapsible">
                     <summary class="btn-indigo-outline">➕ Создать преподавателя</summary>
                     <div style="margin-top:12px;">
@@ -45,7 +53,7 @@
                                 {{ form.academic_title }}
                             </div>
                             <div>
-                                <label style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Кафедра</label>
+                                <label style="display:block; font-size:.85rem; color:#666; margin-bottom:6px;">Факультет</label>
                                 {{ form.department }}
                             </div>
                             <div style="grid-column:1 / -1; text-align:right;">
