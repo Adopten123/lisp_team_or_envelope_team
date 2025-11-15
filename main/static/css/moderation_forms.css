@@ -139,3 +139,32 @@
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+.curriculum-form {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-card form {
+  display: block;
+}
+
+.form-field .under-hours {
+  margin-top: 10px;
+}
+
+.form-actions.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.form-actions.centered .btn {
+  min-width: 150px;
+  text-align: center;
+}

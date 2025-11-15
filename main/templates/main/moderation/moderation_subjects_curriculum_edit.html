@@ -10,7 +10,7 @@
         <h2 class="section-title">✏️ Редактирование учебного плана</h2>
 
         <section class="user-card">
-            <form method="post" novalidate>
+            <form method="post" novalidate class="curriculum-form">
                 {% csrf_token %}
 
                 <div class="form-row two">
@@ -38,28 +38,31 @@
                             <div class="ui-error">{{ form.semester.errors|striptags }}</div>
                         {% endif %}
                     </div>
+
                     <div class="form-field">
                         <label class="ui-label">Часы</label>
                         {{ form.hours }}
                         {% if form.hours.errors %}
                             <div class="ui-error">{{ form.hours.errors|striptags }}</div>
                         {% endif %}
+
+                        <div class="form-field under-hours">
+                            <label class="ui-label">Форма контроля</label>
+                            {{ form.control_form }}
+                            {% if form.control_form.errors %}
+                                <div class="ui-error">{{ form.control_form.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="ui-label">Форма контроля</label>
-                        {{ form.control_form }}
-                        {% if form.control_form.errors %}
-                            <div class="ui-error">{{ form.control_form.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-actions">
+                <div class="form-actions centered">
                     <button class="btn btn-indigo" type="submit">Сохранить</button>
-                    <a class="btn btn-ghost" href="{% url 'curriculum_list' %}">Отмена</a>
+                    <button class="btn btn-ghost"
+                            type="button"
+                            onclick="window.location.href='{% url 'curriculum_list' %}'">
+                        Отмена
+                    </button>
                 </div>
             </form>
         </section>
