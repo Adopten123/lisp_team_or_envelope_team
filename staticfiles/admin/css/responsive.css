@@ -1,9 +1,12 @@
+/* Tablets */
+
 input[type="submit"], button {
     -webkit-appearance: none;
     appearance: none;
 }
 
 @media (max-width: 1024px) {
+    /* Basic */
 
     html {
         -webkit-text-size-adjust: 100%;
@@ -18,6 +21,8 @@ input[type="submit"], button {
         font-size: 0.75rem;
     }
 
+    /* Layout */
+
     #container {
         min-width: 0;
     }
@@ -29,6 +34,8 @@ input[type="submit"], button {
     div.breadcrumbs {
         padding: 10px 30px;
     }
+
+    /* Header */
 
     #header {
         flex-direction: column;
@@ -52,6 +59,8 @@ input[type="submit"], button {
         display: inline-block;
         line-height: 1.4;
     }
+
+    /* Dashboard */
 
     .dashboard #content {
         width: auto;
@@ -80,6 +89,8 @@ input[type="submit"], button {
     td .changelink, td .addlink {
         font-size: 0.8125rem;
     }
+
+    /* Changelist */
 
     #toolbar {
         border: none;
@@ -150,12 +161,14 @@ input[type="submit"], button {
     .filtered .actions,
 
     #changelist .paginator {
-        border-top-color: var(--hairline-color);
+        border-top-color: var(--hairline-color); /* XXX Is this used at all? */
     }
 
     #changelist .results + .paginator {
         border-top: none;
     }
+
+    /* Forms */
 
     label {
         font-size: 0.875rem;
@@ -224,6 +237,8 @@ input[type="submit"], button {
         padding: 7px;
     }
 
+    /* Related widget */
+
     .related-widget-wrapper {
         float: none;
     }
@@ -237,6 +252,8 @@ input[type="submit"], button {
     .related-widget-wrapper-link + .related-widget-wrapper-link {
         margin-left: 10px;
     }
+
+    /* Selector */
 
     .selector {
         display: flex;
@@ -383,7 +400,7 @@ input[type="submit"], button {
     }
 
     .datetimeshortcuts {
-        color: var(--border-color);
+        color: var(--border-color); /* XXX Redundant, .datetime span also sets #ccc */
     }
 
     .form-row .datetime input.vDateField, .form-row .datetime input.vTimeField {
@@ -393,6 +410,8 @@ input[type="submit"], button {
     .inline-group {
         overflow: auto;
     }
+
+    /* Messages */
 
     ul.messagelist li {
         padding-left: 55px;
@@ -407,6 +426,8 @@ input[type="submit"], button {
         background-position: 30px 14px;
     }
 
+    /* Login */
+
     .login #header {
         padding: 15px 20px;
     }
@@ -414,6 +435,8 @@ input[type="submit"], button {
     .login #branding h1 {
         margin: 0;
     }
+
+    /* GIS */
 
     div.olMap {
         max-width: calc(100vw - 30px);
@@ -425,6 +448,8 @@ input[type="submit"], button {
         margin-top: 10px;
     }
 
+    /* Docs */
+
     .module table.xfull {
         width: 100%;
     }
@@ -434,7 +459,10 @@ input[type="submit"], button {
     }
 }
 
+/* Mobile */
+
 @media (max-width: 767px) {
+    /* Layout */
 
     #header, #content, #footer {
         padding: 15px;
@@ -447,6 +475,8 @@ input[type="submit"], button {
     div.breadcrumbs {
         padding: 10px 15px;
     }
+
+    /* Dashboard */
 
     .colMS, .colSM {
         margin: 0;
@@ -465,6 +495,8 @@ input[type="submit"], button {
         padding: 10px 15px;
         font-size: 1rem;
     }
+
+    /* Changelist */
 
     #changelist {
         align-items: stretch;
@@ -513,6 +545,8 @@ input[type="submit"], button {
     .object-tools li + li {
         margin-left: 15px;
     }
+
+    /* Forms */
 
     .form-row {
         padding: 15px 0;
@@ -626,6 +660,8 @@ input[type="submit"], button {
         margin-top: 5px;
     }
 
+    /* Related widget */
+
     .related-widget-wrapper {
         width: 100%;
         display: flex;
@@ -652,6 +688,8 @@ input[type="submit"], button {
     .related-widget-wrapper-link + .related-widget-wrapper-link {
         margin-left: 15px;
     }
+
+    /* Selector */
 
     .selector {
         flex-direction: column;
@@ -699,6 +737,8 @@ input[type="submit"], button {
     .active.selector-add:focus, .active.selector-add:hover {
         background-position: 0 -60px;
     }
+
+    /* Inlines */
 
     .inline-group[data-inline-type="stacked"] .inline-related {
         border: 1px solid var(--hairline-color);
@@ -769,6 +809,8 @@ input[type="submit"], button {
         background-position: 8px 9px;
     }
 
+    /* Submit row */
+
     .submit-row {
         padding: 10px;
         margin: 0 0 15px;
@@ -789,6 +831,8 @@ input[type="submit"], button {
         margin: 0;
     }
 
+    /* Messages */
+
     ul.messagelist li {
         padding-left: 40px;
         background-position: 15px 12px;
@@ -802,9 +846,13 @@ input[type="submit"], button {
         background-position: 15px 14px;
     }
 
+    /* Paginator */
+
     .paginator .this-page, .paginator a:link, .paginator a:visited {
         padding: 4px 10px;
     }
+
+    /* Login */
 
     body.login {
         padding: 0 15px;
@@ -856,6 +904,8 @@ input[type="submit"], button {
         padding: 8px 12px;
         font-size: 0.8125rem;
     }
+
+    /* Calendar and clock */
 
     .calendarbox, .clockbox {
         position: fixed !important;
@@ -929,6 +979,8 @@ input[type="submit"], button {
         top: 10px;
     }
 
+    /* History */
+
     table#change-history tbody th, table#change-history tbody td {
         font-size: 0.8125rem;
         word-break: break-word;
@@ -937,6 +989,8 @@ input[type="submit"], button {
     table#change-history tbody th {
         width: auto;
     }
+
+    /* Docs */
 
     table.model tbody th, table.model tbody td {
         font-size: 0.8125rem;

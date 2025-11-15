@@ -1,3 +1,5 @@
+/* TABLETS */
+
 @media (max-width: 1024px) {
     [dir="rtl"] .colMS {
         margin-right: 0;
@@ -57,6 +59,8 @@
         padding-right: 16px;
     }
 }
+
+/* MOBILE */
 
 @media (max-width: 767px) {
     [dir="rtl"] .aligned .related-lookup,

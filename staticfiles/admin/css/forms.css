@@ -1,5 +1,6 @@
 @import url('widgets.css');
 
+/* FORM ROWS */
 
 .form-row {
     overflow: hidden;
@@ -33,6 +34,7 @@ form .form-row p {
     padding-bottom: 10px;
 }
 
+/* FORM LABELS */
 
 label {
     font-weight: normal;
@@ -45,6 +47,7 @@ label {
     color: var(--body-fg);
 }
 
+/* RADIO BUTTONS */
 
 form div.radiolist div {
     padding-right: 7px;
@@ -73,6 +76,7 @@ form ul.inline li {
     padding-right: 7px;
 }
 
+/* ALIGNED FIELDSETS */
 
 .aligned label {
     display: block;
@@ -184,6 +188,7 @@ fieldset .fieldBox {
     margin-right: 20px;
 }
 
+/* WIDE FIELDSETS */
 
 .wide label {
     width: 200px;
@@ -210,6 +215,7 @@ form div.help ul {
     width: 450px;
 }
 
+/* COLLAPSED FIELDSETS */
 
 fieldset.collapsed * {
     display: none;
@@ -240,11 +246,13 @@ fieldset.collapsed .collapse-toggle {
     color: var(--link-fg);
 }
 
+/* MONOSPACE TEXTAREAS */
 
 fieldset.monospace textarea {
     font-family: var(--font-family-monospace);
 }
 
+/* SUBMIT ROW */
 
 .submit-row {
     padding: 12px 14px 12px;
@@ -313,6 +321,7 @@ body.popup .submit-row {
     text-decoration: none;
 }
 
+/* CUSTOM FORM FIELDS */
 
 .vSelectMultipleField {
     vertical-align: top;
@@ -366,6 +375,8 @@ body.popup .submit-row {
 .vTextField, .vUUIDField {
     width: 20em;
 }
+
+/* INLINES */
 
 .inline-group {
     padding: 0;
@@ -495,6 +506,8 @@ body.popup .submit-row {
 .empty-form {
     display: none;
 }
+
+/* RELATED FIELD ADD ONE / LOOKUP */
 
 .related-lookup {
     margin-left: 5px;

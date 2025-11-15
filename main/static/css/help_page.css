@@ -1,3 +1,4 @@
+/* Стили для страницы помощи */
 .help-page {
     padding: 20px;
     max-width: 600px;
@@ -102,6 +103,7 @@
     font-family: inherit;
 }
 
+/* Стили для приоритетов */
 .priority-options {
     display: flex;
     gap: 10px;
@@ -164,6 +166,7 @@
     color: white;
 }
 
+/* Стили для checkbox */
 .checkbox-option {
     display: flex;
     align-items: center;
@@ -200,6 +203,7 @@
     transform: translate(-50%, -50%);
 }
 
+/* Кнопки формы */
 .form-actions {
     display: flex;
     gap: 15px;
@@ -247,6 +251,7 @@
     color: #666;
 }
 
+/* Ошибки */
 .error-list {
     margin-top: 5px;
 }
@@ -257,6 +262,7 @@
     display: block;
 }
 
+/* Адаптивность */
 @media (max-width: 768px) {
     .help-page {
         padding: 10px;

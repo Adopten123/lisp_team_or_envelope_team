@@ -1,3 +1,5 @@
+/* === Indigo Admin Skin (Django 4.x/5.x) ================================== */
+/* Палитра и переменные */
 :root{
   --indigo-50:#eef2ff; --indigo-100:#e0e7ff; --indigo-200:#c7d2fe;
   --indigo-300:#a5b4fc; --indigo-400:#818cf8; --indigo-500:#6366f1;
@@ -15,10 +17,12 @@
   --focus: rgba(79,70,229,.35);
 }
 
+/* Общий фон администратора */
 body, .dashboard #content{
   background: var(--bg);
 }
 
+/* Верхняя полоса */
 #header{
   background: linear-gradient(90deg, var(--indigo-600), var(--indigo-700));
   border-bottom: 1px solid rgba(255,255,255,.2);
@@ -35,6 +39,7 @@ body, .dashboard #content{
   background: rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:8px;
 }
 
+/* Хлебные крошки */
 div.breadcrumbs{
   background: var(--indigo-50);
   color: var(--text);
@@ -43,6 +48,7 @@ div.breadcrumbs{
 div.breadcrumbs a{ color: var(--indigo-600); }
 div.breadcrumbs a:hover{ color: var(--indigo-700); }
 
+/* Контейнеры и модули */
 #content, .module{
   background: var(--surface);
   border: 1px solid var(--border);
@@ -56,6 +62,7 @@ div.breadcrumbs a:hover{ color: var(--indigo-700); }
   border-bottom: 1px solid var(--border);
 }
 
+/* Таблицы в changelist */
 .change-list .results, .module table{
   border-collapse: separate;
   border-spacing: 0;
@@ -75,6 +82,7 @@ div.breadcrumbs a:hover{ color: var(--indigo-700); }
   background: var(--indigo-100);
 }
 
+/* Пагинация */
 .paginator{
   background: var(--surface);
   border: 1px solid var(--border);
@@ -90,6 +98,7 @@ div.breadcrumbs a:hover{ color: var(--indigo-700); }
   padding: .1rem .45rem;
 }
 
+/* Фильтры справа */
 #changelist-filter{
   background: var(--surface);
   border: 1px solid var(--border);
@@ -104,6 +113,7 @@ div.breadcrumbs a:hover{ color: var(--indigo-700); }
   font-weight: 600;
 }
 
+/* Формы: поля, селекты, инпуты */
 input, select, textarea, .vTextField, .vIntegerField, .vForeignKeyRawIdAdminField{
   border: 1px solid var(--border);
   border-radius: 8px !important;
@@ -113,6 +123,7 @@ input, select, textarea, .vTextField, .vIntegerField, .vForeignKeyRawIdAdminFiel
 select{ background-color: #fff; }
 .help, .help-tooltip{ color: var(--muted); }
 
+/* Фокус-стиль (доступность) */
 :focus{
   outline: 3px solid var(--focus);
   outline-offset: 2px;
@@ -122,6 +133,7 @@ input:focus, select:focus, textarea:focus{
   box-shadow: 0 0 0 3px var(--focus);
 }
 
+/* Кнопки */
 .button, input[type=submit], .submit-row input, .object-tools a.addlink, .object-tools a.historylink{
   background: var(--brand);
   border: 1px solid var(--brand-strong);
@@ -135,6 +147,7 @@ input:focus, select:focus, textarea:focus{
   border-color: var(--indigo-800);
 }
 
+/* Кнопки "Сохранить и добавить" и др. */
 .submit-row{
   background: var(--surface);
   border-top: 1px solid var(--border);
@@ -144,6 +157,7 @@ input:focus, select:focus, textarea:focus{
   margin: .2rem .2rem .2rem 0;
 }
 
+/* Inlines */
 .inline-group{
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -154,6 +168,7 @@ input:focus, select:focus, textarea:focus{
   border-bottom: 1px solid var(--border);
 }
 
+/* Сообщения (alerts) */
 ul.messagelist li{
   border-radius: 10px;
 }
@@ -173,6 +188,7 @@ ul.messagelist li.error{
   color: #8a1f1f;
 }
 
+/* Логин-страница */
 .login #container{
   border-radius: 16px;
   border: 1px solid var(--border);
@@ -185,6 +201,7 @@ ul.messagelist li.error{
   color: var(--indigo-700);
 }
 
+/* Виджеты ManyToMany "dual selector" */
 .selector, .selector-available, .selector-chosen{
   border-color: var(--border);
 }
@@ -194,10 +211,12 @@ ul.messagelist li.error{
   border-color: var(--brand-strong);
 }
 
+/* Переключатели/чекбоксы/радио */
 input[type="checkbox"], input[type="radio"]{
   accent-color: var(--brand);
 }
 
+/* Ссылки */
 a:link, a:visited{
   color: var(--indigo-700);
 }
@@ -205,6 +224,7 @@ a:hover{
   color: var(--indigo-800);
 }
 
+/* Мелкие подправки типографики */
 h1, h2, h3, .module h2{
   color: var(--text);
 }
